@@ -3,6 +3,7 @@
 
 SerialportOperate::SerialportOperate()
 {
+    mSerialpost = new QSerialPort ;
 
 }
 
