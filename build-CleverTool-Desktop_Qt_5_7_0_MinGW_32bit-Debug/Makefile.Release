@@ -201,7 +201,7 @@ release/moc_mainwindow.cpp: C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/QMain
 		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtGui/qicon.h \
 		../CleverTool/mainwindow.h \
 		C:/Qt/Qt5.7.0/5.7/mingw53_32/bin/moc.exe
-	C:\Qt\Qt5.7.0\5.7\mingw53_32\bin\moc.exe $(DEFINES) -D__GNUC__ -DWIN32 -IC:/Qt/Qt5.7.0/5.7/mingw53_32/mkspecs/win32-g++ -IE:/Qt/CleverTool/CleverTool -IE:/Qt/CleverTool/CleverTool/adjust -IE:/Qt/CleverTool/CleverTool/serialport -IC:/Qt/Qt5.7.0/5.7/mingw53_32/include -IC:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets -IC:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtGui -IC:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtANGLE -IC:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtSerialPort -IC:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtCore -I. -ID:/qt/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include -ID:/qt/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include-fixed -ID:/qt/Tools/mingw530_32/i686-w64-mingw32/include -ID:/qt/Tools/mingw530_32/i686-w64-mingw32/include/c++ -ID:/qt/Tools/mingw530_32/i686-w64-mingw32/include/c++/i686-w64-mingw32 -ID:/qt/Tools/mingw530_32/i686-w64-mingw32/include/c++/backward ..\CleverTool\mainwindow.h -o release\moc_mainwindow.cpp
+	C:\Qt\Qt5.7.0\5.7\mingw53_32\bin\moc.exe $(DEFINES) -D__GNUC__ -DWIN32 -IC:/Qt/Qt5.7.0/5.7/mingw53_32/mkspecs/win32-g++ -IE:/Qt/CleverTool/CleverTool -IE:/Qt/CleverTool/CleverTool/adjust -IE:/Qt/CleverTool/CleverTool/serialport -IC:/Qt/Qt5.7.0/5.7/mingw53_32/include -IC:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets -IC:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtGui -IC:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtANGLE -IC:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtSerialPort -IC:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtCore -I. -IC:/Qt/Qt5.7.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include -IC:/Qt/Qt5.7.0/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include-fixed -IC:/Qt/Qt5.7.0/Tools/mingw530_32/i686-w64-mingw32/include -IC:/Qt/Qt5.7.0/Tools/mingw530_32/i686-w64-mingw32/include/c++ -IC:/Qt/Qt5.7.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/i686-w64-mingw32 -IC:/Qt/Qt5.7.0/Tools/mingw530_32/i686-w64-mingw32/include/c++/backward ..\CleverTool\mainwindow.h -o release\moc_mainwindow.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -493,58 +493,7 @@ release/mainwindow.o: ../CleverTool/mainwindow.cpp ../CleverTool/mainwindow.h \
 		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtGui/qtouchdevice.h \
 		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qtabwidget.h \
 		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtGui/qicon.h \
-		ui_mainwindow.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtCore/QVariant \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/QAction \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qaction.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qactiongroup.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/QApplication \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qapplication.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtCore/qcoreapplication.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtCore/qeventloop.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qdesktopwidget.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtGui/qguiapplication.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtGui/qinputmethod.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/QButtonGroup \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qbuttongroup.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/QComboBox \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qcombobox.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qabstractitemdelegate.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qstyleoption.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qabstractspinbox.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtGui/qvalidator.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtCore/qregularexpression.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qslider.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qabstractslider.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qstyle.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qtabbar.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qrubberband.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qframe.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtCore/qabstractitemmodel.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/QHeaderView \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qheaderview.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qabstractitemview.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qabstractscrollarea.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtCore/qitemselectionmodel.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/QLabel \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qlabel.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/QLineEdit \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qlineedit.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtGui/qtextcursor.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtGui/qtextformat.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtGui/qpen.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtGui/qtextoption.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/QMenuBar \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qmenubar.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qmenu.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/QPushButton \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qpushbutton.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qabstractbutton.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/QStatusBar \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qstatusbar.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/QToolBar \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/qtoolbar.h \
-		C:/Qt/Qt5.7.0/5.7/mingw53_32/include/QtWidgets/QWidget
+		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\mainwindow.o ..\CleverTool\mainwindow.cpp
 
 release/moc_mainwindow.o: release/moc_mainwindow.cpp 
