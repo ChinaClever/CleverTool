@@ -191,6 +191,7 @@ Makefile: ../CleverTool/CleverTool.pro D:/qt/5.7/mingw53_32/mkspecs/win32-g++/qm
 		D:/qt/5.7/mingw53_32/mkspecs/features/default_pre.prf \
 		D:/qt/5.7/mingw53_32/mkspecs/features/win32/default_pre.prf \
 		../CleverTool/adjust/adjust.pri \
+		../CleverTool/serialport/serialport.pri \
 		D:/qt/5.7/mingw53_32/mkspecs/features/resolve_config.prf \
 		D:/qt/5.7/mingw53_32/mkspecs/features/exclusive_builds_post.prf \
 		D:/qt/5.7/mingw53_32/mkspecs/features/default_post.prf \
@@ -348,6 +349,7 @@ D:/qt/5.7/mingw53_32/mkspecs/features/exclusive_builds.prf:
 D:/qt/5.7/mingw53_32/mkspecs/features/default_pre.prf:
 D:/qt/5.7/mingw53_32/mkspecs/features/win32/default_pre.prf:
 ../CleverTool/adjust/adjust.pri:
+../CleverTool/serialport/serialport.pri:
 D:/qt/5.7/mingw53_32/mkspecs/features/resolve_config.prf:
 D:/qt/5.7/mingw53_32/mkspecs/features/exclusive_builds_post.prf:
 D:/qt/5.7/mingw53_32/mkspecs/features/default_post.prf:

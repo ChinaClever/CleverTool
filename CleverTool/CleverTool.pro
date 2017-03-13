@@ -13,12 +13,11 @@ TARGET = CleverTool
 TEMPLATE = app
 
 include(adjust/adjust.pri)
+include(serialport/serialport.pri)
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    serialportoperate.cpp
 
 HEADERS  += mainwindow.h \
-    serialportoperate.h
 
 FORMS    += mainwindow.ui

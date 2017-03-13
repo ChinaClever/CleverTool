@@ -7,8 +7,8 @@ SerialportOperate::SerialportOperate()
 }
 
 /**
- * @brief SerialportOperate::readPortInfo
- * 读取当前串口
+ * @brief 读取当前串口
+ *
  */
 QList<QSerialPortInfo> SerialportOperate::readPortInfo()
 {
