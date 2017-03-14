@@ -199,6 +199,18 @@ release/moc_mainwindow.cpp: D:/qt/5.7/mingw53_32/include/QtWidgets/QMainWindow \
 		D:/qt/5.7/mingw53_32/include/QtGui/qtouchdevice.h \
 		D:/qt/5.7/mingw53_32/include/QtWidgets/qtabwidget.h \
 		D:/qt/5.7/mingw53_32/include/QtGui/qicon.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/QDebug \
+		D:/qt/5.7/mingw53_32/include/QtCore/QTimer \
+		D:/qt/5.7/mingw53_32/include/QtCore/qtimer.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qbasictimer.h \
+		../CleverTool/serialport/serialportoperate.h \
+		D:/qt/5.7/mingw53_32/include/QtSerialPort/QSerialPort \
+		D:/qt/5.7/mingw53_32/include/QtSerialPort/qserialport.h \
+		D:/qt/5.7/mingw53_32/include/QtSerialPort/qserialportglobal.h \
+		D:/qt/5.7/mingw53_32/include/QtSerialPort/QSerialPortInfo \
+		D:/qt/5.7/mingw53_32/include/QtSerialPort/qserialportinfo.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/QList \
+		D:/qt/5.7/mingw53_32/include/QtCore/QStringList \
 		../CleverTool/mainwindow.h \
 		D:/qt/5.7/mingw53_32/bin/moc.exe
 	D:\qt\5.7\mingw53_32\bin\moc.exe $(DEFINES) -D__GNUC__ -DWIN32 -ID:/qt/5.7/mingw53_32/mkspecs/win32-g++ -IF:/Qt/GitHub/CleverTool/CleverTool -IF:/Qt/GitHub/CleverTool/CleverTool/adjust -IF:/Qt/GitHub/CleverTool/CleverTool/serialport -ID:/qt/5.7/mingw53_32/include -ID:/qt/5.7/mingw53_32/include/QtWidgets -ID:/qt/5.7/mingw53_32/include/QtGui -ID:/qt/5.7/mingw53_32/include/QtANGLE -ID:/qt/5.7/mingw53_32/include/QtSerialPort -ID:/qt/5.7/mingw53_32/include/QtCore -I. -ID:/qt/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include -ID:/qt/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include-fixed -ID:/qt/Tools/mingw530_32/i686-w64-mingw32/include -ID:/qt/Tools/mingw530_32/i686-w64-mingw32/include/c++ -ID:/qt/Tools/mingw530_32/i686-w64-mingw32/include/c++/i686-w64-mingw32 -ID:/qt/Tools/mingw530_32/i686-w64-mingw32/include/c++/backward ..\CleverTool\mainwindow.h -o release\moc_mainwindow.cpp
@@ -279,7 +291,21 @@ release/serialportoperate.o: ../CleverTool/serialport/serialportoperate.cpp ../C
 		D:/qt/5.7/mingw53_32/include/QtSerialPort/QSerialPortInfo \
 		D:/qt/5.7/mingw53_32/include/QtSerialPort/qserialportinfo.h \
 		D:/qt/5.7/mingw53_32/include/QtCore/QList \
-		D:/qt/5.7/mingw53_32/include/QtCore/QStringList
+		D:/qt/5.7/mingw53_32/include/QtCore/QStringList \
+		D:/qt/5.7/mingw53_32/include/QtCore/QDebug \
+		D:/qt/5.7/mingw53_32/include/QtCore/qdebug.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qhash.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qmap.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qtextstream.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qlocale.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qvariant.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qshareddata.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qvector.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qpoint.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qset.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qcontiguouscache.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qsharedpointer.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qsharedpointer_impl.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\serialportoperate.o ..\CleverTool\serialport\serialportoperate.cpp
 
 release/main.o: ../CleverTool/main.cpp ../CleverTool/mainwindow.h \
@@ -383,6 +409,18 @@ release/main.o: ../CleverTool/main.cpp ../CleverTool/mainwindow.h \
 		D:/qt/5.7/mingw53_32/include/QtGui/qtouchdevice.h \
 		D:/qt/5.7/mingw53_32/include/QtWidgets/qtabwidget.h \
 		D:/qt/5.7/mingw53_32/include/QtGui/qicon.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/QDebug \
+		D:/qt/5.7/mingw53_32/include/QtCore/QTimer \
+		D:/qt/5.7/mingw53_32/include/QtCore/qtimer.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qbasictimer.h \
+		../CleverTool/serialport/serialportoperate.h \
+		D:/qt/5.7/mingw53_32/include/QtSerialPort/QSerialPort \
+		D:/qt/5.7/mingw53_32/include/QtSerialPort/qserialport.h \
+		D:/qt/5.7/mingw53_32/include/QtSerialPort/qserialportglobal.h \
+		D:/qt/5.7/mingw53_32/include/QtSerialPort/QSerialPortInfo \
+		D:/qt/5.7/mingw53_32/include/QtSerialPort/qserialportinfo.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/QList \
+		D:/qt/5.7/mingw53_32/include/QtCore/QStringList \
 		D:/qt/5.7/mingw53_32/include/QtWidgets/QApplication \
 		D:/qt/5.7/mingw53_32/include/QtWidgets/qapplication.h \
 		D:/qt/5.7/mingw53_32/include/QtCore/qcoreapplication.h \
@@ -493,6 +531,18 @@ release/mainwindow.o: ../CleverTool/mainwindow.cpp ../CleverTool/mainwindow.h \
 		D:/qt/5.7/mingw53_32/include/QtGui/qtouchdevice.h \
 		D:/qt/5.7/mingw53_32/include/QtWidgets/qtabwidget.h \
 		D:/qt/5.7/mingw53_32/include/QtGui/qicon.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/QDebug \
+		D:/qt/5.7/mingw53_32/include/QtCore/QTimer \
+		D:/qt/5.7/mingw53_32/include/QtCore/qtimer.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qbasictimer.h \
+		../CleverTool/serialport/serialportoperate.h \
+		D:/qt/5.7/mingw53_32/include/QtSerialPort/QSerialPort \
+		D:/qt/5.7/mingw53_32/include/QtSerialPort/qserialport.h \
+		D:/qt/5.7/mingw53_32/include/QtSerialPort/qserialportglobal.h \
+		D:/qt/5.7/mingw53_32/include/QtSerialPort/QSerialPortInfo \
+		D:/qt/5.7/mingw53_32/include/QtSerialPort/qserialportinfo.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/QList \
+		D:/qt/5.7/mingw53_32/include/QtCore/QStringList \
 		ui_mainwindow.h \
 		D:/qt/5.7/mingw53_32/include/QtCore/QVariant \
 		D:/qt/5.7/mingw53_32/include/QtWidgets/QAction \
@@ -542,6 +592,9 @@ release/mainwindow.o: ../CleverTool/mainwindow.cpp ../CleverTool/mainwindow.h \
 		D:/qt/5.7/mingw53_32/include/QtWidgets/qabstractbutton.h \
 		D:/qt/5.7/mingw53_32/include/QtWidgets/QStatusBar \
 		D:/qt/5.7/mingw53_32/include/QtWidgets/qstatusbar.h \
+		D:/qt/5.7/mingw53_32/include/QtWidgets/QTextEdit \
+		D:/qt/5.7/mingw53_32/include/QtWidgets/qtextedit.h \
+		D:/qt/5.7/mingw53_32/include/QtGui/qtextdocument.h \
 		D:/qt/5.7/mingw53_32/include/QtWidgets/QToolBar \
 		D:/qt/5.7/mingw53_32/include/QtWidgets/qtoolbar.h \
 		D:/qt/5.7/mingw53_32/include/QtWidgets/QWidget

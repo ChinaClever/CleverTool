@@ -21,6 +21,7 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
+#include <QtWidgets/QTextEdit>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
 
@@ -38,6 +39,8 @@ public:
     QPushButton *pushButton_2;
     QLabel *label_3;
     QLabel *label_4;
+    QTextEdit *textEdit;
+    QLabel *label_5;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -46,7 +49,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(385, 330);
+        MainWindow->resize(385, 452);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         comboBox = new QComboBox(centralWidget);
@@ -84,6 +87,14 @@ public:
         label_4->setGeometry(QRect(30, 120, 100, 35));
         label_4->setFont(font);
         label_4->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        textEdit = new QTextEdit(centralWidget);
+        textEdit->setObjectName(QStringLiteral("textEdit"));
+        textEdit->setGeometry(QRect(140, 250, 191, 81));
+        label_5 = new QLabel(centralWidget);
+        label_5->setObjectName(QStringLiteral("label_5"));
+        label_5->setGeometry(QRect(30, 250, 100, 35));
+        label_5->setFont(font);
+        label_5->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -106,10 +117,11 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
         pushButton->setText(QApplication::translate("MainWindow", "\345\217\221\351\200\201", 0));
         label->setText(QApplication::translate("MainWindow", "\344\270\262\345\217\243\351\200\211\346\213\251\357\274\232", 0));
-        label_2->setText(QApplication::translate("MainWindow", "TextLabel", 0));
-        pushButton_2->setText(QApplication::translate("MainWindow", "\346\211\223\345\274\200", 0));
+        label_2->setText(QString());
+        pushButton_2->setText(QApplication::translate("MainWindow", "\346\211\223\345\274\200\344\270\262\345\217\243", 0));
         label_3->setText(QApplication::translate("MainWindow", "\344\270\262\345\217\243\347\212\266\346\200\201\357\274\232", 0));
         label_4->setText(QApplication::translate("MainWindow", "\345\217\221\351\200\201\345\221\275\344\273\244\357\274\232", 0));
+        label_5->setText(QApplication::translate("MainWindow", "\346\216\245\346\224\266\346\225\260\346\215\256\357\274\232", 0));
     } // retranslateUi
 
 };
