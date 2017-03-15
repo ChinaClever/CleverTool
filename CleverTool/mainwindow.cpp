@@ -9,10 +9,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     port = new SerialportOperate;
 
-    initComboxData();
-    //    mTimer = new QTimer(this);
-    //       connect(mTimer, SIGNAL(timeout()), this, SLOT(timeoutDone()));
-    //       mTimer->start(1000);
+    initComboxData(0);
+    QTimer *mTimer = new QTimer(this);
+    connect(mTimer, SIGNAL(timeout()), this, SLOT(timeoutDone()));
+    mTimer->start(3*1000);
 
     updateStateAndButton();
 
@@ -26,9 +26,19 @@ MainWindow::~MainWindow()
 /**
  * @brief combox初始化串口信息
  */
-void MainWindow::initComboxData()
+void MainWindow::initComboxData( int flag)
 {
-    QStringList list = port->readPortInfo();
+    QStringList list;
+    list.clear();
+    qDebug()<<"success 0";
+    ui->comboBox->clear();
+    if(flag == 0)
+        list = port->initPortInfo();
+    else if (flag == 1)
+        list = port->readPortInfo();
+
+    qDebug()<<"success 1";
+
     for(int i=0;i < list.size();i++)
     {
         QString str;
@@ -97,7 +107,13 @@ void MainWindow::on_pushButton_clicked()
 #if 1
     QString portName=ui->comboBox->currentText();
     QString data = ui->lineEdit->text();
-    port->sendDataToPort(portName,data);
+    int writeBytes = 0;
+    writeBytes = port->sendDataToPort(portName,data);
+
+    if( writeBytes == data.size() && data.size() )
+    {
+        QMessageBox::information(this,tr("Information"),tr("数据发送成功"),tr("确定"));
+    }
 
     QString str;
     str.clear();
@@ -119,5 +135,18 @@ void MainWindow::on_pushButton_clicked()
     }
 #endif
 
+}
+
+/**
+ * @brief 定时刷新串口
+ */
+void MainWindow::timeoutDone()
+{
+    int index = ui->comboBox->currentIndex();
+    initComboxData(1);
+    if(ui->comboBox->count() > index)
+        ui->comboBox->setCurrentIndex(index);
+    else
+        ui->comboBox->setCurrentIndex(0);
 }
 

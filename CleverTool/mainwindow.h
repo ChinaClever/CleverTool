@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include<QDebug>
 #include<QTimer>
+#include<QMessageBox>
 #include"serialportoperate.h"
 //#pragma execution_character_set("utf-8")
 
@@ -29,9 +30,10 @@ private slots:
     void on_comboBox_currentTextChanged(const QString &arg1);
 
     void on_pushButton_clicked();
+    void timeoutDone();
 
 private:
-    void initComboxData();
+    void initComboxData(int flag);
     void updateStateAndButton();
 
 private:
