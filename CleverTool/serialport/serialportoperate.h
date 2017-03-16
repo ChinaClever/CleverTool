@@ -12,7 +12,6 @@ public:
     SerialportOperate();
 
 
-
 protected:
     QList<QSerialPortInfo> readPortInfo();     //读取串口信息
     void enablePort();       //打开串口
