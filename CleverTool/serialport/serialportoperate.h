@@ -29,7 +29,6 @@ public:
     bool checkPortState(QString &portName);       //检测
     void checkAllState();
 
-
 protected:
 
 //    void copyList();
