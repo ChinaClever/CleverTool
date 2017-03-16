@@ -202,16 +202,6 @@ void SerialportOperate::initList()
     }
 }
 
-/**
- * @brief mPortList赋值给mComparePortlist
- */
-void SerialportOperate::copyList()
-{
-    //    for(int i=0; i < mPortList.size(); i++)
-    //    {
-    //        mComparePortlist.append(mPortList.at(i));
-    //    }
-}
 
 void SerialportOperate::initMlist()
 {
