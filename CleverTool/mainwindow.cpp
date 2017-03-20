@@ -109,11 +109,11 @@ void MainWindow::on_pushButton_clicked()
     QString data = ui->lineEdit->text();
     int writeBytes = 0;
     writeBytes = port->sendDataToPort(portName,data);
-
-    if( writeBytes == data.size() && data.size() )
-    {
-        QMessageBox::information(this,tr("Information"),tr("数据发送成功"),tr("确定"));
-    }
+    qDebug()<<"发送字节数："<<writeBytes;
+    //    if( writeBytes == data.size() && data.size() )
+    //    {
+    //        QMessageBox::information(this,tr("Information"),tr("数据发送成功"),tr("确定"));
+    //    }
 
     QString str;
     str.clear();

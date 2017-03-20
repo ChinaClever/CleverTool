@@ -79,11 +79,14 @@ void SerialportOperate::disablePort(QString &portName)
 */
 int SerialportOperate::sendDataToPort(QString &portName,QString &data)
 {
+    char buffer[7]={0x01,0x04,0x04,0x01,0x04,0x04};
+
     int writeBytes;
     int ret = serachPort(portName);
-    if(!data.isEmpty() && mList.at(ret)->isOpen())
+    if(data.isEmpty() && mList.at(ret)->isOpen())
     {
-        writeBytes = mList.at(ret)->write(data.toLatin1());  //QString转化为QByteArray类型
+//        writeBytes = mList.at(ret)->write(data.toLatin1());  //QString转化为QByteArray类型
+        writeBytes = mList.at(ret)->write(buffer);  //QString转化为QByteArray类型
         return writeBytes;
     }
 }
