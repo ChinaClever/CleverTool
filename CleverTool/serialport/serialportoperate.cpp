@@ -77,16 +77,23 @@ void SerialportOperate::disablePort(QString &portName)
 * @param portName
 * @param data
 */
-int SerialportOperate::sendDataToPort(QString &portName,QString &data)
+int SerialportOperate::sendDataToPort(QString &portName,quint8 *cmd, int len)
 {
-    char buffer[7]={0x01,0x04,0x04,0x01,0x04,0x04};
+    //    char buffer[7]={0x01,0x04,0x04,0x01,0x04,0x04};
+
+    //    qDebug()<<"数据:"<<cmd;
+    //    for(int i =0 ;i < sizeof)
+    QByteArray array = quintToByte(cmd,len);
+
+    for(int i =0 ; i < len ; i++)
+        qDebug("cmd:%x",*(cmd+i));
 
     int writeBytes;
     int ret = serachPort(portName);
-    if(data.isEmpty() && mList.at(ret)->isOpen())
+    if(mList.at(ret)->isOpen())
     {
-//        writeBytes = mList.at(ret)->write(data.toLatin1());  //QString转化为QByteArray类型
-        writeBytes = mList.at(ret)->write(buffer);  //QString转化为QByteArray类型
+        //        writeBytes = mList.at(ret)->write(data.toLatin1());  //QString转化为QByteArray类型
+        writeBytes = mList.at(ret)->write(array);  //QString转化为QByteArray类型
         return writeBytes;
     }
 }
@@ -126,8 +133,8 @@ bool SerialportOperate::checkPortState(QString &portName)
 
 void SerialportOperate::checkAllState()
 {
-    for(int i=0;i<mList.size();i++)
-        qDebug()<<"i:"<<i<<"端口名："<<mList.at(i)->portName()<<"状态："<<mList.at(i)->isOpen();
+    //    for(int i=0;i<mList.size();i++)
+    //        qDebug()<<"i:"<<i<<"端口名："<<mList.at(i)->portName()<<"状态："<<mList.at(i)->isOpen();
 
 }
 
@@ -156,7 +163,7 @@ QByteArray SerialportOperate::readDataFromPort(QString &portName)
     }else
     {
         QString warningstr = QObject::tr("串口%1未打开").arg(portName);
-        QMessageBox::information(NULL,QObject::tr("Information"),warningstr,QObject::tr("确定"));
+//        QMessageBox::information(NULL,QObject::tr("Information"),warningstr,QObject::tr("确定"));
         return 0;
     }
 
@@ -251,6 +258,26 @@ void SerialportOperate::initCompareList()
     {
         mCompareList.append(list.at(i));
     }
+}
+
+QByteArray SerialportOperate::quintToByte(quint8 *cmd, int len)
+{
+    QByteArray array;
+    for(int i = 0; i<len ; i++)
+    {
+        array.append(*(cmd + i));
+    }
+
+    return array;
+}
+
+bool SerialportOperate::checkIsOpen(QString &portName)
+{
+    int ret = serachPort(portName);
+    if(mList.at(ret)->isOpen())
+        return true;
+    else
+        return false;
 }
 
 

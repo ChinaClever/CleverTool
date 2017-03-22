@@ -1,18 +1,33 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include"datadefine.h"
 #include<qtimer.h>
+
+returntableData returnData;
+collectedData sentData;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    initData();
     port = new SerialportOperate;
 
+    //    quint8 addr = 1;
+    //    quint8 flag = 0xA1;
+    //    quint8 buffer[8] = {1,0,0,0,0,0,0,0}; //第一位到第八位开关，结果为10000000，即80
+    //    quint8 buffer1[8] = {0,0,0,0,0,0,0,0};
+    //    sentDataToPacket(addr,flag,buffer,buffer1);
+    //    onBit();
+    //    bitControl();
+    initGroupboxThree(1);
+    initTablewidget();
     initComboxData(0);
-    QTimer *mTimer = new QTimer(this);
-    connect(mTimer, SIGNAL(timeout()), this, SLOT(timeoutDone()));
-    mTimer->start(3*1000);
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(timeoutDone()));
+    timer->start(3*1000);
 
     updateStateAndButton();
 
@@ -30,14 +45,14 @@ void MainWindow::initComboxData( int flag)
 {
     QStringList list;
     list.clear();
-    qDebug()<<"success 0";
+    //    qDebug()<<"success 0";
     ui->comboBox->clear();
     if(flag == 0)
         list = port->initPortInfo();
     else if (flag == 1)
         list = port->readPortInfo();
 
-    qDebug()<<"success 1";
+    //    qDebug()<<"success 1";
 
     for(int i=0;i < list.size();i++)
     {
@@ -85,7 +100,7 @@ void MainWindow::on_comboBox_currentTextChanged(const QString &)
 void MainWindow::updateStateAndButton()
 {
     mCurrentPortName = ui->comboBox->currentText();
-    qDebug()<<"串口状态："<<mCurrentPortName<<port->checkPortState(mCurrentPortName);
+    //    qDebug()<<"串口状态："<<mCurrentPortName<<port->checkPortState(mCurrentPortName);
     if(port->checkPortState(mCurrentPortName))
     {
         ui->pushButton_2->setText("关闭串口");
@@ -99,44 +114,6 @@ void MainWindow::updateStateAndButton()
 }
 
 
-
-
-void MainWindow::on_pushButton_clicked()
-{
-
-#if 1
-    QString portName=ui->comboBox->currentText();
-    QString data = ui->lineEdit->text();
-    int writeBytes = 0;
-    writeBytes = port->sendDataToPort(portName,data);
-    qDebug()<<"发送字节数："<<writeBytes;
-    //    if( writeBytes == data.size() && data.size() )
-    //    {
-    //        QMessageBox::information(this,tr("Information"),tr("数据发送成功"),tr("确定"));
-    //    }
-
-    QString str;
-    str.clear();
-    str =port->readDataFromPort(portName);
-    if(!str.isEmpty())
-        ui->textEdit->setText(str);
-#else
-    QByteArray recv = port->test();//
-    if( recv.size() == 256)
-    {
-        for(int i=0;i<0xff;i++)
-            if(recv.at(i) != i)
-            {
-                qDebug()<<"数据接收失败！";
-            }
-    }else
-    {
-        qDebug()<<"接收数据成功！";
-    }
-#endif
-
-}
-
 /**
  * @brief 定时刷新串口
  */
@@ -148,5 +125,818 @@ void MainWindow::timeoutDone()
         ui->comboBox->setCurrentIndex(index);
     else
         ui->comboBox->setCurrentIndex(0);
+
+    readAnswer();
 }
 
+/**
+ * @brief 地址码切换,刷新发送命令及校验码
+ * @param index
+ */
+void MainWindow::on_comboBox_2_currentIndexChanged(int index)
+{
+    mAddr = index + 1;  //当前地址码
+    initGroupboxOne(index);
+    initGroupboxTwo(index);
+    initGroupboxThree(index);
+}
+
+void MainWindow::initGroupboxOne(int index)
+{
+    switch (index) {
+    case 0:
+        ui->lineEdit_3->setText(tr("04"));
+        break;
+    case 1:
+        ui->lineEdit_3->setText(tr("07"));
+        break;
+    case 2:
+        ui->lineEdit_3->setText(tr("06"));
+        break;
+    case 3:
+        ui->lineEdit_3->setText(tr("01"));
+        break;
+
+    }
+}
+
+void MainWindow::initGroupboxTwo(int index)
+{
+    switch (index) {
+    case 0:
+        ui->lineEdit_6->setText(tr("07"));
+        break;
+    case 1:
+        ui->lineEdit_6->setText(tr("04"));
+        break;
+    case 2:
+        ui->lineEdit_6->setText(tr("05"));
+        break;
+    case 3:
+        ui->lineEdit_6->setText(tr("02"));
+        break;
+
+    }
+}
+
+void MainWindow::initGroupboxThree(int index)
+{
+    quint8 addr = index + 1;
+    quint8 flag = 0xA2;
+    quint8 onbuf[8];//发送采集命令时，这两个参数无用
+    quint8 offbuf[8];
+    memset(onbuf,0,sizeof(onbuf));
+    memset(offbuf,0,sizeof(offbuf));
+    bool symbol = false; //表示此时发送采集命令
+
+    sentDataToPacket(addr, flag,onbuf,offbuf ,symbol);
+    QString str = quintToStr(sendData,sentData.length);
+    ui->lineEdit_8->setText(str);
+
+}
+
+/**
+ * @brief 增益校准按钮
+ */
+void MainWindow::on_pushButton_3_clicked()
+{
+    //    str.clear();
+    //    is_read = false;
+    mflag = 0;
+
+    if(is_read)
+    {
+        is_read = false;
+        sendCmd(mflag);
+        ui->label_11->setMovie(movie);
+        movie->start();
+    }
+}
+
+void MainWindow::initData()
+{
+    mflag = 3;
+    is_gather = true;
+    is_read = true; //默认已读，才能保证发送
+    mAddr = 1;
+    mTimer = new QTimer(this);
+    movie = new QMovie(":/new/prefix1/image/camEffectTarget.gif");
+}
+
+
+/**
+ * @brief 相位校准按钮
+ */
+void MainWindow::on_pushButton_4_clicked()
+{
+    //    is_read = false;
+    mflag = 1;
+
+    if(is_read)
+    {
+        is_read = false;
+        sendCmd(mflag);
+
+    }
+}
+
+/**
+ * @brief 发送命令
+ * @param flag
+ */
+void MainWindow::sendCmd(int flag)
+{
+
+    quint8 buf[6];
+    memset(buf,0,sizeof(buf));
+    //    qDebug()<<"cmd:"<<mAddr;
+    if(mflag == 0)  //增益校准
+        for(int i = 0; i < 6; i++)
+        {
+
+            buf[i] = transCmd[mAddr-1][i];
+            qDebug("buf:%x",buf[i]);
+        }
+    else if(mflag == 1)  //相位校准
+        for(int i = 0; i < 6; i++)
+        {
+
+            buf[i] = phaseCmd[mAddr-1][i];
+            //        qDebug()<<"transCmd:"<<transCmd[1][1];
+            //            printf("%x",transCmd[1][0]);
+            qDebug("buf:%x",buf[i]);
+        }
+
+    port->sendDataToPort(mCurrentPortName,buf,sizeof(buf));
+}
+
+/**
+ * @brief 从串口读取数据显示,根据mflag标志决定数据流向
+ */
+void MainWindow::readAnswer()
+{
+    qDebug()<<"判断mflg："<<mflag;
+    QByteArray answer = port->readDataFromPort(mCurrentPortName);
+
+    quint8 data[30];
+    QString str;
+
+    memset(data,0,sizeof(data));
+    for(int i = 0; i < answer.length() ; i++)
+    {
+        data[i] = answer.at(i);
+        qDebug("data:%x",data[i]);
+        str.append(QString::number(data[i],16));
+        str.append(" ");
+    }
+
+    if(!answer.isEmpty())
+    {
+        is_read = true;  //将读取数据标志位置1
+        switch (mflag)
+        {
+        case 0:
+            updateGroupboxOne(data,mflag,answer.length()-1,answer.length());
+            break;
+        case 1:
+            updateGroupboxTwo(data,mflag,answer.length()-1,answer.length());
+            break;
+        case 2:  //当数据为采集信息数据时，需要判断是显示到采集应答还是表格
+            if(is_gather)
+            {
+                updateGroupboxThree(data,answer.length());
+            }
+            else
+            {
+                returnToPacket(answer);
+                updataTableData();
+            }
+
+            break;
+        }
+    }
+    else //数据未收到，如果is_read一直为false，那么后面数据将一直无法发送，所以延迟置1，延迟时间内无法发送
+    {
+        qDebug()<<"数据未收到";
+
+        if(!port->checkIsOpen(mCurrentPortName) && mflag !=3)
+        {
+            QTimer::singleShot(2*1000 , this , SLOT(delaySetTrue()));  //3s延时置1
+        }
+
+    }
+
+}
+
+/**
+ * @brief 获取异或校验码,主要针对于返回值校验码，最后一位为校验码，所以要减1
+ */
+quint8 MainWindow::getXorNumber(quint8 *data,int len)
+{
+
+    quint8 xorNumber = 0;
+    for(int i = 0;i<len ;i++)
+    {
+        qDebug() <<"数据长度："<<sizeof(data);
+        xorNumber ^= *(data+i);
+        qDebug("*data:%x",*(data+i));
+    }
+    qDebug("校验码：%x",xorNumber);
+    return xorNumber;
+
+}
+
+
+/**
+ * @brief 应答是否正确,分别为要校验的数据，标志位1代表增益校准，2代表相位校准，长度为数据长度，防止sizeof中碰到0
+ */
+bool MainWindow::responseIsRight(quint8 *data ,int flag ,int length)
+{
+
+    //mAddr  sendCmd xor
+    dataTopacket(data,length);
+
+    if((getXorNumber(data,length) == recv.xornumber) && cmdIsRight(flag))
+    {
+        return true;
+    }
+    qDebug()<<"cmdIsRight:"<<cmdIsRight(flag);
+    return false;
+
+}
+
+/**
+ * @brief flag为1表示增益校准，为2表示相位校准
+ * @param data
+ * @param flag
+ * @return
+ */
+bool MainWindow::cmdIsRight(int flag)
+{
+    if(recv.addr == mAddr)
+    {
+        for(int i = 0; i <5 ;i++)
+        {
+            qDebug("recv:%x   cmd:%x",recv.cmd[i],recvCmd[flag][i]);
+            if(recv.cmd[i] == recvCmd[flag][i])
+                continue;
+            return false;
+        }
+    }else
+        return false;
+
+    return true;
+}
+
+void MainWindow::dataTopacket(quint8 *Data,int len)
+{
+    int i = 0;
+    recv.addr = Data[i++];
+
+    recv.cmd[0] = Data[i++];
+    recv.cmd[1] = Data[i++];
+    recv.cmd[2] = Data[i++];
+    recv.cmd[3] = Data[i++];
+    recv.cmd[4] = Data[i++];
+
+    recv.xornumber = Data[i++];
+
+}
+
+void MainWindow::initTablewidget()
+{
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
+    ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);  //设置不可编辑
+
+    initTablewidgetOfButton();
+
+}
+
+/**
+ * @brief 初始化一个带有按钮的表格
+ */
+void MainWindow::initTablewidgetOfButton()
+{
+    for(int i =0;i <ui->tableWidget->rowCount(); i++)
+        for(int j = 0;j <ui->tableWidget->columnCount(); j++)
+        {
+            if(j != (ui->tableWidget->columnCount() - 1))
+            {
+                QTableWidgetItem *item = new QTableWidgetItem(tr("---"));
+                item->setTextAlignment(Qt::AlignHCenter);
+                ui->tableWidget->setItem(i,j,item);
+            }
+            else
+            {
+                QWidget *buttonWidget=new QWidget(this);
+                QHBoxLayout *buttonLayout=new QHBoxLayout(buttonWidget);
+
+                QPushButton *button_on=new QPushButton(this); //在最后一栏添加按钮
+                //button_on->setFixedHeight(30);
+                button_on->setText(tr("开启"));
+
+                QPushButton *button_off=new QPushButton(this);
+                button_off->setText(tr("关闭"));
+
+                buttonLayout->addWidget(button_on);
+                buttonLayout->addWidget(button_off);
+                buttonLayout->setContentsMargins(10, 2, 10, 3);
+
+                mAddressMap.insert(i,button_on);
+                mAddressMap.insert(i,button_off);
+
+                connect(button_on,SIGNAL(clicked()),this,SLOT(button_clicked()));
+                connect(button_off,SIGNAL(clicked()),this,SLOT(button_clicked()));
+
+                ui->tableWidget->setCellWidget(i,j,buttonWidget);
+            }
+        }
+}
+
+/**
+ * @brief 初始化一个不带按钮的表格
+ */
+void MainWindow::initTablewidgetNoButton()
+{
+    for(int i =0;i <ui->tableWidget->rowCount(); i++)
+        for(int j = 0;j <ui->tableWidget->columnCount(); j++)
+        {
+            QTableWidgetItem *item = new QTableWidgetItem(tr("---"));
+            item->setTextAlignment(Qt::AlignHCenter);
+            ui->tableWidget->setItem(i,j,item);
+        }
+}
+
+/**
+ * 点击关闭按钮的点击事件
+ */
+void MainWindow::button_clicked()
+{
+
+    QPushButton *button = dynamic_cast<QPushButton *>(QObject::sender()); //找到信号发送者
+    int mCurrentButtonRow,switchData;
+    //遍历map，通过比较地址，获取当前按钮所在回路
+
+    int count = ui->tableWidget->rowCount(); //同时也等于rowcount
+    QList<QPushButton *> addresslist;
+    int i;
+    for(i = 0;i < count; i++)
+    {
+        addresslist.clear();
+        addresslist = mAddressMap.values(i);
+        for(int j= 0;j < addresslist.size(); j++)
+        {
+            if(addresslist[j] == button)
+            {
+                mCurrentButtonRow = i; //当前行数
+                switchData = j;        //开关正好与其存值相同
+                break;
+            }
+        }
+    }
+
+    setSwitch(mCurrentButtonRow,switchData);
+
+
+}
+
+/**
+ * @brief 开始采集按钮的点击事件
+ */
+void MainWindow::on_pushButton_5_clicked()
+{
+    connect(mTimer, SIGNAL(timeout()), this, SLOT(collectLoopDone()));  //循环采集数据
+
+    if(port->checkIsOpen(mCurrentPortName)) //如果串口打开，再开始循环
+    {
+        mTimer->start(5*1000);
+        QMessageBox::information(this,tr("information"),tr("开始采集数据，点击停止采集结束数据采集！"),tr("确定"));
+    }
+    else
+    {
+        QString warningstr = QObject::tr("串口%1未打开").arg(mCurrentPortName);
+        QMessageBox::information(this,QObject::tr("Information"),warningstr,QObject::tr("确定"));
+    }
+}
+
+/**
+ * @brief 开始采集时发送命令打包,传入参数为执行板地址，以及读写及按钮标志位,symbol用于采集命令及发送命令的区别
+ */
+void MainWindow::sentDataToPacket(quint8 &addr, quint8 &flag,quint8 *onbit,quint8 *offbit ,bool symbol)
+{
+
+    //    quint8 sendData[32];
+    memset(sendData,0,sizeof(sendData));
+    int j = 0;
+
+    //填充包头
+    sentData.head[0] = sendData[j++] = 0x7B;
+    sentData.head[1] = sendData[j++] = 0xC1;
+
+    //填充地址，可变，需要传参
+    //    sentData.addr = sendData[j++] = 0x01;
+    sentData.addr = sendData[j++] = addr;
+
+    //长度
+    sentData.length = sendData[j++] = 0x15;
+
+    //标志位
+    //    sentData.flag = sendData[j++] = 0xA1;
+    sentData.flag = sendData[j++] = flag;
+
+
+    if(!symbol) //发送采集命令
+    {
+        int i=0;
+        sentData.openeffective[i++] = sendData[j++] = 0X11;  //第一块执行板的开关控制
+        sentData.openeffective[i++] = sendData[j++] = 0X11;
+        sentData.openeffective[i++] = sendData[j++] = 0X11;
+
+        sentData.openeffective[i++] = sendData[j++] = 0X11;
+        sentData.openeffective[i++] = sendData[j++] = 0X11;
+        sentData.openeffective[i++] = sendData[j++] = 0X11;
+
+        i=0;
+        sentData.closeffective[i++] = sendData[j++] = 0X11;  //第一块执行板的开关控制
+        sentData.closeffective[i++] = sendData[j++] = 0X11;
+        sentData.closeffective[i++] = sendData[j++] = 0X11;
+
+        sentData.closeffective[i++] = sendData[j++] = 0X11;
+        sentData.closeffective[i++] = sendData[j++] = 0X11;
+        sentData.closeffective[i++] = sendData[j++] = 0X11;
+
+        i=0;
+        sentData.obligate[i++] = sendData[j++] = 0x22;
+        sentData.obligate[i++] = sendData[j++] = 0x22;
+        sentData.obligate[i++] = sendData[j++] = 0x22;
+    }
+    else    //发送控制命令
+    {
+        //开启有效位
+        int i = 0;
+        for(int k = 0; k < 6 ; k++)
+        {
+            if((i+1) == addr) //i=0时，第一块执行板，此时mAddr=1
+                sentData.openeffective[i++] = sendData[j++] = bitControl(onbit);  //第一块执行板的开关控制
+            else
+                sentData.openeffective[i++] = sendData[j++] = 0;
+        }
+
+        //关闭有效位
+        i = 0;
+        for(int k = 0; k < 6 ; k++)
+        {
+            if((i+1) == addr) //i=0时，第一块执行板，此时mAddr=1
+                sentData.closeffective[i++] = sendData[j++] = bitControl(offbit);  //第一块执行板的开关控制
+            else
+                sentData.closeffective[i++] = sendData[j++] = 0;
+        }
+
+        //预留
+        i = 0;
+        sentData.obligate[i++] = sendData[j++] = 0;
+        sentData.obligate[i++] = sendData[j++] = 0;
+        sentData.obligate[i++] = sendData[j++] = 0;
+    }
+
+    //异或校验码
+    sentData.xornumber = sendData[j++] = getXorNumber(sendData,sizeof(sendData));
+    qDebug("校验码为：%x" , sentData.xornumber );
+
+}
+
+/**
+ * @brief 开关有效位的赋值
+ */
+quint8 MainWindow::bitControl(quint8 *buffer)
+{
+
+
+    //    quint8 buffer[8] = {1,0,0,0,0,0,0,0}; //第一位到第八位开关，结果为10000000，即80
+    quint8 on = 0;
+    for(int i = 0;i < 8;i++)
+    {
+        qDebug("buffer:%x",*(buffer+i));
+        if(buffer[i] == 1)
+        {
+
+            on = on|(1<<(7-i));  //如果该位为1，则该位开关打开，置1，否则默认为0，此时无效
+        }
+    }
+    qDebug("------------------------on------------------------:%x",on);
+    return on;
+
+}
+
+/**
+ * @brief 发送采集命令
+ */
+void MainWindow::sendGatherCmd()
+{
+    is_gather = true;
+    quint8 addr = mAddr;
+    quint8 flag =0xA2;
+    quint8 buffer[8] = {0X11,0X11,0X11,0X11,0X11,0X11,0X11,0X11}; //第一位到第八位开关，结果为10000000，即80
+    quint8 buffer1[8] = {0X11,0X11,0X11,0X11,0X11,0X11,0X11,0X11};
+    sentDataToPacket(addr,flag,buffer,buffer1,0);
+    port->sendDataToPort(mCurrentPortName,sendData,21);
+}
+
+/**
+ * @brief 发送表格相关的命令
+ */
+void MainWindow::sendTableCmd()
+{
+    //电流电压
+    is_gather = false;  //用于区别于采集命令
+    quint8 addr = mAddr;
+    quint8 flag = 0;
+    quint8 buffer[8] = {1,1,1,1,1,1,1,1}; //第一位到第八位开关，结果为10000000，即80
+    quint8 buffer1[8] = {0,0,0,0,0,0,0,0};
+    bool symbol = true;
+    sentDataToPacket(addr,flag,buffer,buffer1,symbol);
+    port->sendDataToPort(mCurrentPortName,sendData,21);
+
+}
+
+/**
+ * @brief 发送开关位的控制命令
+ */
+void MainWindow::sendControlCmd(quint8 *onBuf,quint8 *offBuf)
+{
+    quint8 addr = mAddr;
+    quint8 flag = 0xA1;
+    //    quint8 buffer[8] = {1,1,1,1,1,1,1,1};
+    //    quint8 buffer1[8] = {0,0,0,0,0,0,0,0};
+    bool symbol = true;
+    sentDataToPacket(addr,flag,onBuf,offBuf,symbol);
+    port->sendDataToPort(mCurrentPortName,sendData,21);
+}
+
+void MainWindow::returnToPacket(QByteArray &array)
+{
+
+
+    int i = 0;
+
+    //执行板返回标志
+    returnData.sign = array.at(i++);
+
+    //执行板地址
+    returnData.addr = array.at(i++);
+
+    //长度
+    returnData.len = array.at(i++);
+
+    //开关状态
+    returnData.onoffState = array.at(i++);
+
+    //八位电流值
+    for(int m = 0; m < 8; m++)
+        for(int n = 0 ; n <2 ; n++)
+            returnData.current[m][n] = array.at(i++);
+
+    //电压值
+    for(int m = 0; m < 2; m++)
+        for(int n = 0 ; n <2 ; n++)
+            returnData.volate[m][n] = array.at(i++);
+
+    //功率
+    for(int m = 0; m < 2; m++)
+        for(int n = 0 ; n <2 ; n++)
+            returnData.power[m][n] = array.at(i++);
+
+    //异或校验码
+    returnData.xornumber = array.at(i++);
+
+}
+
+/**
+ * @brief 更新表格数据
+ */
+void MainWindow::updataTableData()
+{
+    for(int i = 0 ; i < 8 ;i++ )
+    {
+        int j = 0;
+        setOnOffState(i,j++);
+        setCurretnt(i,j++);
+
+    }
+    setFirstVolate();
+    setSecondVolate();
+    setFirstPower();
+    setSecondPower();
+}
+
+/**
+ * @brief 开关状态显示
+ * @param row
+ * @param column
+ */
+void MainWindow::setOnOffState(int row, int column)
+{
+    QTableWidgetItem *item = ui->tableWidget->item(row,column);
+    bool state = (returnData.onoffState>>(7-row))&1; //判断该位，先将该位移到第一位，再与1相与，则第一位不变，其他位置0
+    if(state) //开
+        item->setText(tr("打开"));
+    else
+        item->setText(tr("关闭"));
+}
+
+/**
+ * @brief 设置电流值
+ * @param row
+ * @param column
+ */
+void MainWindow::setCurretnt(int row, int column)
+{
+    QTableWidgetItem *item = ui->tableWidget->item(row,column);
+    int data = (returnData.current[row][0]<<8 | returnData.current[row][1])/10;
+    QString str = QString("%1A").arg(data);
+    item->setText(str);
+}
+
+void MainWindow::setFirstVolate()
+{
+
+    int data = returnData.volate[0][0]<<8 | returnData.volate[0][1];
+    QString str = QString("%1V").arg(data);
+    ui->label_18->setText(str);
+}
+
+void MainWindow::setSecondVolate()
+{
+
+    int data = returnData.volate[1][0]<<8 | returnData.volate[1][1];
+    QString str = QString("%1V").arg(data);
+    ui->label_21->setText(str);
+}
+
+void MainWindow::setFirstPower()
+{
+
+    int data = returnData.power[0][0]<<8 | returnData.power[0][1];
+    QString str = QString("%1KW").arg(data);
+    ui->label_23->setText(str);
+}
+
+void MainWindow::setSecondPower()
+{
+
+    int data = returnData.power[1][0]<<8 | returnData.power[1][1];
+    QString str = QString("%1KW").arg(data);
+    ui->label_25->setText(str);
+}
+
+/**
+ * @brief 设置开关
+ * @param row为当前所按按钮所在行数
+ * @param onOroff为是开是关,决定是填充开有效位还是关有效位
+ */
+void MainWindow::setSwitch(int row,int onOroff)
+{
+    quint8 onbuf[8];
+    quint8 offbuf[8];
+    memset(onbuf,0,sizeof(onbuf));
+    memset(offbuf,0,sizeof(offbuf));
+    if(onOroff)  //开，那么填充开有效位，关有效位不用管
+    {
+        onbuf[row] = 1;
+
+    }else        //关，与上面正好相反
+    {
+        offbuf[row] = 1;
+
+    }
+
+    if(is_read)
+        sendControlCmd(onbuf,offbuf);
+}
+
+void MainWindow::updateResponse(QString &str)
+{
+
+    //    ui->lineEdit_10->setText(str);
+}
+
+/**
+ * @brief 将quint8数组转化为字符串返回
+ * @param buf
+ */
+QString MainWindow::quintToStr(quint8 *buf , int len)
+{
+    QString str;
+    str.clear();
+    for(int i = 0 ;i < len ; i++)
+    {
+        str.append(QString::number(*(buf + i),16));
+        str.append(" ");
+    }
+    return str;
+}
+
+/**
+ * @brief 更新增益按钮应答数据及其相关状态,参数主要用于判断状态正确错误
+ * length用于检测状态时获取校验码，此时长度一定要比
+ */
+void MainWindow::updateGroupboxOne(quint8 *data, int flag, int length ,int len)
+{
+    bool ret = responseIsRight(data,flag,length);  //判断应答是否正确
+
+    if(ret)
+        ui->label_11->setText("正确");
+    else
+        ui->label_11->setText("错误");
+
+    QString str = quintToStr(data, len);
+    ui->lineEdit_4->setText(str);
+}
+
+/**
+ * @brief 刷新相位校准应答数据以及状态
+ * @param data
+ * @param flag
+ * @param length
+ * @param len
+ */
+void MainWindow::updateGroupboxTwo(quint8 *data, int flag, int length ,int len)
+{
+    bool ret = responseIsRight(data,flag,length);  //判断应答是否正确
+
+    if(ret)
+        ui->label_16->setText("正确");
+    else
+        ui->label_16->setText("错误");
+
+    QString str = quintToStr(data, len);
+    ui->lineEdit_7->setText(str);
+}
+
+/**
+ * @brief 刷新采集应答数据以及状态
+ * @param data
+ * @param len
+ */
+void MainWindow::updateGroupboxThree(quint8 *data, int len)
+{
+    QString str = quintToStr(data, len);
+    ui->lineEdit_10->setText(str);
+
+    if(*(data + len - 1) == getXorNumber(data,len - 1) )
+        ui->label_27->setText(tr("正常"));
+    else
+        ui->label_27->setText(tr("错误"));
+}
+
+/**
+ * @brief 延时函数
+ */
+void MainWindow::delayTimeDone()
+{
+    if(is_read)
+    {
+        is_read = false;
+        sendTableCmd();  //表格信息采集
+    }
+}
+
+/**
+ * @brief 开始采集按钮点击之后采集循环
+ */
+void MainWindow::collectLoopDone()
+{
+    is_read = false;
+    mflag = 2;
+    if(is_read)
+    {
+        is_read = false;
+        sendGatherCmd();
+    }
+    QTimer::singleShot(5*1000 , this , SLOT(delayTimeDone()));  //5s延时后再发送其他命令
+
+    if(!port->checkIsOpen(mCurrentPortName)) //如果检测到串口关闭，那么结束循环，即表格刷新
+        mTimer->stop();
+}
+
+/**
+ * @brief 停止采集
+ */
+void MainWindow::on_pushButton_6_clicked()
+{
+    mTimer->stop();
+    QMessageBox::information(this,tr("information"),tr("停止数据采集！"),tr("确定"));
+}
+
+/**
+ * @brief 延迟置1
+ */
+void MainWindow::delaySetTrue()
+{
+    is_read = true;
+    mflag = 3; //0为增益，1为相位，2为采集，3表示恢复初始状态
+    qDebug()<<"延迟置1";
+    QString warningstr = QObject::tr("串口%1未打开").arg(mCurrentPortName);
+    QMessageBox::information(this,QObject::tr("Information"),warningstr,QObject::tr("确定"));
+}
