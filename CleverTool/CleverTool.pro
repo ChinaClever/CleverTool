@@ -19,5 +19,9 @@ SOURCES += main.cpp\
         mainwindow.cpp \
 
 HEADERS  += mainwindow.h \
+    datadefine.h
 
 FORMS    += mainwindow.ui
+
+RESOURCES += \
+    image.qrc

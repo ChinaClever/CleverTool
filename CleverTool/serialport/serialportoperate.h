@@ -21,13 +21,14 @@ public:
     void enablePort(QString &portName, qint32 baudRate = QSerialPort::Baud19200);       //打开串口
     void disablePort(QString &portName);      //关闭串口
     QByteArray test();
-    int sendDataToPort(QString &portName, QString &data);   //发送数据
+    int sendDataToPort(QString &portName, quint8 *cmd, int len);   //发送数据
     QByteArray readDataFromPort(QString &portName);
     QString readStringFromPort(QString &portName);
-    void sendDataToPort(QByteArray &data);
+//    void sendDataToPort(QByteArray &data);
     int serachPort(QString &portName);   //遍历
     bool checkPortState(QString &portName);       //检测
     void checkAllState();
+    bool checkIsOpen(QString &portName);
 
 protected:
 
@@ -35,6 +36,7 @@ protected:
     void initList();
     void initMlist();
     void initCompareList();
+    QByteArray quintToByte(quint8 *cmd,int len);
 
 private:
     QSerialPort *mSerialport;
