@@ -13,6 +13,7 @@ class SerialportOperate
 {
 public:
     SerialportOperate();
+     ~SerialportOperate();
 
     QByteArray datra;
 

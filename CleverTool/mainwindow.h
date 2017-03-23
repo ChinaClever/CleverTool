@@ -9,6 +9,7 @@
 #include<stdio.h>
 #include<QHBoxLayout>
 #include<QMovie>
+#include<QFile>
 //#pragma execution_character_set("utf-8")
 
 namespace Ui {
@@ -34,14 +35,19 @@ protected:
     quint8 sendData[32]; //采集信息时发送命令
     bool is_gather;  //用于判断采集命令或者是表格数据
     bool is_read;    //用于判断发送命令是否已有返回数据
+    bool is_once;  //采集的循环轮流发送
     QTimer *mTimer;  //表格刷新
-     QTimer *timer;  //主程序读取数据及串口刷新
+    QTimer *timer;  //主程序读取数据及串口刷新
     QMovie* movie;
+    int switchData; //开关状态
+    int mCurrentButtonRow; //当前点击按钮所在行
 
 
 
-private slots:
-    void on_pushButton_2_clicked();
+
+
+    private slots:
+        void on_pushButton_2_clicked();
 
     void on_comboBox_currentTextChanged(const QString &arg1);
 
@@ -62,25 +68,30 @@ private slots:
 
     void on_pushButton_6_clicked();
 
-private:
-    void initComboxData(int flag);
-    void updateStateAndButton();
+    void on_pushButton_7_clicked();
 
 protected:
+    void initComboxDa(int flag);
+    void updateStateAndButton();
+
+
+    void initText();
+
     void initGroupboxOne(int index);
     void updateGroupboxOne(quint8 *data, int flag, int length, int len);
     void initGroupboxTwo(int index);
-     void updateGroupboxTwo(quint8 *data, int flag, int length, int len);
+    void updateGroupboxTwo(quint8 *data, int flag, int length, int len);
     void initGroupboxThree(int index);
-     void updateGroupboxThree(quint8 *data, int len);
+    void updateGroupboxThree(quint8 *data, int len);
     void initData();
     void sendCmd(int flag); //flag用于判断是增益还是相位校准
-    void readAnswer();
+    void readAnswer(); //只针对非表格数据更新
+    void readTableAnswer(); //表格数据读取
     quint8 getXorNumber(quint8 *data, int len);
     //    quint8 getXorNumber(quint8 *data, int len, int flag);
     bool responseIsRight(quint8 *data, int flag, int length);
     bool cmdIsRight(int flag);
-    void dataTopacket(quint8 *Data, int len);
+    void dataTopacket(quint8 *Data);
     void initTablewidget();
     void initTablewidgetOfButton();
     void initTablewidgetNoButton();
@@ -103,9 +114,12 @@ protected:
 
     void setSwitch(int row, int onOroff);
 
-    void updateResponse(QString &str);
+//    void updateResponse(QString &str);
 
     QString quintToStr(quint8 *buf, int len);
+
+    void clearTalbeText();
+
 
 
 
