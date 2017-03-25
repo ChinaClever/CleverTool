@@ -199,19 +199,34 @@ void MainWindow::on_pushButton_3_clicked()
 {
     //    str.clear();
     //    is_read = false;
+    if(mflag == 2)
+        on_pushButton_6_clicked();//改变了mflag为3
+    //    mflag = 0;
+
     mflag = 0;
 
-    if(is_read)
+    if(is_read && port->checkIsOpen(mCurrentPortName))
     {
         is_read = false;
         sendCmd(mflag);
         //        ui->label_11->setMovie(movie);
         //        movie->start();
     }
+    else if(!port->checkIsOpen(mCurrentPortName))
+    {
+        QString warningstr = QObject::tr("串口%1未打开").arg(mCurrentPortName);
+        QMessageBox::information(this,QObject::tr("Information"),warningstr,QObject::tr("确定"));
+    }
+
 }
 
+/**
+ * @brief 初始化标志位
+ */
 void MainWindow::initData()
 {
+    switchFlag = false;
+    switchNum = 9 ;
     mCurrentButtonRow = 9;
     mflag = 3;
     is_gather = true;
@@ -229,14 +244,24 @@ void MainWindow::initData()
 void MainWindow::on_pushButton_4_clicked()
 {
     //    is_read = false;
+    if(mflag == 2)
+        on_pushButton_6_clicked();//改变了mflag为3
+
     mflag = 1;
 
-    if(is_read)
+    if(is_read && port->checkIsOpen(mCurrentPortName))
     {
         is_read = false;
         sendCmd(mflag);
 
     }
+    else if(!port->checkIsOpen(mCurrentPortName))
+    {
+        QString warningstr = QObject::tr("串口%1未打开").arg(mCurrentPortName);
+        QMessageBox::information(this,QObject::tr("Information"),warningstr,QObject::tr("确定"));
+    }
+
+
 }
 
 /**
@@ -245,7 +270,7 @@ void MainWindow::on_pushButton_4_clicked()
  */
 void MainWindow::sendCmd(int flag)
 {
-
+    qDebug()<<"校准命令已发送";
     quint8 buf[6];
     memset(buf,0,sizeof(buf));
     //    qDebug()<<"cmd:"<<mAddr;
@@ -441,6 +466,10 @@ bool MainWindow::cmdIsRight(int flag)
     return true;
 }
 
+/**
+ * @brief 相位及增益校准返回数据打包
+ * @param Data
+ */
 void MainWindow::dataTopacket(quint8 *Data)
 {
     int i = 0;
@@ -560,7 +589,15 @@ void MainWindow::button_clicked()
  */
 void MainWindow::on_pushButton_5_clicked()
 {
-    mflag = 2;
+    if(port->checkIsOpen(mCurrentPortName))
+    {
+        mflag = 2;
+    }
+    else
+    {
+        QString warningstr = QObject::tr("串口%1未打开").arg(mCurrentPortName);
+        QMessageBox::information(this,QObject::tr("Information"),warningstr,QObject::tr("确定"));
+    }
 #if 0
     //    qDebug()<<"isopen:"<<port->checkIsOpen(mCurrentPortName)<<"portname:"<<mCurrentPortName;
 
@@ -732,6 +769,10 @@ void MainWindow::sendControlCmd(quint8 *onBuf,quint8 *offBuf)
     port->sendDataToPort(mCurrentPortName,sendData,21);
 }
 
+/**
+ * @brief 返回数据打包
+ * @param array
+ */
 void MainWindow::returnToPacket(QByteArray &array)
 {
 
@@ -973,13 +1014,25 @@ void MainWindow::collectLoopDone()
 
     //        is_read = false;
     qDebug()<<"mCurrentButtonRow:"<<mCurrentButtonRow;
-    if(mCurrentButtonRow == 9) //当前行为0 - 7，为9表示初始并无按钮点击
+
+    if( switchFlag ) //已点击切换按钮
+    {
+        sendControlCmd(onbuffer,offbuffer);
+        switchFlag = false;
+    }
+    else if(mCurrentButtonRow == 9) //当前行为0 - 7，为9表示初始并无按钮点击
     {
         if(is_once)
         {
             qDebug()<<"采集指令---------------------------------";
-            sendGatherCmd(); //发送采集数据命令
-            is_once = false;
+            //            sendGatherCmd(); //发送采集数据命令
+            //            is_once = false;
+
+            if(is_read)
+            {
+                sendGatherCmd(); //发送采集数据命令
+                is_once = false;
+            }
         }
         else
         {
@@ -1005,6 +1058,7 @@ void MainWindow::collectLoopDone()
 void MainWindow::on_pushButton_6_clicked()
 {
     mflag = 3;
+    is_read = true;
     //    mTimer->stop();
     QMessageBox::information(this,tr("information"),tr("停止数据采集！"),tr("确定"));
     //    initTablewidgetOfButton();//如果停止采集初始化表格
@@ -1019,10 +1073,13 @@ void MainWindow::delaySetTrue()
     is_read = true;
     mflag = 3; //0为增益，1为相位，2为采集，3表示恢复初始状态
     //    qDebug()<<"延迟置1";
-    QString warningstr = QObject::tr("串口%1未打开").arg(mCurrentPortName);
-    QMessageBox::information(this,QObject::tr("Information"),warningstr,QObject::tr("确定"));
+    //    QString warningstr = QObject::tr("串口%1未打开").arg(mCurrentPortName);
+    //    QMessageBox::information(this,QObject::tr("Information"),warningstr,QObject::tr("确定"));
 }
 
+/**
+ * @brief 初始化操作说明
+ */
 void MainWindow::initText()
 {
     QFile file("data.txt");
@@ -1043,12 +1100,16 @@ void MainWindow::initText()
  */
 void MainWindow::on_pushButton_7_clicked()
 {
+    is_read = true; //清空标志位，使命令可发
     mflag = 4;
     port->sendDataToPort(mCurrentPortName,recalibrateCmd,sizeof(recalibrateCmd));
     ui->lineEdit_4->clear();
     ui->lineEdit_7->clear();
 }
 
+/**
+ * @brief 清空表格数据
+ */
 void MainWindow::clearTalbeText()
 {
     for(int i = 0; i < ui->tableWidget->rowCount() ; i++)
@@ -1067,8 +1128,35 @@ void MainWindow::clearTalbeText()
     ui->label_27->clear();
 }
 
+/**
+ * @brief 切换开关按钮
+ */
+void MainWindow::on_pushButton_8_clicked()
+{
+    switchFlag = true;
+//    quint8 onbuffer[8]; /*= {1,0,0,0,0,0,0,0}; */
+//    quint8 offbuffer[8]; /*= {0,1,1,1,1,1,1,1}; */
+    memset(onbuffer,0,sizeof(onbuffer));
+    memset(offbuffer,0,sizeof(offbuffer));
 
+    //    i = 0;
+    if( switchNum > 7 ) //初始为9，循环到8则返回0
+        for(int j = 0 ; j < 8 ;j++)
+        {
+            if( j == switchNum++ )
+            {
+                onbuffer[j] = 1;
+                offbuffer[j] = 0;
+            }
+            else
+            {
+                onbuffer[j] = 0;
+                offbuffer[j] = 1;
+            }
 
+        }
+    else
+        switchNum = 0;
 
-
-
+    //    sendControlCmd(onbuffer,offbuffer);
+}

@@ -19,16 +19,16 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
+    
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
+    
 protected:
     SerialportOperate *port;
     QString mCurrentPortName;
     int mAddr;
-
+    
     QString mGainStr; //增益校准返回
     int mflag;//判断增益及相位校准的标志位
     QMultiMap<int,QPushButton *> mAddressMap;  //一键多值
@@ -41,42 +41,40 @@ protected:
     QMovie* movie;
     int switchData; //开关状态
     int mCurrentButtonRow; //当前点击按钮所在行
+    int switchNum;
+    bool switchFlag;
 
-
-
-
-
-    private slots:
-        void on_pushButton_2_clicked();
-
-    void on_comboBox_currentTextChanged(const QString &arg1);
-
-    void timeoutDone();
-
-    void on_comboBox_2_currentIndexChanged(int index);
-
-    void on_pushButton_3_clicked();
-
+    quint8 onbuffer[8]; /*= {1,0,0,0,0,0,0,0}; */
+    quint8 offbuffer[8]; /*= {0,1,1,1,1,1,1,1}; */
+    
+    
+    
+    
+    
+private slots:
+    void on_pushButton_2_clicked();    
+    void on_comboBox_currentTextChanged(const QString &arg1);    
+    void timeoutDone();   
+    void on_comboBox_2_currentIndexChanged(int index);    
+    void on_pushButton_3_clicked();    
     void on_pushButton_4_clicked();
-    void button_clicked();
-
-    void on_pushButton_5_clicked();
-
+    void button_clicked();    
+    void on_pushButton_5_clicked();    
     void delayTimeDone();
     void delaySetTrue();
-    void collectLoopDone();
-
-    void on_pushButton_6_clicked();
-
+    void collectLoopDone();   
+    void on_pushButton_6_clicked();    
     void on_pushButton_7_clicked();
+    
+    void on_pushButton_8_clicked();
 
 protected:
     void initComboxDa(int flag);
     void updateStateAndButton();
-
-
+    
+    
     void initText();
-
+    
     void initGroupboxOne(int index);
     void updateGroupboxOne(quint8 *data, int flag, int length, int len);
     void initGroupboxTwo(int index);
@@ -104,26 +102,26 @@ protected:
     void sendControlCmd(quint8 *onBuf, quint8 *offBuf);
     void returnToPacket(QByteArray &array);
     void updataTableData();
-
+    
     void setOnOffState(int row,int column);
     void setCurretnt(int row,int column);
     void setFirstVolate();
     void setSecondVolate();
     void setFirstPower();
     void setSecondPower();
-
+    
     void setSwitch(int row, int onOroff);
-
-//    void updateResponse(QString &str);
-
+    
+    //    void updateResponse(QString &str);
+    
     QString quintToStr(quint8 *buf, int len);
-
+    
     void clearTalbeText();
-
-
-
-
-
+    
+    
+    
+    
+    
 private:
     Ui::MainWindow *ui;
 };
