@@ -77,7 +77,7 @@
     <property name="geometry">
      <rect>
       <x>140</x>
-      <y>80</y>
+      <y>100</y>
       <width>69</width>
       <height>30</height>
      </rect>
@@ -574,6 +574,12 @@
       <string>采集应答：</string>
      </property>
     </widget>
+    <zorder>label_17</zorder>
+    <zorder>lineEdit_8</zorder>
+    <zorder>lineEdit_10</zorder>
+    <zorder>label_19</zorder>
+    <zorder>lineEdit_11</zorder>
+    <zorder>lineEdit_11</zorder>
    </widget>
    <widget class="QGroupBox" name="groupBox_4">
     <property name="geometry">
@@ -997,7 +1003,7 @@
     <widget class="QPushButton" name="pushButton_6">
      <property name="geometry">
       <rect>
-       <x>155</x>
+       <x>220</x>
        <y>10</y>
        <width>71</width>
        <height>30</height>
@@ -1010,7 +1016,7 @@
     <widget class="QPushButton" name="pushButton_5">
      <property name="geometry">
       <rect>
-       <x>30</x>
+       <x>90</x>
        <y>10</y>
        <width>71</width>
        <height>30</height>
@@ -1018,19 +1024,6 @@
      </property>
      <property name="text">
       <string>开始采集</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_8">
-     <property name="geometry">
-      <rect>
-       <x>275</x>
-       <y>10</y>
-       <width>71</width>
-       <height>30</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>切换开关</string>
      </property>
     </widget>
    </widget>
@@ -1070,9 +1063,6 @@
        <pointsize>12</pointsize>
       </font>
      </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
      <property name="html">
       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -1086,7 +1076,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>80</y>
+      <y>100</y>
       <width>71</width>
       <height>31</height>
      </rect>

@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2017-03-23T16:24:31
+# Project created by QtCreator 2017-03-13T13:58:06
 #
 #-------------------------------------------------
 
@@ -16,9 +16,12 @@ include(adjust/adjust.pri)
 include(serialport/serialport.pri)
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
 
-HEADERS  += mainwindow.h\
-         datadefine.h
+HEADERS  += mainwindow.h \
+    datadefine.h
 
 FORMS    += mainwindow.ui
+
+RESOURCES += \
+    image.qrc

@@ -10,6 +10,11 @@ SerialportOperate::SerialportOperate()
 
 }
 
+SerialportOperate::~SerialportOperate()
+{
+  delete mSerialport;
+}
+
 /**
  * @brief 读取当前串口,返回串口名
  *
@@ -94,8 +99,9 @@ int SerialportOperate::sendDataToPort(QString &portName,quint8 *cmd, int len)
     {
         //        writeBytes = mList.at(ret)->write(data.toLatin1());  //QString转化为QByteArray类型
         writeBytes = mList.at(ret)->write(array);  //QString转化为QByteArray类型
-        return writeBytes;
+//        return writeBytes;
     }
+    return writeBytes;
 }
 
 /**
@@ -105,14 +111,16 @@ int SerialportOperate::sendDataToPort(QString &portName,quint8 *cmd, int len)
 */
 int SerialportOperate::serachPort(QString &portName)
 {
-    for(int i = 0;i <mList.size(); i++)
+    int i;
+    for( i = 0;i <mList.size(); i++)
     {
         if( mList.at(i)->portName() == portName)
         {
-            return i;
+//            return i;
             break;
         }
     }
+    return i;
 }
 
 /**
