@@ -33,7 +33,7 @@ bool checkXor(data_packet *packet)
  */
 bool analysis_data(data_packet &netPacket, QByteArray &array)
 {
-
+    //    qDebug() << "analysis_data";
     if(array.size() == 16)
     {
         int ret = 0 ;
@@ -105,6 +105,7 @@ bool analysis_data(data_packet &netPacket, QByteArray &array)
 
 void get_information(data_packet &netPacket , data_dev *deviceData)
 {
+    //    qDebug() << "get_information";
     //    data_dev deviceData;
     //    memset(&deviceData,0,sizeof(deviceData));
 
@@ -119,22 +120,22 @@ void get_information(data_packet &netPacket , data_dev *deviceData)
 
     }else if(netPacket.fn == 0x21)
     {
-        qDebug() << "2";
+        //        qDebug() << "2";
         int ret = netPacket.addr;
         *(deviceData->phase.cur + ret) = netPacket.practicalValue;
     }else if(netPacket.fn == 0x22)
     {
-        qDebug() << "3";
+        //        qDebug() << "3";
         int ret = netPacket.addr;
         *(deviceData->phase.vol + ret) = netPacket.practicalValue;
     }else if(netPacket.fn == 0x31)
     {
-        qDebug() << "4";
+        //        qDebug() << "4";
         int ret = netPacket.addr;
         *(deviceData->out.cur + ret) = netPacket.practicalValue;
     }else if(netPacket.fn == 0x32)
     {
-        qDebug() << "5";
+        //        qDebug() << "5";
         int ret = netPacket.addr;
         *(deviceData->out.vol + ret ) = netPacket.practicalValue;
     }else

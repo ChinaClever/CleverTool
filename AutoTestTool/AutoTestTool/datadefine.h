@@ -1,6 +1,7 @@
 ﻿#ifndef DATADEFINE_H
 #define DATADEFINE_H
 #include <qglobal.h>
+#include <ctype.h>
 
 typedef struct
 {
@@ -108,8 +109,8 @@ typedef struct
 
 typedef struct
 {
-    quint8 itemum;  //测试主项个数
-    quint8 subItemNum;  //测试子相数目
+    quint8 subOutItemNum;  //测试电流子相数目
+    quint8 subPhaseItemNum;  //测试电压子相数目
 }basic_info_json;
 
 

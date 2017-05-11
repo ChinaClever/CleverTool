@@ -15,30 +15,46 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     mConnectingNum = 3;
     isStopButton = false;
+
     ui->widget_2->hide();
     this->setFixedHeight(360);
 
     timer = new QTimer;  //用于控制命令发送间隔
     connect(timer,SIGNAL(timeout()),this,SLOT(timeoutDone()));
 
-    QTimer *timer_1 = new QTimer; //用于刷新ip，检测掉线
-    connect(timer_1,SIGNAL(timeout()),this,SLOT(timeoutDoneOfRefreshIp()));
-    timer_1->start(3*1000);
-
-    //    timer->start(5*1000);
-    UdpClient *client = getUdpClient();
-    QHostAddress addr("192.168.1.112");
-    int port_1 = 40051;
-    int port_2 = 40052;
-    client_1 = new TcpClient(addr,port_1,this); //发送数据
-    client_2 = new TcpClient(addr,port_2,this); //接收传输文件
-    //    client_1->createConnect();
-    client_2->createConnect();
+    client_1 = new TcpClient(this);
+    client_2 = new TcpClient(this);
     isConnecting = true;
-    connect(client,SIGNAL(receiveData(QByteArray&)),this,SLOT(readUdpData(QByteArray&)));
 
-    //    json myJson;
-    //    myJson.writeJson();
+    UdpClient *client = getUdpClient();
+    connect(client,SIGNAL(receiveData(QByteArray&,QHostAddress*)),this,SLOT(readUdpData(QByteArray&,QHostAddress*)));
+
+    json myJson;
+    myJson.writeJson();  //将信息写入json文件
+#if 0
+    MySql sql;
+    sql.createSqlite();
+    sql.openDataBase();
+    sql.createTable();
+
+    sql.insertData("王磊",12);
+    sql.insertData("张磊",13);
+    sql.insertData("李磊",14);
+    sql.insertData("欧阳磊",15);
+    sql.insertData("刘磊",16);
+    sql.insertData("沈磊",17);
+    sql.insertData("朱磊",18);
+
+    //    sql.searchAllDatabase();
+    //    sql.searchDatabase();
+    if(!sql.searchOneData(3))
+        qDebug() << "数据不存在！";
+    sql.updateDatabase();
+    //    sql.delateData(11);
+
+    //    sql.clearTable();
+#endif
+
 }
 
 MainWindow::~MainWindow()
@@ -52,19 +68,20 @@ MainWindow::~MainWindow()
  */
 void MainWindow::on_pushButton_3_clicked()
 {
-    mNum = 0;
-    if(!client_1->getConnectingStatus()) //如果未连接，那么就连接
-    {
-        client_1->createConnect();
-        sleep(100);
-    }
+
+    mNum = 0 ;
+    mOutAddr = mPhaseAddr = 1 ;
+    int time = ui->spinBox_time->value();
 
     if(client_1->getConnectingStatus() && !(timer->isActive()))      //如果已连接，且定时器未开启，那么启动定时器发送命令
-        timer->start(0.5*1000);
+    {
+        timer->start(time*1000);
 
-    ui->pushButton_3->setVisible(false);
-    isStopButton = true;
-    //     initGatherCmd();
+        //设置按钮状态为stop
+        ui->pushButton_3->setVisible(false);
+        isStopButton = true;
+    }
+
 }
 
 /**
@@ -72,19 +89,31 @@ void MainWindow::on_pushButton_3_clicked()
  */
 void MainWindow::initGatherCmd(data_packet &packet)
 {
+
     quint16 predictValue ;
     quint16 practicalValue ;
     //    addr = 12;
     int ret = mPhaseNum*2;
+
+    qDebug() << "initGatherCmd:" <<mNum ;
+
     if(!isOut)
     {
-        if(mNum < ret)
-            for(int i = 1 ; i <= mPhaseNum; i++ )
-                mAddr = i;
-    }else if(mNum >=ret && mNum <(ret + mOutNum-1))
+        if((mNum - 1) < ret)
+            packet.addr = (mNum + 1)/2;
+
+        ui->radioButton_phase->setChecked(true);   //修改checkbox状态
+        ui->lineEdit_radio_phase->setText(QString::number(packet.addr,10));
+    }else
     {
-        for(int i = 1 ; i <=mOutNum ;i++)
-            mAddr = i;
+        if(((mNum - 1) >= ret) && ((mNum - 1) <= (ret + mOutNum-1)))
+        {
+            mPhaseAddr = mNum - ret;
+            packet.addr = mPhaseAddr;
+            //            qDebug() << mNum;
+            ui->radioButton_out->setChecked(true);
+            ui->lineEdit_radio_out->setText(QString::number(packet.addr));
+        }
     }
 
     if(isVol)
@@ -94,7 +123,7 @@ void MainWindow::initGatherCmd(data_packet &packet)
 
     practicalValue = 0xFF;
 
-    packet.addr = mAddr;
+    //    packet.addr = mAddr;
     packet.predictValue = predictValue;
     packet.practicalValue = practicalValue;
 
@@ -111,9 +140,15 @@ void MainWindow::initGatherCmd(data_packet &packet)
 }
 
 void MainWindow::timeoutDone()
-{
+{   
+    sentCmd();
+}
 
-    //    initConnectingIp(); //更新连接ip
+/**
+ * @brief M改变全局变量mNum,改变发送命令
+ */
+void MainWindow::sentCmd()
+{
     typeSet();  //确定是主控或输出位？相位几或输出位几
     data_packet mGatherCmdPacket;  //采集命令
     initGatherCmd(mGatherCmdPacket);
@@ -157,7 +192,7 @@ void  MainWindow::packetToArray(data_packet &packet, QByteArray &array)
  */
 void MainWindow::typeSet()
 {
-    qDebug()<< mNum;
+    //    qDebug()<< mNum;
     int ret = mPhaseNum*2;
 
     if(mNum < ret)
@@ -174,6 +209,12 @@ void MainWindow::typeSet()
     {
         timer->stop();
 
+        //发送完毕后，按钮恢复yuanla状态
+        ui->pushButton_continue->setVisible(false);
+        ui->pushButton_3->setVisible(true);
+        ui->pushButton_continue->setVisible(true);
+
+        mNum++;
     }
 
 
@@ -187,9 +228,6 @@ void MainWindow::sleep(unsigned int msec)
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }
 
-
-
-
 /**
  * @brief 导入
  */
@@ -202,6 +240,19 @@ void MainWindow::on_pushButton_4_clicked()
     packetToArray(importCmdPacket,array);
     if(isConnecting)
         client_1->writeData(array);
+
+
+
+    int port  = 40052;
+    client_2->createConnect(*mAddr,port);
+    QString str = "D:/save.json";
+
+    sleep(10);
+
+    if(client_2->getConnectingStatus())
+        client_2->sendFile(str);
+    else
+        qDebug() << "未连接";
 }
 
 /**
@@ -215,7 +266,7 @@ void MainWindow::on_pushButton_5_clicked()
     QByteArray array;
     packetToArray(exportCmdPacket,array);
     if(isConnecting)
-        client_2->writeData(array);
+        client_1->writeData(array);
 }
 
 /**
@@ -241,7 +292,9 @@ void MainWindow::on_pushButton_9_clicked()
  */
 void MainWindow::initJsonDataPacket()
 {
-    //    mJsonPacket.factory = ui->lineEdit_factory->text().toLatin1().data();
+    mJsonPacket.basic_info.subOutItemNum  = mOutNum;
+    mJsonPacket.basic_info.subPhaseItemNum  = mPhaseNum;
+
     strcpy(mJsonPacket.factory , ui->lineEdit_factory->text().toLatin1().data());
     strcpy(mJsonPacket.line , ui->lineEdit_line->text().toLatin1().data());
 
@@ -276,57 +329,58 @@ void MainWindow::on_pushButton_10_clicked()
 {
     initJsonDataPacket();
 
-    json myJson;
-    myJson.writeJson();  //将信息写入json文件
+    //    json myJson;
+    //    myJson.writeJson();  //将信息写入json文件
 }
 
-void MainWindow::readUdpData(QByteArray &array)
+void MainWindow::readUdpData(QByteArray &array, QHostAddress *addr)
 {
+
     data_packet netPacket;
-    //    data_dev deviceData ;
-    if(analysis_data(netPacket,array))
+    if(analysis_data(netPacket,array) && !(client_1->getConnectingStatus()))  //防止client的重复连接
     {
         get_information(netPacket,&mDeviceData);
-        initConnectingIp(); //如果从udp读到数据，那么更新ip
-        initDeviceInfo(); // 更新设备信息
+
+        int port = 40051;
+        client_1->createConnect(*addr,port); //读取数据之后，先建立连接
+        sleep(10);
+        if(client_1->getConnectingStatus())
+        {
+            initDeviceInfo(addr); // 更新设备信息
+        }
+
     }else
         qDebug() << "数据格式问题！";
 }
 
-void MainWindow::initConnectingIp()
-{
-    mConnectingNum = 3;
-    UdpClient *client = getUdpClient();
-    ui->lineEdit_ip->setText(client->getAddr().toString().remove(0,7));
-    ui->label_connecting_status->setText(tr("连接正常"));
-
-
-}
 
 /**
  * @brief 检测设备是否掉线
  */
-void MainWindow::timeoutDoneOfRefreshIp()
+void MainWindow::clearDeviceInfo()
 {
-    //    qDebug() << "mConnectingNum:" << mConnectingNum;
 
-    if(mConnectingNum)
-        mConnectingNum--;
-    else  //设备掉线
-    {
-        //清空ip及连接状态
-        ui->lineEdit_ip->clear();
-        ui->label_connecting_status->clear();
+    //清空ip及连接状态
+    ui->lineEdit_ip->clear();
+    ui->label_connecting_status->setText(tr("无连接"));
 
-        // 清空设备基本信息
-        ui->label_device_type->clear();
-        ui->label_out_num->clear();
-        ui->label_phase_num->clear();
-    }
+    // 清空设备基本信息
+    ui->label_device_type->clear();
+    ui->label_out_num->clear();
+    ui->label_phase_num->clear();
+
+    //按钮
+    ui->pushButton_11->setEnabled(true);
+
 }
 
-void MainWindow::initDeviceInfo()
+void MainWindow::initDeviceInfo(QHostAddress *addr)
 {
+    //ip信息初始化
+    ui->lineEdit_ip->setText(addr->toString().remove(0,7));
+    ui->label_connecting_status->setText(tr("连接正常"));
+    ui->pushButton_11->setEnabled(false);
+
     //设备类型
     QString deviceType;
     switch (mDeviceData.info.devType) {
@@ -351,6 +405,9 @@ void MainWindow::initDeviceInfo()
     //改变发送命令中的想位数及输出位数
     mOutNum = mDeviceData.info.outNum;
     mPhaseNum = mDeviceData.info.phaseNum;
+
+    //全局变量连接ip
+    mAddr = addr;
 }
 
 
@@ -359,6 +416,7 @@ void MainWindow::initDeviceInfo()
  */
 void MainWindow::on_pushButton_continue_clicked()
 {
+    isStopButton = false;
     ui->pushButton_continue->setVisible(false);
     ui->pushButton_3->setVisible(true);
     ui->pushButton_continue->setVisible(true);
@@ -371,42 +429,124 @@ void MainWindow::on_pushButton_continue_clicked()
  */
 void MainWindow::on_pushButton_stop_clicked()
 {
-    isStopButton = false;
+    //    isStopButton = false;
     ui->pushButton_stop->setVisible(false);
     timer->stop();
 
 }
 
 /**
- * @brief 相位单选框
+ * @brief 自动搜索
  */
-void MainWindow::on_radioButton_3_clicked()
+void MainWindow::on_pushButton_11_clicked()
 {
-    //    if(isStopButton)
-    //    ui->lineEdit_40
+    UdpClient *client = getUdpClient();
+    client->sendHeartBeart(); //点击按钮发送心跳包
 }
 
 /**
- * @brief 输出位单选框
+ * @brief 断开连接
  */
-void MainWindow::on_radioButton_2_clicked()
+void MainWindow::on_pushButton_12_clicked()
 {
-    //   ui->lineEdit_41
+    client_1->breakConnect();
+    clearDeviceInfo();
+}
+
+
+/**
+ * @brief 检测是否为纯数字
+ * @param str
+ * @return
+ */
+bool MainWindow::checkIsDigit(QString &str)
+{
+
+    for(int i = 0 ; i < str.length() ; i++)
+    {
+        if(!isdigit(*(str.toLatin1().data() + i)))
+            return false;
+    }
+
+    return true;
 }
 
 /**
- * @brief 上一项
+ * @brief 检测lineedit输入是否合法
+ * @param lineEdit
+ * @param upNum -- 输出位个数，或者是输入相个数
+ * @return
+ */
+bool MainWindow::checkRadioInputIsRight(QLineEdit *lineEdit,int &upNum)
+{
+    QString str = ui->lineEdit_radio_phase->text();
+    if(checkIsDigit(str))
+    {
+        int num = lineEdit->text().toInt();
+        if((num > 0) && (num <= upNum))
+        {
+
+        }else
+        {
+            if(num)
+                QMessageBox::warning(this,tr("warning"),tr("输入超过上限，请重新输入"));
+            else
+                QMessageBox::warning(this,tr("warning"),tr("输入不能为0,请重新输入"));
+
+            lineEdit->clear();
+            return false;
+
+        }
+    }else
+    {
+        QMessageBox::warning(this,tr("warning"),tr("请输入数字"));
+        lineEdit->clear();
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * @brief 单元测试
  */
 void MainWindow::on_pushButton_7_clicked()
 {
-    if(mNum)
-        mNum--;
-}
+    int num = 0;
 
-/**
- * @brief 下一项
- */
-void MainWindow::on_pushButton_8_clicked()
-{
-    mNum++;
+    if(ui->radioButton_phase->isChecked())  //输入相
+    {
+        if(!ui->lineEdit_radio_phase->text().isEmpty())  //输入不为空
+        {
+            if(checkRadioInputIsRight(ui->lineEdit_radio_phase,mPhaseNum))  //输入合法
+            {
+                num = ui->lineEdit_radio_phase->text().toInt();
+
+                mNum = (num - 1)*2;
+                sentCmd(); //电流
+                sleep(10);
+                sentCmd(); //电压
+            }
+        }else
+        {
+            QMessageBox::warning(this,tr("waring"),tr("请选择输入相！"));
+        }
+
+    }else  //输出位
+    {
+        if(!ui->lineEdit_radio_out->text().isEmpty())
+        {
+
+            if(checkRadioInputIsRight(ui->lineEdit_radio_out,mOutNum))
+            {
+                num = ui->lineEdit_radio_out->text().toInt();
+                mNum = mPhaseNum*2 + (num - 1);
+                sentCmd();
+            }
+        }else
+        {
+            QMessageBox::warning(this,tr("waring"),tr("请选择输出位！"));
+        }
+    }
+
 }

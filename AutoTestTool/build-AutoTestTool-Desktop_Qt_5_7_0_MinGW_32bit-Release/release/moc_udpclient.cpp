@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_UdpClient_t {
-    QByteArrayData data[7];
-    char stringdata0[62];
+    QByteArrayData data[9];
+    char stringdata0[81];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -34,12 +34,15 @@ QT_MOC_LITERAL(1, 10, 11), // "receiveData"
 QT_MOC_LITERAL(2, 22, 0), // ""
 QT_MOC_LITERAL(3, 23, 11), // "QByteArray&"
 QT_MOC_LITERAL(4, 35, 5), // "array"
-QT_MOC_LITERAL(5, 41, 11), // "timeoutDone"
-QT_MOC_LITERAL(6, 53, 8) // "readData"
+QT_MOC_LITERAL(5, 41, 13), // "QHostAddress*"
+QT_MOC_LITERAL(6, 55, 4), // "addr"
+QT_MOC_LITERAL(7, 60, 11), // "timeoutDone"
+QT_MOC_LITERAL(8, 72, 8) // "readData"
 
     },
     "UdpClient\0receiveData\0\0QByteArray&\0"
-    "array\0timeoutDone\0readData"
+    "array\0QHostAddress*\0addr\0timeoutDone\0"
+    "readData"
 };
 #undef QT_MOC_LITERAL
 
@@ -57,14 +60,14 @@ static const uint qt_meta_data_UdpClient[] = {
        1,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   29,    2, 0x06 /* Public */,
+       1,    2,   29,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       5,    0,   32,    2, 0x0a /* Public */,
-       6,    0,   33,    2, 0x0a /* Public */,
+       7,    0,   34,    2, 0x0a /* Public */,
+       8,    0,   35,    2, 0x0a /* Public */,
 
  // signals: parameters
-    QMetaType::Void, 0x80000000 | 3,    4,
+    QMetaType::Void, 0x80000000 | 3, 0x80000000 | 5,    4,    6,
 
  // slots: parameters
     QMetaType::Void,
@@ -79,7 +82,7 @@ void UdpClient::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         UdpClient *_t = static_cast<UdpClient *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->receiveData((*reinterpret_cast< QByteArray(*)>(_a[1]))); break;
+        case 0: _t->receiveData((*reinterpret_cast< QByteArray(*)>(_a[1])),(*reinterpret_cast< QHostAddress*(*)>(_a[2]))); break;
         case 1: _t->timeoutDone(); break;
         case 2: _t->readData(); break;
         default: ;
@@ -88,7 +91,7 @@ void UdpClient::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         int *result = reinterpret_cast<int *>(_a[0]);
         void **func = reinterpret_cast<void **>(_a[1]);
         {
-            typedef void (UdpClient::*_t)(QByteArray & );
+            typedef void (UdpClient::*_t)(QByteArray & , QHostAddress * );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&UdpClient::receiveData)) {
                 *result = 0;
                 return;
@@ -134,9 +137,9 @@ int UdpClient::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 }
 
 // SIGNAL 0
-void UdpClient::receiveData(QByteArray & _t1)
+void UdpClient::receiveData(QByteArray & _t1, QHostAddress * _t2)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 QT_END_MOC_NAMESPACE

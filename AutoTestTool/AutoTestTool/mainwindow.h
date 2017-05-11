@@ -10,7 +10,10 @@
 #include <QTime>
 #include <json/json.h>
 #include <QHBoxLayout>
+#include <QMessageBox>
+#include <QLineEdit>
 #include "datadefine.h"
+#include "json/mysql.h"
 
 
 namespace Ui {
@@ -28,7 +31,6 @@ public:
 private slots:
     void on_pushButton_3_clicked();
     void timeoutDone();
-    void timeoutDoneOfRefreshIp();
 
     void on_pushButton_4_clicked();
 
@@ -38,24 +40,20 @@ private slots:
 
     void on_pushButton_10_clicked();
 
-    void readUdpData(QByteArray &array);
+    void readUdpData(QByteArray &array,QHostAddress *addr);
 
     void on_pushButton_continue_clicked();
 
     void on_pushButton_stop_clicked();
 
-    void on_radioButton_3_clicked();
+    void on_pushButton_11_clicked();
 
-    void on_radioButton_2_clicked();
+    void on_pushButton_12_clicked();
 
     void on_pushButton_7_clicked();
 
-    void on_pushButton_8_clicked();
-
 private:
     Ui::MainWindow *ui;
-
-//    TcpClient *client;
 
     bool isConnecting = false;
     QTimer *timer;
@@ -66,15 +64,16 @@ private:
     int mNum = 0;
     int mOutNum ;
     int mPhaseNum;
-    int mAddr;
+    int mOutAddr,mPhaseAddr;
     int mConnectingNum;
     bool isStopButton;
 
     bool isOut,isVol;
+
     TcpClient *client_1;
     TcpClient *client_2;
+    QHostAddress *mAddr;
     data_dev mDeviceData ;  //为当前连接的设备定义一个结构体，保存其设备状态、输出位、相位等基本信息
-    //    data_json mJsonPacket;
 
 private:
     void initGatherCmd(data_packet &packet);
@@ -82,12 +81,14 @@ private:
     void sleep(unsigned int msec);
     void packetToArray(data_packet &packet, QByteArray &array);
     void initJsonDataPacket();
-    void initConnectingIp();
-    void initDeviceInfo();
+    void initDeviceInfo(QHostAddress *addr);
+    void clearDeviceInfo();
+    bool checkIsDigit(QString &str);
+    bool checkRadioInputIsRight(QLineEdit *lineEdit, int &upNum);
+    void sentCmd();
 
 };
 
-//data_json *getDataJsonPacket();
 extern UdpClient *getUdpClient();
 
 #endif // MAINWINDOW_H

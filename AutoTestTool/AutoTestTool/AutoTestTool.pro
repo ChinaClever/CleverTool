@@ -6,11 +6,13 @@
 
 QT       += core gui
 QT       += network
+QT       += sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = AutoTestTool
 TEMPLATE = app
+
 
 
 SOURCES += main.cpp\
@@ -19,7 +21,8 @@ SOURCES += main.cpp\
     tcp/tcpclient.cpp \
     tcp/cmdtonetpacket.cpp \
     json/json.cpp \
-    udp/analysisdata.cpp
+    udp/analysisdata.cpp \
+    json/mysql.cpp
 
 HEADERS  += mainwindow.h \
     udp/udpclient.h \
@@ -27,6 +30,7 @@ HEADERS  += mainwindow.h \
     datadefine.h \
     tcp/cmdtonetpacket.h \
     json/json.h \
-    udp/analysisdata.h
+    udp/analysisdata.h \
+    json/mysql.h
 
 FORMS    += mainwindow.ui

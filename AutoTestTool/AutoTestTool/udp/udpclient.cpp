@@ -18,7 +18,7 @@ UdpClient::UdpClient(QObject *parent, int port) : QObject(parent)
     udpsocket = new QUdpSocket;
     QTimer *timer = new QTimer;
     connect(timer,SIGNAL(timeout()),this,SLOT(timeoutDone()));
-    timer->start(3*1000);
+    //    timer->start(3*1000);
 
     connect(udpsocket,SIGNAL(readyRead()),this,SLOT(readData()));
 }
@@ -44,8 +44,8 @@ void UdpClient::readData()
         mArray.resize(udpsocket->pendingDatagramSize());
         if(mArray.size() == udpsocket->readDatagram(mArray.data(),mArray.size(),mAddr,mServerPort))
         {
-//            qDebug() << "IP:" << mAddr->toString() << "PORT:" << mPort;
-            emit receiveData(mArray);
+            //            qDebug() << "IP:" << mAddr->toString() << "PORT:" << mPort;
+            emit receiveData(mArray,mAddr);
 
         }else
             qDebug() << "数据不完整！";
@@ -78,4 +78,14 @@ QHostAddress UdpClient::getAddr()
 quint16 UdpClient::getPort()
 {
     return *mServerPort;
+}
+
+void UdpClient::sendHeartBeart()
+{
+    QString str("auto test tool!");
+    if(udpsocket->writeDatagram(str.toLatin1(),str.length(),QHostAddress::Broadcast,mPort) != str.length())
+    {
+        qDebug() << "数据传输不完整";
+    }else
+        qDebug() << "心跳包发送成功！";
 }

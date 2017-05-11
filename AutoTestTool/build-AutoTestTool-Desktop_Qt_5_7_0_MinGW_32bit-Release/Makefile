@@ -212,6 +212,7 @@ Makefile: ../AutoTestTool/AutoTestTool.pro D:/qt/5.7/mingw53_32/mkspecs/win32-g+
 		D:/qt/5.7/mingw53_32/lib/Qt5Widgets.prl \
 		D:/qt/5.7/mingw53_32/lib/Qt5Gui.prl \
 		D:/qt/5.7/mingw53_32/lib/Qt5Network.prl \
+		D:/qt/5.7/mingw53_32/lib/Qt5Sql.prl \
 		D:/qt/5.7/mingw53_32/lib/Qt5Core.prl
 	$(QMAKE) -spec win32-g++ -o Makefile ..\AutoTestTool\AutoTestTool.pro
 D:/qt/5.7/mingw53_32/mkspecs/features/spec_pre.prf:
@@ -367,6 +368,7 @@ D:/qt/5.7/mingw53_32/lib/qtmain.prl:
 D:/qt/5.7/mingw53_32/lib/Qt5Widgets.prl:
 D:/qt/5.7/mingw53_32/lib/Qt5Gui.prl:
 D:/qt/5.7/mingw53_32/lib/Qt5Network.prl:
+D:/qt/5.7/mingw53_32/lib/Qt5Sql.prl:
 D:/qt/5.7/mingw53_32/lib/Qt5Core.prl:
 qmake: FORCE
 	@$(QMAKE) -spec win32-g++ -o Makefile ..\AutoTestTool\AutoTestTool.pro

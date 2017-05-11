@@ -4,17 +4,23 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <QHostAddress>
+#include <QTextStream>
+#include <QFile>
+#include <QTime>
+#include <QCoreApplication>
+#include <QEventLoop>
 
 class TcpClient : public QObject
 {
     Q_OBJECT
 public:
-    explicit TcpClient(QHostAddress &addr,int &port ,QObject *parent = 0);
+    explicit TcpClient(QObject *parent = 0);
 
-    void createConnect();
+    void createConnect(QHostAddress &addr, int &port);
     void breakConnect();
     void writeData(QByteArray array);
     bool getConnectingStatus();
+    void sendFile(QString &str);
 
 signals:
     void receiveTcpData(QByteArray &array);
@@ -24,11 +30,15 @@ public slots:
     void socketDisconnected();
     void readData();
 
+
 private:
     QTcpSocket *tcpsocket;
     int mPort;
     QHostAddress mAddr;
     bool isConnecting;
+
+private:
+    void sleep(unsigned int msec);
 
 };
 

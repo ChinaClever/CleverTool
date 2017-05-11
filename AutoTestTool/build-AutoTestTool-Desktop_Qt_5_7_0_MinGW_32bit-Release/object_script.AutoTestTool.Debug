@@ -6,6 +6,7 @@ INPUT(
 ./debug\cmdtonetpacket.o
 ./debug\json.o
 ./debug\analysisdata.o
+./debug\mysql.o
 ./debug\moc_mainwindow.o
 ./debug\moc_udpclient.o
 ./debug\moc_tcpclient.o

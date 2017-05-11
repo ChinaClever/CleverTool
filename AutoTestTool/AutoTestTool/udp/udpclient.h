@@ -15,9 +15,10 @@ public:
     QByteArray getUdpBackData();
     QHostAddress getAddr();
     quint16 getPort();
+    void sendHeartBeart();
 
 signals:
-    void receiveData(QByteArray &array);
+    void receiveData(QByteArray &array,QHostAddress *addr);
 
 public slots:
     void timeoutDone();

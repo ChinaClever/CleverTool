@@ -23,6 +23,7 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QRadioButton>
 #include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QWidget>
@@ -111,18 +112,21 @@ public:
     QHBoxLayout *horizontalLayout_5;
     QLabel *label_16;
     QLineEdit *lineEdit_predictvol;
+    QLabel *label_29;
+    QSpacerItem *horizontalSpacer;
     QLabel *label_17;
     QLineEdit *lineEdit_predictcur;
+    QLabel *label_31;
     QGroupBox *groupBox_12;
     QGridLayout *gridLayout_3;
-    QRadioButton *radioButton_3;
-    QLineEdit *lineEdit_40;
+    QRadioButton *radioButton_phase;
+    QLineEdit *lineEdit_radio_phase;
     QLabel *label_18;
     QLabel *label_38;
     QLabel *label_37;
     QLabel *label_39;
-    QRadioButton *radioButton_2;
-    QLineEdit *lineEdit_41;
+    QRadioButton *radioButton_out;
+    QLineEdit *lineEdit_radio_out;
     QLabel *label_41;
     QLabel *label_40;
     QPushButton *pushButton_5;
@@ -131,9 +135,12 @@ public:
     QGroupBox *groupBox_13;
     QPushButton *pushButton_7;
     QPushButton *pushButton_3;
-    QPushButton *pushButton_8;
     QPushButton *pushButton_stop;
     QPushButton *pushButton_continue;
+    QSpinBox *spinBox_time;
+    QLabel *label_27;
+    QLabel *label_28;
+    QLabel *label_30;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -570,7 +577,7 @@ public:
 
         groupBox_3 = new QGroupBox(centralWidget);
         groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
-        groupBox_3->setGeometry(QRect(560, 10, 537, 341));
+        groupBox_3->setGeometry(QRect(560, 10, 521, 341));
         groupBox_3->setMinimumSize(QSize(0, 341));
         gridLayout_4 = new QGridLayout(groupBox_3);
         gridLayout_4->setSpacing(6);
@@ -595,6 +602,17 @@ public:
 
         horizontalLayout_5->addWidget(lineEdit_predictvol);
 
+        label_29 = new QLabel(groupBox_11);
+        label_29->setObjectName(QStringLiteral("label_29"));
+        label_29->setFont(font);
+        label_29->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        horizontalLayout_5->addWidget(label_29);
+
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        horizontalLayout_5->addItem(horizontalSpacer);
+
         label_17 = new QLabel(groupBox_11);
         label_17->setObjectName(QStringLiteral("label_17"));
         label_17->setFont(font);
@@ -607,6 +625,13 @@ public:
 
         horizontalLayout_5->addWidget(lineEdit_predictcur);
 
+        label_31 = new QLabel(groupBox_11);
+        label_31->setObjectName(QStringLiteral("label_31"));
+        label_31->setFont(font);
+        label_31->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        horizontalLayout_5->addWidget(label_31);
+
 
         gridLayout_4->addWidget(groupBox_11, 0, 0, 1, 2);
 
@@ -617,17 +642,18 @@ public:
         gridLayout_3->setSpacing(6);
         gridLayout_3->setContentsMargins(11, 11, 11, 11);
         gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
-        radioButton_3 = new QRadioButton(groupBox_12);
-        radioButton_3->setObjectName(QStringLiteral("radioButton_3"));
+        radioButton_phase = new QRadioButton(groupBox_12);
+        radioButton_phase->setObjectName(QStringLiteral("radioButton_phase"));
+        radioButton_phase->setChecked(true);
 
-        gridLayout_3->addWidget(radioButton_3, 0, 0, 1, 1);
+        gridLayout_3->addWidget(radioButton_phase, 0, 0, 1, 1);
 
-        lineEdit_40 = new QLineEdit(groupBox_12);
-        lineEdit_40->setObjectName(QStringLiteral("lineEdit_40"));
-        lineEdit_40->setMinimumSize(QSize(25, 0));
-        lineEdit_40->setMaximumSize(QSize(61, 16777215));
+        lineEdit_radio_phase = new QLineEdit(groupBox_12);
+        lineEdit_radio_phase->setObjectName(QStringLiteral("lineEdit_radio_phase"));
+        lineEdit_radio_phase->setMinimumSize(QSize(25, 0));
+        lineEdit_radio_phase->setMaximumSize(QSize(61, 16777215));
 
-        gridLayout_3->addWidget(lineEdit_40, 0, 1, 1, 1);
+        gridLayout_3->addWidget(lineEdit_radio_phase, 0, 1, 1, 1);
 
         label_18 = new QLabel(groupBox_12);
         label_18->setObjectName(QStringLiteral("label_18"));
@@ -659,17 +685,17 @@ public:
 
         gridLayout_3->addWidget(label_39, 0, 5, 1, 1);
 
-        radioButton_2 = new QRadioButton(groupBox_12);
-        radioButton_2->setObjectName(QStringLiteral("radioButton_2"));
+        radioButton_out = new QRadioButton(groupBox_12);
+        radioButton_out->setObjectName(QStringLiteral("radioButton_out"));
 
-        gridLayout_3->addWidget(radioButton_2, 1, 0, 1, 1);
+        gridLayout_3->addWidget(radioButton_out, 1, 0, 1, 1);
 
-        lineEdit_41 = new QLineEdit(groupBox_12);
-        lineEdit_41->setObjectName(QStringLiteral("lineEdit_41"));
-        lineEdit_41->setMinimumSize(QSize(25, 0));
-        lineEdit_41->setMaximumSize(QSize(61, 16777215));
+        lineEdit_radio_out = new QLineEdit(groupBox_12);
+        lineEdit_radio_out->setObjectName(QStringLiteral("lineEdit_radio_out"));
+        lineEdit_radio_out->setMinimumSize(QSize(25, 0));
+        lineEdit_radio_out->setMaximumSize(QSize(61, 16777215));
 
-        gridLayout_3->addWidget(lineEdit_41, 1, 1, 1, 1);
+        gridLayout_3->addWidget(lineEdit_radio_out, 1, 1, 1, 1);
 
         label_41 = new QLabel(groupBox_12);
         label_41->setObjectName(QStringLiteral("label_41"));
@@ -709,27 +735,46 @@ public:
         groupBox_13->setMinimumSize(QSize(501, 0));
         pushButton_7 = new QPushButton(groupBox_13);
         pushButton_7->setObjectName(QStringLiteral("pushButton_7"));
-        pushButton_7->setGeometry(QRect(10, 30, 75, 23));
+        pushButton_7->setGeometry(QRect(210, 30, 75, 23));
         pushButton_3 = new QPushButton(groupBox_13);
         pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
-        pushButton_3->setGeometry(QRect(210, 30, 75, 23));
-        pushButton_8 = new QPushButton(groupBox_13);
-        pushButton_8->setObjectName(QStringLiteral("pushButton_8"));
-        pushButton_8->setGeometry(QRect(390, 30, 75, 23));
+        pushButton_3->setGeometry(QRect(340, 30, 75, 23));
         pushButton_stop = new QPushButton(groupBox_13);
         pushButton_stop->setObjectName(QStringLiteral("pushButton_stop"));
-        pushButton_stop->setGeometry(QRect(210, 30, 75, 23));
+        pushButton_stop->setGeometry(QRect(340, 30, 75, 23));
         pushButton_continue = new QPushButton(groupBox_13);
         pushButton_continue->setObjectName(QStringLiteral("pushButton_continue"));
-        pushButton_continue->setGeometry(QRect(210, 30, 75, 23));
+        pushButton_continue->setGeometry(QRect(340, 30, 75, 23));
+        spinBox_time = new QSpinBox(groupBox_13);
+        spinBox_time->setObjectName(QStringLiteral("spinBox_time"));
+        spinBox_time->setGeometry(QRect(100, 30, 41, 22));
+        spinBox_time->setMinimum(1);
+        spinBox_time->setMaximum(60);
+        label_27 = new QLabel(groupBox_13);
+        label_27->setObjectName(QStringLiteral("label_27"));
+        label_27->setGeometry(QRect(20, 30, 81, 20));
+        label_27->setFont(font);
+        label_27->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+        label_28 = new QLabel(groupBox_13);
+        label_28->setObjectName(QStringLiteral("label_28"));
+        label_28->setGeometry(QRect(140, 30, 16, 20));
+        label_28->setFont(font);
+        label_28->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         pushButton_continue->raise();
         pushButton_7->raise();
-        pushButton_8->raise();
         pushButton_stop->raise();
         pushButton_3->raise();
+        spinBox_time->raise();
+        label_27->raise();
+        label_28->raise();
 
         gridLayout_4->addWidget(groupBox_13, 2, 0, 1, 2);
 
+        label_30 = new QLabel(centralWidget);
+        label_30->setObjectName(QStringLiteral("label_30"));
+        label_30->setGeometry(QRect(1100, 90, 75, 64));
+        label_30->setFont(font);
+        label_30->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         MainWindow->setCentralWidget(centralWidget);
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QStringLiteral("statusBar"));
@@ -778,12 +823,12 @@ public:
         label_phase_num->setText(QString());
         label_44->setText(QApplication::translate("MainWindow", "\350\256\276\345\244\207\347\261\273\345\236\213\357\274\232", 0));
         label_51->setText(QApplication::translate("MainWindow", "\350\276\223\345\207\272\344\275\215\357\274\232", 0));
-        label_connecting_status->setText(QString());
+        label_connecting_status->setText(QApplication::translate("MainWindow", "\346\227\240\350\277\236\346\216\245", 0));
         pushButton_12->setText(QApplication::translate("MainWindow", "\346\226\255\345\274\200", 0));
         label_out_num->setText(QString());
         label_device_type->setText(QString());
         label_53->setText(QApplication::translate("MainWindow", "\350\277\236\346\216\245\347\212\266\346\200\201\357\274\232", 0));
-        label_49->setText(QApplication::translate("MainWindow", "\347\233\270\346\225\260\357\274\232", 0));
+        label_49->setText(QApplication::translate("MainWindow", "\350\276\223\345\205\245\347\233\270\357\274\232", 0));
         groupBox_5->setTitle(QApplication::translate("MainWindow", "\346\265\213\350\257\225\346\203\205\345\206\265", 0));
         label_43->setText(QApplication::translate("MainWindow", "IP\345\234\260\345\235\200\357\274\232", 0));
         lineEdit_ip->setText(QString());
@@ -792,28 +837,32 @@ public:
         groupBox_11->setTitle(QString());
         label_16->setText(QApplication::translate("MainWindow", "\351\242\204\346\265\213\347\224\265\345\216\213\357\274\232", 0));
         lineEdit_predictvol->setText(QApplication::translate("MainWindow", "220", 0));
+        label_29->setText(QApplication::translate("MainWindow", "V", 0));
         label_17->setText(QApplication::translate("MainWindow", "\351\242\204\346\265\213\347\224\265\346\265\201\357\274\232", 0));
         lineEdit_predictcur->setText(QApplication::translate("MainWindow", "3", 0));
+        label_31->setText(QApplication::translate("MainWindow", "A", 0));
         groupBox_12->setTitle(QString());
-        radioButton_3->setText(QApplication::translate("MainWindow", "\347\233\270\344\275\215", 0));
-        lineEdit_40->setText(QString());
+        radioButton_phase->setText(QApplication::translate("MainWindow", "\350\276\223\345\205\245\347\233\270", 0));
+        lineEdit_radio_phase->setText(QApplication::translate("MainWindow", "1", 0));
         label_18->setText(QApplication::translate("MainWindow", "\347\224\265\345\216\213\357\274\232", 0));
         label_38->setText(QString());
         label_37->setText(QApplication::translate("MainWindow", "\347\224\265\346\265\201\357\274\232", 0));
         label_39->setText(QString());
-        radioButton_2->setText(QApplication::translate("MainWindow", "\350\276\223\345\207\272\344\275\215", 0));
-        lineEdit_41->setText(QString());
+        radioButton_out->setText(QApplication::translate("MainWindow", "\350\276\223\345\207\272\344\275\215", 0));
+        lineEdit_radio_out->setText(QApplication::translate("MainWindow", "1", 0));
         label_41->setText(QApplication::translate("MainWindow", "\347\224\265\346\265\201\357\274\232", 0));
         label_40->setText(QString());
         pushButton_5->setText(QApplication::translate("MainWindow", "\345\257\274\345\207\272", 0));
         pushButton_4->setText(QApplication::translate("MainWindow", "\345\257\274\345\205\245", 0));
         pushButton_9->setText(QApplication::translate("MainWindow", "\350\257\246\347\273\206\344\277\241\346\201\257", 0));
         groupBox_13->setTitle(QString());
-        pushButton_7->setText(QApplication::translate("MainWindow", "\344\270\212\344\270\200\351\241\271", 0));
-        pushButton_3->setText(QApplication::translate("MainWindow", "\345\274\200\345\247\213\346\265\213\350\257\225", 0));
-        pushButton_8->setText(QApplication::translate("MainWindow", "\344\270\213\344\270\200\351\241\271", 0));
+        pushButton_7->setText(QApplication::translate("MainWindow", "\345\215\225\345\205\203\346\265\213\350\257\225", 0));
+        pushButton_3->setText(QApplication::translate("MainWindow", "\344\270\200\351\224\256\346\265\213\350\257\225", 0));
         pushButton_stop->setText(QApplication::translate("MainWindow", "\346\232\202\345\201\234", 0));
         pushButton_continue->setText(QApplication::translate("MainWindow", "\347\273\247\347\273\255", 0));
+        label_27->setText(QApplication::translate("MainWindow", "\346\227\266\351\227\264\351\227\264\351\232\224\357\274\232", 0));
+        label_28->setText(QApplication::translate("MainWindow", "S", 0));
+        label_30->setText(QApplication::translate("MainWindow", "\351\242\204\346\265\213\347\224\265\345\216\213\357\274\232", 0));
     } // retranslateUi
 
 };

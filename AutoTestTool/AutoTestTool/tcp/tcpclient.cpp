@@ -1,11 +1,7 @@
 ﻿#include "tcpclient.h"
 
-TcpClient::TcpClient(QHostAddress &addr, int &port, QObject *parent) : QObject(parent)
+TcpClient::TcpClient(QObject *parent) : QObject(parent)
 {
-
-
-    mAddr = addr;
-    mPort = port;
     isConnecting = false;
 
     tcpsocket = new QTcpSocket;
@@ -14,8 +10,10 @@ TcpClient::TcpClient(QHostAddress &addr, int &port, QObject *parent) : QObject(p
     connect(tcpsocket,SIGNAL(readyRead()),this,SLOT(readData()));
 }
 
-void TcpClient::createConnect()
+void TcpClient::createConnect(QHostAddress &addr,int &port )
 {
+    mAddr = addr;
+    mPort = port;
     tcpsocket->connectToHost(mAddr,mPort);
 }
 
@@ -33,7 +31,8 @@ void TcpClient::socketDisconnected()
 
 void TcpClient::breakConnect()
 {
-    tcpsocket->close();
+    //    tcpsocket->close();//关闭io
+    tcpsocket->abort();  //断开当前连接
 }
 
 void TcpClient::writeData(QByteArray array)
@@ -59,6 +58,34 @@ void TcpClient::readData()
 bool TcpClient::getConnectingStatus()
 {
     return isConnecting;
+}
+
+/**
+ * @brief 发送文件
+ * @param str
+ */
+void TcpClient::sendFile(QString &str)
+{
+    QFile file(str);
+
+    if(file.open(QFile::ReadOnly))
+    {
+        QTextStream out(&file);
+        while(!out.atEnd())
+        {
+            QString str = out.readLine();
+            writeData(str.toLatin1());
+            sleep(2);
+        }
+    }else
+        qDebug() << "打开文件失败！";
+}
+
+void TcpClient::sleep(unsigned int msec)
+{
+    QTime dieTime = QTime::currentTime().addMSecs(msec);
+    while( QTime::currentTime() < dieTime )
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }
 
 

@@ -703,7 +703,7 @@
            <string notr="true">background-color: rgb(170, 255, 127);</string>
           </property>
           <property name="text">
-           <string/>
+           <string>无连接</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -792,7 +792,7 @@
            </font>
           </property>
           <property name="text">
-           <string>相数：</string>
+           <string>输入相：</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -874,7 +874,7 @@
      <rect>
       <x>560</x>
       <y>10</y>
-      <width>537</width>
+      <width>521</width>
       <height>341</height>
      </rect>
     </property>
@@ -924,6 +924,35 @@
          </widget>
         </item>
         <item>
+         <widget class="QLabel" name="label_29">
+          <property name="font">
+           <font>
+            <family>微软雅黑</family>
+            <pointsize>11</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>V</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <widget class="QLabel" name="label_17">
           <property name="font">
            <font>
@@ -946,6 +975,22 @@
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="QLabel" name="label_31">
+          <property name="font">
+           <font>
+            <family>微软雅黑</family>
+            <pointsize>11</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>A</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </item>
@@ -962,14 +1007,17 @@
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="0">
-         <widget class="QRadioButton" name="radioButton_3">
+         <widget class="QRadioButton" name="radioButton_phase">
           <property name="text">
-           <string>相位</string>
+           <string>输入相</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QLineEdit" name="lineEdit_40">
+         <widget class="QLineEdit" name="lineEdit_radio_phase">
           <property name="minimumSize">
            <size>
             <width>25</width>
@@ -983,7 +1031,7 @@
            </size>
           </property>
           <property name="text">
-           <string/>
+           <string>1</string>
           </property>
          </widget>
         </item>
@@ -1058,14 +1106,14 @@
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QRadioButton" name="radioButton_2">
+         <widget class="QRadioButton" name="radioButton_out">
           <property name="text">
            <string>输出位</string>
           </property>
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QLineEdit" name="lineEdit_41">
+         <widget class="QLineEdit" name="lineEdit_radio_out">
           <property name="minimumSize">
            <size>
             <width>25</width>
@@ -1079,7 +1127,7 @@
            </size>
           </property>
           <property name="text">
-           <string/>
+           <string>1</string>
           </property>
          </widget>
         </item>
@@ -1156,46 +1204,33 @@
        <widget class="QPushButton" name="pushButton_7">
         <property name="geometry">
          <rect>
-          <x>10</x>
+          <x>210</x>
           <y>30</y>
           <width>75</width>
           <height>23</height>
          </rect>
         </property>
         <property name="text">
-         <string>上一项</string>
+         <string>单元测试</string>
         </property>
        </widget>
        <widget class="QPushButton" name="pushButton_3">
         <property name="geometry">
          <rect>
-          <x>210</x>
+          <x>340</x>
           <y>30</y>
           <width>75</width>
           <height>23</height>
          </rect>
         </property>
         <property name="text">
-         <string>开始测试</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_8">
-        <property name="geometry">
-         <rect>
-          <x>390</x>
-          <y>30</y>
-          <width>75</width>
-          <height>23</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>下一项</string>
+         <string>一键测试</string>
         </property>
        </widget>
        <widget class="QPushButton" name="pushButton_stop">
         <property name="geometry">
          <rect>
-          <x>210</x>
+          <x>340</x>
           <y>30</y>
           <width>75</width>
           <height>23</height>
@@ -1208,7 +1243,7 @@
        <widget class="QPushButton" name="pushButton_continue">
         <property name="geometry">
          <rect>
-          <x>210</x>
+          <x>340</x>
           <y>30</y>
           <width>75</width>
           <height>23</height>
@@ -1218,14 +1253,98 @@
          <string>继续</string>
         </property>
        </widget>
+       <widget class="QSpinBox" name="spinBox_time">
+        <property name="geometry">
+         <rect>
+          <x>100</x>
+          <y>30</y>
+          <width>41</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>60</number>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_27">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>30</y>
+          <width>81</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>微软雅黑</family>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>时间间隔：</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_28">
+        <property name="geometry">
+         <rect>
+          <x>140</x>
+          <y>30</y>
+          <width>16</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>微软雅黑</family>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>S</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
        <zorder>pushButton_continue</zorder>
        <zorder>pushButton_7</zorder>
-       <zorder>pushButton_8</zorder>
        <zorder>pushButton_stop</zorder>
        <zorder>pushButton_3</zorder>
+       <zorder>spinBox_time</zorder>
+       <zorder>label_27</zorder>
+       <zorder>label_28</zorder>
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QLabel" name="label_30">
+    <property name="geometry">
+     <rect>
+      <x>1100</x>
+      <y>90</y>
+      <width>75</width>
+      <height>64</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>预测电压：</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>

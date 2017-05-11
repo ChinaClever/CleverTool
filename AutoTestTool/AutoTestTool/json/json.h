@@ -13,6 +13,13 @@
 #include "datadefine.h"
 
 
+#ifdef _DEBUG
+#pragma comment(lib,"lib_json_d.lib")
+#else
+#pragma comment(lib,"lib_json.lib")
+#endif
+
+
 class json
 {
 public:
@@ -21,6 +28,8 @@ public:
 
 private:
     void writeFile(QByteArray &array);
+    void curItem(QVariantMap &map);
+    void volItem(QVariantMap &map);
 
 
 };
