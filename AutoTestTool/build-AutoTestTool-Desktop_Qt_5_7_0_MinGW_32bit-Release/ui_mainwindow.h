@@ -140,7 +140,6 @@ public:
     QSpinBox *spinBox_time;
     QLabel *label_27;
     QLabel *label_28;
-    QLabel *label_30;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -770,11 +769,6 @@ public:
 
         gridLayout_4->addWidget(groupBox_13, 2, 0, 1, 2);
 
-        label_30 = new QLabel(centralWidget);
-        label_30->setObjectName(QStringLiteral("label_30"));
-        label_30->setGeometry(QRect(1100, 90, 75, 64));
-        label_30->setFont(font);
-        label_30->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
         MainWindow->setCentralWidget(centralWidget);
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QStringLiteral("statusBar"));
@@ -862,7 +856,6 @@ public:
         pushButton_continue->setText(QApplication::translate("MainWindow", "\347\273\247\347\273\255", 0));
         label_27->setText(QApplication::translate("MainWindow", "\346\227\266\351\227\264\351\227\264\351\232\224\357\274\232", 0));
         label_28->setText(QApplication::translate("MainWindow", "S", 0));
-        label_30->setText(QApplication::translate("MainWindow", "\351\242\204\346\265\213\347\224\265\345\216\213\357\274\232", 0));
     } // retranslateUi
 
 };

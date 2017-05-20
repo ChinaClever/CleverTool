@@ -104,9 +104,9 @@ void json::writeJson()
     //    json.insert("sub_test_item_list", QJsonValue(map_sub1_test_item_list));
     //    json.insert("", QJsonValue(map_sub2_test_item_list));
     /*----------------------------------------------------------------------------------------------------------------*/
-    // 项
+    // 项1
     QJsonObject map_test_item_list_1;
-    map_test_item_list_1.insert("item_name", "P0");
+    map_test_item_list_1.insert("item_name", "输入相");
     map_test_item_list_1.insert("start_time", "2016-07-11 11:48:50");
     map_test_item_list_1.insert("stop_time", "2016-07-11 11:48:50");
     map_test_item_list_1.insert("test_result", "passed");
@@ -116,7 +116,61 @@ void json::writeJson()
     map_test_item_list_1.insert("upper_limit", "");
     map_test_item_list_1.insert("test_value", "");
 
+    QJsonArray array;
+    //    array.append(QJsonValue());
+    for(int i=0; i<3; i++) //jsonPacket->basic_info.subOutItemNum
+    {
+        QJsonObject phaseObject;
+        setSubItem(phaseObject);
+        array.append(QJsonValue(phaseObject));
 
+
+    }
+    QJsonObject phaseObject_1;
+    phaseObject_1.insert("sub_test_item_list",QJsonValue(array));
+
+    //    QJsonObject phaseObject_2;
+    QJsonArray array_1;
+    array_1.append(QJsonValue(map_test_item_list_1));
+    array_1.append(QJsonValue(phaseObject_1));
+
+    json.insert("test_item_list",QJsonValue(array_1));
+    /*------------------------------------------------------------------------------------------------------------------*/
+    //    //相二
+    // 项1
+    QJsonObject map_test_item_list_2;
+    map_test_item_list_2.insert("item_name", "输出位");
+    map_test_item_list_2.insert("start_time", "2016-07-11 11:48:50");
+    map_test_item_list_2.insert("stop_time", "2016-07-11 11:48:50");
+    map_test_item_list_2.insert("test_result", "passed");
+    map_test_item_list_2.insert("result_desc", "");
+    map_test_item_list_2.insert("value_flag", "N");
+    map_test_item_list_2.insert("lower_limit", "");
+    map_test_item_list_2.insert("upper_limit", "");
+    map_test_item_list_2.insert("test_value", "");
+
+    QJsonArray array_5;
+    //    array.append(QJsonValue());
+    for(int i=0; i<6; i++) //jsonPacket->basic_info.subOutItemNum
+    {
+        QJsonObject phaseObject;
+        setSubItem(phaseObject);
+        array_5.append(QJsonValue(phaseObject));
+
+
+    }
+    QJsonObject phaseObject_5;
+    phaseObject_5.insert("sub_test_item_list",QJsonValue(array_5));
+
+    //    QJsonObject phaseObject_2;
+    QJsonArray array_6;
+
+    array_6.append(QJsonValue(map_test_item_list_2));
+    array_6.append(QJsonValue(phaseObject_5));
+
+    json.insert("test_item_list_1",QJsonValue(array_6));
+
+    /*------------------------------------------------------------------------------------------------------------------*/
     // 构建 Json 文档
     QJsonDocument document;
     document.setObject(json);
@@ -135,7 +189,7 @@ void json::writeJson()
  * @brief 创建电流子项
  * @param map
  */
-void json::curItem(QVariantMap &map)
+void json::setSubItem(QJsonObject &map)
 {
     map.insert("sub_item_name", "LX");
     map.insert("start_time", "2016-07-11 11:48:50");

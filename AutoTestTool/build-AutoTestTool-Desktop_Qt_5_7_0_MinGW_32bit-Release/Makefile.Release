@@ -238,13 +238,17 @@ release/moc_mainwindow.cpp: D:/qt/5.7/mingw53_32/include/QtWidgets/QMainWindow \
 		D:/qt/5.7/mingw53_32/include/QtNetwork/QTcpSocket \
 		D:/qt/5.7/mingw53_32/include/QtNetwork/qtcpsocket.h \
 		D:/qt/5.7/mingw53_32/include/QtNetwork/QHostAddress \
-		D:/qt/5.7/mingw53_32/include/QtCore/QByteArray \
-		../AutoTestTool/tcp/cmdtonetpacket.h \
-		D:/qt/5.7/mingw53_32/include/QtCore/QTime \
-		D:/qt/5.7/mingw53_32/include/QtCore/qdatetime.h \
-		../AutoTestTool/json/json.h \
 		D:/qt/5.7/mingw53_32/include/QtCore/QTextStream \
 		D:/qt/5.7/mingw53_32/include/QtCore/QFile \
+		D:/qt/5.7/mingw53_32/include/QtCore/QTime \
+		D:/qt/5.7/mingw53_32/include/QtCore/qdatetime.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/QCoreApplication \
+		D:/qt/5.7/mingw53_32/include/QtCore/qcoreapplication.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qeventloop.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/QEventLoop \
+		D:/qt/5.7/mingw53_32/include/QtCore/QByteArray \
+		../AutoTestTool/tcp/cmdtonetpacket.h \
+		../AutoTestTool/json/json.h \
 		D:/qt/5.7/mingw53_32/include/QtCore/QVariantMap \
 		D:/qt/5.7/mingw53_32/include/QtCore/QDebug \
 		D:/qt/5.7/mingw53_32/include/QtCore/QJsonObject \
@@ -271,6 +275,14 @@ release/moc_mainwindow.cpp: D:/qt/5.7/mingw53_32/include/QtWidgets/QMainWindow \
 		D:/qt/5.7/mingw53_32/include/QtGui/qtextformat.h \
 		D:/qt/5.7/mingw53_32/include/QtGui/qpen.h \
 		D:/qt/5.7/mingw53_32/include/QtGui/qtextoption.h \
+		../AutoTestTool/json/mysql.h \
+		D:/qt/5.7/mingw53_32/include/QtSql/QSqlDatabase \
+		D:/qt/5.7/mingw53_32/include/QtSql/qsqldatabase.h \
+		D:/qt/5.7/mingw53_32/include/QtSql/qsql.h \
+		D:/qt/5.7/mingw53_32/include/QtSql/QSqlQuery \
+		D:/qt/5.7/mingw53_32/include/QtSql/qsqlquery.h \
+		D:/qt/5.7/mingw53_32/include/QtSql/QSqlError \
+		D:/qt/5.7/mingw53_32/include/QtSql/qsqlerror.h \
 		../AutoTestTool/mainwindow.h \
 		D:/qt/5.7/mingw53_32/bin/moc.exe
 	D:\qt\5.7\mingw53_32\bin\moc.exe $(DEFINES) -D__GNUC__ -DWIN32 -ID:/qt/5.7/mingw53_32/mkspecs/win32-g++ -IF:/Qt/GitHub/CleverTool/AutoTestTool/AutoTestTool -ID:/qt/5.7/mingw53_32/include -ID:/qt/5.7/mingw53_32/include/QtWidgets -ID:/qt/5.7/mingw53_32/include/QtGui -ID:/qt/5.7/mingw53_32/include/QtANGLE -ID:/qt/5.7/mingw53_32/include/QtNetwork -ID:/qt/5.7/mingw53_32/include/QtSql -ID:/qt/5.7/mingw53_32/include/QtCore -I. -ID:/qt/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include -ID:/qt/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include-fixed -ID:/qt/Tools/mingw530_32/i686-w64-mingw32/include -ID:/qt/Tools/mingw530_32/i686-w64-mingw32/include/c++ -ID:/qt/Tools/mingw530_32/i686-w64-mingw32/include/c++/i686-w64-mingw32 -ID:/qt/Tools/mingw530_32/i686-w64-mingw32/include/c++/backward ..\AutoTestTool\mainwindow.h -o release\moc_mainwindow.cpp
@@ -416,6 +428,16 @@ release/moc_tcpclient.cpp: D:/qt/5.7/mingw53_32/include/QtCore/QObject \
 		D:/qt/5.7/mingw53_32/include/QtCore/qsharedpointer_impl.h \
 		D:/qt/5.7/mingw53_32/include/QtNetwork/QHostAddress \
 		D:/qt/5.7/mingw53_32/include/QtNetwork/qhostaddress.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/QTextStream \
+		D:/qt/5.7/mingw53_32/include/QtCore/QFile \
+		D:/qt/5.7/mingw53_32/include/QtCore/qfile.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qfiledevice.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/QTime \
+		D:/qt/5.7/mingw53_32/include/QtCore/qdatetime.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/QCoreApplication \
+		D:/qt/5.7/mingw53_32/include/QtCore/qcoreapplication.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qeventloop.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/QEventLoop \
 		../AutoTestTool/tcp/tcpclient.h \
 		D:/qt/5.7/mingw53_32/bin/moc.exe
 	D:\qt\5.7\mingw53_32\bin\moc.exe $(DEFINES) -D__GNUC__ -DWIN32 -ID:/qt/5.7/mingw53_32/mkspecs/win32-g++ -IF:/Qt/GitHub/CleverTool/AutoTestTool/AutoTestTool -ID:/qt/5.7/mingw53_32/include -ID:/qt/5.7/mingw53_32/include/QtWidgets -ID:/qt/5.7/mingw53_32/include/QtGui -ID:/qt/5.7/mingw53_32/include/QtANGLE -ID:/qt/5.7/mingw53_32/include/QtNetwork -ID:/qt/5.7/mingw53_32/include/QtSql -ID:/qt/5.7/mingw53_32/include/QtCore -I. -ID:/qt/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include -ID:/qt/Tools/mingw530_32/lib/gcc/i686-w64-mingw32/5.3.0/include-fixed -ID:/qt/Tools/mingw530_32/i686-w64-mingw32/include -ID:/qt/Tools/mingw530_32/i686-w64-mingw32/include/c++ -ID:/qt/Tools/mingw530_32/i686-w64-mingw32/include/c++/i686-w64-mingw32 -ID:/qt/Tools/mingw530_32/i686-w64-mingw32/include/c++/backward ..\AutoTestTool\tcp\tcpclient.h -o release\moc_tcpclient.cpp
@@ -556,13 +578,17 @@ release/main.o: ../AutoTestTool/main.cpp ../AutoTestTool/mainwindow.h \
 		D:/qt/5.7/mingw53_32/include/QtNetwork/QTcpSocket \
 		D:/qt/5.7/mingw53_32/include/QtNetwork/qtcpsocket.h \
 		D:/qt/5.7/mingw53_32/include/QtNetwork/QHostAddress \
-		D:/qt/5.7/mingw53_32/include/QtCore/QByteArray \
-		../AutoTestTool/tcp/cmdtonetpacket.h \
-		D:/qt/5.7/mingw53_32/include/QtCore/QTime \
-		D:/qt/5.7/mingw53_32/include/QtCore/qdatetime.h \
-		../AutoTestTool/json/json.h \
 		D:/qt/5.7/mingw53_32/include/QtCore/QTextStream \
 		D:/qt/5.7/mingw53_32/include/QtCore/QFile \
+		D:/qt/5.7/mingw53_32/include/QtCore/QTime \
+		D:/qt/5.7/mingw53_32/include/QtCore/qdatetime.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/QCoreApplication \
+		D:/qt/5.7/mingw53_32/include/QtCore/qcoreapplication.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qeventloop.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/QEventLoop \
+		D:/qt/5.7/mingw53_32/include/QtCore/QByteArray \
+		../AutoTestTool/tcp/cmdtonetpacket.h \
+		../AutoTestTool/json/json.h \
 		D:/qt/5.7/mingw53_32/include/QtCore/QVariantMap \
 		D:/qt/5.7/mingw53_32/include/QtCore/QDebug \
 		D:/qt/5.7/mingw53_32/include/QtCore/QJsonObject \
@@ -589,13 +615,21 @@ release/main.o: ../AutoTestTool/main.cpp ../AutoTestTool/mainwindow.h \
 		D:/qt/5.7/mingw53_32/include/QtGui/qtextformat.h \
 		D:/qt/5.7/mingw53_32/include/QtGui/qpen.h \
 		D:/qt/5.7/mingw53_32/include/QtGui/qtextoption.h \
+		../AutoTestTool/json/mysql.h \
+		D:/qt/5.7/mingw53_32/include/QtSql/QSqlDatabase \
+		D:/qt/5.7/mingw53_32/include/QtSql/qsqldatabase.h \
+		D:/qt/5.7/mingw53_32/include/QtSql/qsql.h \
+		D:/qt/5.7/mingw53_32/include/QtSql/QSqlQuery \
+		D:/qt/5.7/mingw53_32/include/QtSql/qsqlquery.h \
+		D:/qt/5.7/mingw53_32/include/QtSql/QSqlError \
+		D:/qt/5.7/mingw53_32/include/QtSql/qsqlerror.h \
 		D:/qt/5.7/mingw53_32/include/QtWidgets/QApplication \
 		D:/qt/5.7/mingw53_32/include/QtWidgets/qapplication.h \
-		D:/qt/5.7/mingw53_32/include/QtCore/qcoreapplication.h \
-		D:/qt/5.7/mingw53_32/include/QtCore/qeventloop.h \
 		D:/qt/5.7/mingw53_32/include/QtWidgets/qdesktopwidget.h \
 		D:/qt/5.7/mingw53_32/include/QtGui/qguiapplication.h \
-		D:/qt/5.7/mingw53_32/include/QtGui/qinputmethod.h
+		D:/qt/5.7/mingw53_32/include/QtGui/qinputmethod.h \
+		D:/qt/5.7/mingw53_32/include/QtSql/QSqlDriver \
+		D:/qt/5.7/mingw53_32/include/QtSql/qsqldriver.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\main.o ..\AutoTestTool\main.cpp
 
 release/mainwindow.o: ../AutoTestTool/mainwindow.cpp ../AutoTestTool/mainwindow.h \
@@ -713,13 +747,17 @@ release/mainwindow.o: ../AutoTestTool/mainwindow.cpp ../AutoTestTool/mainwindow.
 		D:/qt/5.7/mingw53_32/include/QtNetwork/QTcpSocket \
 		D:/qt/5.7/mingw53_32/include/QtNetwork/qtcpsocket.h \
 		D:/qt/5.7/mingw53_32/include/QtNetwork/QHostAddress \
-		D:/qt/5.7/mingw53_32/include/QtCore/QByteArray \
-		../AutoTestTool/tcp/cmdtonetpacket.h \
-		D:/qt/5.7/mingw53_32/include/QtCore/QTime \
-		D:/qt/5.7/mingw53_32/include/QtCore/qdatetime.h \
-		../AutoTestTool/json/json.h \
 		D:/qt/5.7/mingw53_32/include/QtCore/QTextStream \
 		D:/qt/5.7/mingw53_32/include/QtCore/QFile \
+		D:/qt/5.7/mingw53_32/include/QtCore/QTime \
+		D:/qt/5.7/mingw53_32/include/QtCore/qdatetime.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/QCoreApplication \
+		D:/qt/5.7/mingw53_32/include/QtCore/qcoreapplication.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qeventloop.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/QEventLoop \
+		D:/qt/5.7/mingw53_32/include/QtCore/QByteArray \
+		../AutoTestTool/tcp/cmdtonetpacket.h \
+		../AutoTestTool/json/json.h \
 		D:/qt/5.7/mingw53_32/include/QtCore/QVariantMap \
 		D:/qt/5.7/mingw53_32/include/QtCore/QDebug \
 		D:/qt/5.7/mingw53_32/include/QtCore/QJsonObject \
@@ -746,55 +784,15 @@ release/mainwindow.o: ../AutoTestTool/mainwindow.cpp ../AutoTestTool/mainwindow.
 		D:/qt/5.7/mingw53_32/include/QtGui/qtextformat.h \
 		D:/qt/5.7/mingw53_32/include/QtGui/qpen.h \
 		D:/qt/5.7/mingw53_32/include/QtGui/qtextoption.h \
-		ui_mainwindow.h \
-		D:/qt/5.7/mingw53_32/include/QtCore/QVariant \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/QAction \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qaction.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qactiongroup.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/QApplication \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qapplication.h \
-		D:/qt/5.7/mingw53_32/include/QtCore/qcoreapplication.h \
-		D:/qt/5.7/mingw53_32/include/QtCore/qeventloop.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qdesktopwidget.h \
-		D:/qt/5.7/mingw53_32/include/QtGui/qguiapplication.h \
-		D:/qt/5.7/mingw53_32/include/QtGui/qinputmethod.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/QButtonGroup \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qbuttongroup.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/QGridLayout \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/QGroupBox \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qgroupbox.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/QHeaderView \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qheaderview.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qabstractitemview.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qabstractscrollarea.h \
-		D:/qt/5.7/mingw53_32/include/QtCore/qabstractitemmodel.h \
-		D:/qt/5.7/mingw53_32/include/QtCore/qitemselectionmodel.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qabstractitemdelegate.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qstyleoption.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qabstractspinbox.h \
-		D:/qt/5.7/mingw53_32/include/QtGui/qvalidator.h \
-		D:/qt/5.7/mingw53_32/include/QtCore/qregularexpression.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qslider.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qabstractslider.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qstyle.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qtabbar.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qrubberband.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/QLabel \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qlabel.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/QPushButton \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qpushbutton.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qabstractbutton.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/QRadioButton \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qradiobutton.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/QSpacerItem \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/QSpinBox \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qspinbox.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/QStatusBar \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qstatusbar.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/QTextEdit \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/qtextedit.h \
-		D:/qt/5.7/mingw53_32/include/QtGui/qtextdocument.h \
-		D:/qt/5.7/mingw53_32/include/QtWidgets/QWidget
+		../AutoTestTool/json/mysql.h \
+		D:/qt/5.7/mingw53_32/include/QtSql/QSqlDatabase \
+		D:/qt/5.7/mingw53_32/include/QtSql/qsqldatabase.h \
+		D:/qt/5.7/mingw53_32/include/QtSql/qsql.h \
+		D:/qt/5.7/mingw53_32/include/QtSql/QSqlQuery \
+		D:/qt/5.7/mingw53_32/include/QtSql/qsqlquery.h \
+		D:/qt/5.7/mingw53_32/include/QtSql/QSqlError \
+		D:/qt/5.7/mingw53_32/include/QtSql/qsqlerror.h \
+		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\mainwindow.o ..\AutoTestTool\mainwindow.cpp
 
 release/udpclient.o: ../AutoTestTool/udp/udpclient.cpp ../AutoTestTool/udp/udpclient.h \
@@ -937,7 +935,17 @@ release/tcpclient.o: ../AutoTestTool/tcp/tcpclient.cpp ../AutoTestTool/tcp/tcpcl
 		D:/qt/5.7/mingw53_32/include/QtCore/qsharedpointer.h \
 		D:/qt/5.7/mingw53_32/include/QtCore/qsharedpointer_impl.h \
 		D:/qt/5.7/mingw53_32/include/QtNetwork/QHostAddress \
-		D:/qt/5.7/mingw53_32/include/QtNetwork/qhostaddress.h
+		D:/qt/5.7/mingw53_32/include/QtNetwork/qhostaddress.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/QTextStream \
+		D:/qt/5.7/mingw53_32/include/QtCore/QFile \
+		D:/qt/5.7/mingw53_32/include/QtCore/qfile.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qfiledevice.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/QTime \
+		D:/qt/5.7/mingw53_32/include/QtCore/qdatetime.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/QCoreApplication \
+		D:/qt/5.7/mingw53_32/include/QtCore/qcoreapplication.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qeventloop.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/QEventLoop
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\tcpclient.o ..\AutoTestTool\tcp\tcpclient.cpp
 
 release/cmdtonetpacket.o: ../AutoTestTool/tcp/cmdtonetpacket.cpp ../AutoTestTool/tcp/cmdtonetpacket.h \
@@ -1191,7 +1199,10 @@ release/mysql.o: ../AutoTestTool/json/mysql.cpp ../AutoTestTool/json/mysql.h \
 		D:/qt/5.7/mingw53_32/include/QtCore/qset.h \
 		D:/qt/5.7/mingw53_32/include/QtCore/qcontiguouscache.h \
 		D:/qt/5.7/mingw53_32/include/QtCore/qsharedpointer.h \
-		D:/qt/5.7/mingw53_32/include/QtCore/qsharedpointer_impl.h
+		D:/qt/5.7/mingw53_32/include/QtCore/qsharedpointer_impl.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/QFile \
+		D:/qt/5.7/mingw53_32/include/QtCore/qfile.h \
+		D:/qt/5.7/mingw53_32/include/QtCore/qfiledevice.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\mysql.o ..\AutoTestTool\json\mysql.cpp
 
 release/moc_mainwindow.o: release/moc_mainwindow.cpp 

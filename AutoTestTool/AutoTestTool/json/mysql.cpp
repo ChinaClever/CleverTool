@@ -2,24 +2,26 @@
 
 MySql::MySql()
 {
-    create_sql = "create table student (id int primary key, name varchar(30), age int)";
-    select_max_sql = "select max(id) from student";
-    insert_sql = "insert into student values (?, ?, ?)";
-    update_sql = "update student set name = :name where id = :id";
-    select_sql = "select id, name from student";
-    select_one_sql = "select from student where id = ?";
-    select_all_sql = "select * from student";
-    delete_sql = "delete from student where id = ?";
-    clear_sql = "delete from student";
+    create_sql = "create table if not exists deviceinfo(id int primary key, ip varchar(30), time TEXT )";
+    select_max_sql = "select max(id) from deviceinfo";
+    insert_sql = "insert into deviceinfo values (?, ?, ?)";
+    update_sql = "update deviceinfo set ip = :ip where id = :id"; //根据id来修改ip
+    select_sql = "select id, ip from deviceinfo";
+//    select_one_sql = "select from student where id = ?";
+    select_all_sql = "select * from deviceinfo";
+    delete_sql = "delete from deviceinfo where id = ?";  //根据id删除，当然也可以根据ip或者时间删除
+    clear_sql = "delete from deviceinfo";
 
 }
 
 bool MySql::createSqlite()
 {
-    database = QSqlDatabase::addDatabase("QSQLITE");  //添加数据库驱动
-    database.setDatabaseName("D:/database.db");  //设置数据库名称，同时包括其路径
+//    database = QSqlDatabase::addDatabase("QSQLITE");  //添加数据库驱动
+    database = QSqlDatabase::addDatabase("QMYSQL");  //添加数据库驱动
+//    database.setDatabaseName("D:/database.db");  //设置数据库名称，同时包括其路径
+    database.setDatabaseName("MySQL");  //设置数据库名称，同时包括其路径
     database.setUserName("root");  //设置登录用户名
-    database.setPassword("123456"); //设置登录密码
+    database.setPassword("557326"); //设置登录密码
     sql_query = QSqlQuery(database);
 
 }
@@ -82,14 +84,14 @@ int MySql::serachMaxId()
     return max_id;
 }
 
-void MySql::insertData(QString name,int age)
+void MySql::insertData(QString ip,QString time)
 {
     int max_id = serachMaxId();  //先获取最大ID
     //     QSqlQuery sql_query(database);
     sql_query.prepare(insert_sql);
     sql_query.addBindValue(max_id+1);
-    sql_query.addBindValue(name);
-    sql_query.addBindValue(age);
+    sql_query.addBindValue(ip);
+    sql_query.addBindValue(time);
     if(!sql_query.exec())
     {
         qDebug()<<sql_query.lastError();
@@ -100,12 +102,12 @@ void MySql::insertData(QString name,int age)
     }
 }
 
-void MySql::updateDatabase()
+void MySql::updateDatabase(QString ip ,int id)  //把某一项修改成指定ip
 {
     //     QSqlQuery sql_query(database);
     sql_query.prepare(update_sql);
-    sql_query.bindValue(":name", "Qt");
-    sql_query.bindValue(":id", 1);
+    sql_query.bindValue(":ip", "ip");
+    sql_query.bindValue(":id", id);
     if(!sql_query.exec())
     {
         qDebug()<<sql_query.lastError();
@@ -128,9 +130,9 @@ void MySql::searchDatabase()
         while(sql_query.next())
         {
             int id = sql_query.value("id").toInt();
-            QString name = sql_query.value("name").toString();
+            QString ip = sql_query.value("ip").toString();
 
-            qDebug()<<QString("id:%1    name:%2").arg(id).arg(name);
+            qDebug()<<QString("id:%1    ip:%2").arg(id).arg(ip);
         }
     }
 
@@ -149,15 +151,15 @@ void MySql::searchAllDatabase()
         while(sql_query.next())
         {
             int id = sql_query.value(0).toInt();
-            QString name = sql_query.value(1).toString();
-            int age = sql_query.value(2).toInt();
+            QString ip = sql_query.value(1).toString();
+            QString time = sql_query.value(2).toString();
 
-            qDebug()<<QString("id:%1    name:%2    age:%3").arg(id).arg(name).arg(age);
+            qDebug()<<QString("id:%1    ip:%2    time:%3").arg(id).arg(ip).arg(time);
         }
     }
 }
 
-bool MySql::searchOneData(int id)
+bool MySql::searchOneData(int id) //根据id查询，可换成根据IP查询或者时间查询
 {
     sql_query.prepare(select_all_sql);
     sql_query.bindValue(":id", id);
@@ -169,12 +171,12 @@ bool MySql::searchOneData(int id)
         while(sql_query.next())
         {
             int num = sql_query.value(0).toInt();
-            QString name = sql_query.value(1).toString();
-            int age = sql_query.value(2).toInt();
+            QString ip = sql_query.value(1).toString();
+            QString time = sql_query.value(2).toString();
 
             if(num == id)
             {
-                qDebug()<<QString("id:%1    name:%2    age:%3").arg(id).arg(name).arg(age);
+                qDebug()<<QString("id:%1    ip:%2    time:%3").arg(id).arg(ip).arg(time);
                 return true;
             }
         }

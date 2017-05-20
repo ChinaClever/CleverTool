@@ -15,8 +15,8 @@ public:
     void openDataBase();
     bool createTable();
     int serachMaxId();
-    void insertData(QString name, int age);
-    void updateDatabase();
+    void insertData(QString ip, QString time);
+    void updateDatabase(QString ip, int id);
     void searchDatabase();
     void searchAllDatabase();
     bool searchOneData(int id);

@@ -31,25 +31,25 @@ MainWindow::MainWindow(QWidget *parent) :
 
     json myJson;
     myJson.writeJson();  //将信息写入json文件
-#if 0
+#if 1
     MySql sql;
     sql.createSqlite();
     sql.openDataBase();
     sql.createTable();
 
-    sql.insertData("王磊",12);
-    sql.insertData("张磊",13);
-    sql.insertData("李磊",14);
-    sql.insertData("欧阳磊",15);
-    sql.insertData("刘磊",16);
-    sql.insertData("沈磊",17);
-    sql.insertData("朱磊",18);
+    sql.insertData("192.168.1.112","10:45");
+    sql.insertData("192.168.1.113","10:46");
+    sql.insertData("192.168.1.114","10:47");
+    sql.insertData("192.168.1.115","10:48");
+    sql.insertData("192.168.1.116","10:49");
+    sql.insertData("192.168.1.117","10:40");
+    sql.insertData("192.168.1.118","10:41");
 
-    //    sql.searchAllDatabase();
+    sql.searchAllDatabase();
     //    sql.searchDatabase();
-    if(!sql.searchOneData(3))
-        qDebug() << "数据不存在！";
-    sql.updateDatabase();
+    //    if(!sql.searchOneData(3))
+    //        qDebug() << "数据不存在！";
+    //    sql.updateDatabase();
     //    sql.delateData(11);
 
     //    sql.clearTable();
