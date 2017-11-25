@@ -3,6 +3,8 @@
 #include"datadefine.h"
 #include<qtimer.h>
 
+#define isSet 1
+
 static returntableData returnData;
 static collectedData sentData;
 
@@ -23,6 +25,12 @@ MainWindow::MainWindow(QWidget *parent) :
     timer->start(1*1000);
 
     updateStateAndButton();
+
+    //去掉不用的条目
+    ui->groupBox_2->setDisabled(true);
+    ui->pushButton_3->setText(tr("电压电流校准"));
+    ui->pushButton_3->setMinimumSize(110,30);
+    ui->pushButton_3->setGeometry(300,120,110,30);
 
 }
 
@@ -235,6 +243,16 @@ void MainWindow::initData()
     mAddr = 1;
     //    mTimer = new QTimer(this);
     //    movie = new QMovie(":/new/prefix1/image/camEffectTarget.gif");
+
+    if(isSet){
+        pass = 0;
+        for(int j = 0 ; j < 8 ;j++){
+                init[j] = 1;
+                onbuffer[j] = 0;
+                offbuffer[j] = 1;
+        }
+    }
+
 }
 
 
@@ -589,6 +607,9 @@ void MainWindow::button_clicked()
  */
 void MainWindow::on_pushButton_5_clicked()
 {
+    if(isSet){
+        pass = 1;
+    }
     if(port->checkIsOpen(mCurrentPortName))
     {
         mflag = 2;
@@ -839,10 +860,20 @@ void MainWindow::setOnOffState(int row, int column)
 {
     QTableWidgetItem *item = ui->tableWidget->item(row,column);
     bool state = (returnData.onoffState>>(7-row))&1; //判断该位，先将该位移到第一位，再与1相与，则第一位不变，其他位置0
-    if(state) //开
+    if(state) {//开
+        if(isSet && init[row]){
+            init[row] = 0;
+            onbuffer[row] = 1;
+            offbuffer[row] = 0;
+        }
         item->setText(tr("打开"));
-    else
-        item->setText(tr("关闭"));
+    }else{
+        if(isSet && init[row]){
+            init[row] = 0;
+            onbuffer[row] = 0;
+            offbuffer[row] = 1;
+        }
+        item->setText(tr("关闭"));}
 }
 
 /**
@@ -854,7 +885,7 @@ void MainWindow::setCurretnt(int row, int column)
 {
     QTableWidgetItem *item = ui->tableWidget->item(row,column);
     int data = (returnData.current[row][0]<<8 | returnData.current[row][1])/10;
-    QString str = QString("%1A").arg(data);
+    QString str = QString("%1.%2A").arg(data/10).arg(data%10);
     item->setText(str);
 }
 
@@ -862,7 +893,7 @@ void MainWindow::setFirstVolate()
 {
 
     int data = returnData.volate[0][0]<<8 | returnData.volate[0][1];
-    QString str = QString("%1V").arg(data);
+    QString str = QString("%1.%2V").arg(data/10).arg(data%10);
     ui->label_18->setText(str);
 }
 
@@ -870,7 +901,7 @@ void MainWindow::setSecondVolate()
 {
 
     int data = returnData.volate[1][0]<<8 | returnData.volate[1][1];
-    QString str = QString("%1V").arg(data);
+    QString str = QString("%1.%2V").arg(data/10).arg(data%10);
     ui->label_21->setText(str);
 }
 
@@ -1044,6 +1075,11 @@ void MainWindow::collectLoopDone()
     else
     {
         qDebug()<<"按钮指令---------------------------------";
+        if(isSet){
+            onbuffer[mCurrentButtonRow] = switchData;
+            offbuffer[mCurrentButtonRow] = 1-onbuffer[mCurrentButtonRow];
+        }
+
         setSwitch(mCurrentButtonRow,switchData);
         mCurrentButtonRow = 9;
     }
@@ -1133,30 +1169,37 @@ void MainWindow::clearTalbeText()
  */
 void MainWindow::on_pushButton_8_clicked()
 {
-    switchFlag = true;
-//    quint8 onbuffer[8]; /*= {1,0,0,0,0,0,0,0}; */
-//    quint8 offbuffer[8]; /*= {0,1,1,1,1,1,1,1}; */
-    memset(onbuffer,0,sizeof(onbuffer));
-    memset(offbuffer,0,sizeof(offbuffer));
+    if(isSet && !pass) return;
 
-    //    i = 0;
-    if( switchNum > 7 ) //初始为9，循环到8则返回0
+    switchFlag = true;
+    if(isSet){
         for(int j = 0 ; j < 8 ;j++)
         {
-            if( j == switchNum++ )
-            {
-                onbuffer[j] = 1;
-                offbuffer[j] = 0;
-            }
-            else
-            {
-                onbuffer[j] = 0;
-                offbuffer[j] = 1;
-            }
-
+                onbuffer[j] = 1 - onbuffer[j];
+                offbuffer[j] = 1 - offbuffer[j];
         }
-    else
-        switchNum = 0;
+    }else{
+        memset(onbuffer,0,sizeof(onbuffer)); //清零
+        memset(offbuffer,0,sizeof(offbuffer));
 
+        //    i = 0;
+        if( switchNum > 7 ) //初始为9，循环到8则返回0
+            for(int j = 0 ; j < 8 ;j++)
+            {
+                if( j == switchNum++ )
+                {
+                    onbuffer[j] = 1;
+                    offbuffer[j] = 0;
+                }
+                else
+                {
+                    onbuffer[j] = 0;
+                    offbuffer[j] = 1;
+                }
+
+            }
+        else
+            switchNum = 0;
+    }
     //    sendControlCmd(onbuffer,offbuffer);
 }

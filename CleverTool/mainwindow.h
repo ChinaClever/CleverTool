@@ -46,6 +46,9 @@ protected:
 
     quint8 onbuffer[8]; /*= {1,0,0,0,0,0,0,0}; */
     quint8 offbuffer[8]; /*= {0,1,1,1,1,1,1,1}; */
+
+    quint8 init[8]; //初始化标志 -- My+
+    int    pass;    //  -- My+
     
     
     
@@ -56,17 +59,17 @@ private slots:
     void on_comboBox_currentTextChanged(const QString &arg1);    
     void timeoutDone();   
     void on_comboBox_2_currentIndexChanged(int index);    
-    void on_pushButton_3_clicked();    
+    void on_pushButton_3_clicked();    //校准1
     void on_pushButton_4_clicked();
     void button_clicked();    
-    void on_pushButton_5_clicked();    
+    void on_pushButton_5_clicked();   //开始采集
     void delayTimeDone();
     void delaySetTrue();
     void collectLoopDone();   
     void on_pushButton_6_clicked();    
-    void on_pushButton_7_clicked();
+    void on_pushButton_7_clicked();  //重新校准
     
-    void on_pushButton_8_clicked();
+    void on_pushButton_8_clicked(); //切换开关
 
 protected:
     void initComboxDa(int flag);
