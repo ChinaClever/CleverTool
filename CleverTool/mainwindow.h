@@ -108,6 +108,10 @@ protected:
     
     void setOnOffState(int row,int column);
     void setCurretnt(int row,int column);
+
+    void setCurretVolate(int row,int column);
+    void setCurretPower(int row,int column);
+
     void setFirstVolate();
     void setSecondVolate();
     void setFirstPower();

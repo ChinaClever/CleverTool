@@ -3,7 +3,7 @@
 #include"datadefine.h"
 #include<qtimer.h>
 
-#define isSet 1
+#define isSet 0
 
 static returntableData returnData;
 static collectedData sentData;
@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //去掉不用的条目
     ui->groupBox_2->setDisabled(true);
     ui->pushButton_3->setText(tr("电压电流校准"));
+    ui->groupBox->setTitle("电压电流校准");
     ui->pushButton_3->setMinimumSize(110,30);
     ui->pushButton_3->setGeometry(300,120,110,30);
 
@@ -797,7 +798,7 @@ void MainWindow::sendControlCmd(quint8 *onBuf,quint8 *offBuf)
 void MainWindow::returnToPacket(QByteArray &array)
 {
 
-
+    qDebug() << array.toHex();
     int i = 0;
 
     //执行板返回标志
@@ -818,12 +819,15 @@ void MainWindow::returnToPacket(QByteArray &array)
             returnData.current[m][n] = array.at(i++);
 
     //电压值
-    for(int m = 0; m < 2; m++)
+    for(int m = 0; m < 8; m++){
+        int j = i;
         for(int n = 0 ; n <2 ; n++)
-            returnData.volate[m][n] = array.at(i++);
+            returnData.volate[m][n] = array.at(j++);
+        if(3 == m || 7 == m) i += 2;
+    }
 
     //功率
-    for(int m = 0; m < 2; m++)
+    for(int m = 0; m < 8; m++)
         for(int n = 0 ; n <2 ; n++)
             returnData.power[m][n] = array.at(i++);
 
@@ -840,15 +844,20 @@ void MainWindow::updataTableData()
     qDebug()<<"刷新表格";
     for(int i = 0 ; i < 8 ;i++ )
     {
-        int j = 0;
-        setOnOffState(i,j++);
-        setCurretnt(i,j++);
+       // int j = 0;
+        setOnOffState(i,0);
+        setCurretnt(i,1);
+        setCurretVolate(i,2);
+        setCurretPower(i, 3);
+
+
+
 
     }
-    setFirstVolate();
+  /*  setFirstVolate();
     setSecondVolate();
     setFirstPower();
-    setSecondPower();
+    setSecondPower(); */
 }
 
 /**
@@ -889,6 +898,22 @@ void MainWindow::setCurretnt(int row, int column)
     item->setText(str);
 }
 
+void MainWindow::setCurretVolate(int row, int column)
+{
+    QTableWidgetItem *item = ui->tableWidget->item(row,column);
+    int data = (returnData.volate[row][0]<<8 | returnData.volate[row][1]);
+    QString str = QString("%1.%2V").arg(data/10).arg(data%10);
+    item->setText(str);
+}
+
+void MainWindow::setCurretPower(int row, int column)
+{
+    QTableWidgetItem *item = ui->tableWidget->item(row,column);
+    int data = (returnData.power[row][0]<<8 | returnData.power[row][1]);
+    QString str = QString("%1.%2KW").arg(data/10).arg(data%10);
+    item->setText(str);
+}
+
 void MainWindow::setFirstVolate()
 {
 
@@ -909,7 +934,7 @@ void MainWindow::setFirstPower()
 {
 
     int data = returnData.power[0][0]<<8 | returnData.power[0][1];
-    QString str = QString("%1KW").arg(data);
+    QString str = QString("%1.%2KW").arg(data/10).arg(data%10);
     ui->label_23->setText(str);
 }
 
@@ -917,7 +942,7 @@ void MainWindow::setSecondPower()
 {
 
     int data = returnData.power[1][0]<<8 | returnData.power[1][1];
-    QString str = QString("%1KW").arg(data);
+    QString str = QString("%1.%2KW").arg(data/10).arg(data%10);
     ui->label_25->setText(str);
 }
 
@@ -1096,7 +1121,7 @@ void MainWindow::on_pushButton_6_clicked()
     mflag = 3;
     is_read = true;
     //    mTimer->stop();
-    QMessageBox::information(this,tr("information"),tr("停止数据采集！"),tr("确定"));
+ //   QMessageBox::information(this,tr("information"),tr("停止数据采集！"),tr("确定"));
     //    initTablewidgetOfButton();//如果停止采集初始化表格
     clearTalbeText();
 }
