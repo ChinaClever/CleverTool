@@ -49,10 +49,9 @@ protected:
 
     quint8 init[8]; //初始化标志 -- My+
     int    pass;    //  -- My+
-    
-    
-    
-    
+    int cSUM; //控制按钮轮询
+
+    QTimer *timer2;
     
 private slots:
     void on_pushButton_2_clicked();    
@@ -66,14 +65,33 @@ private slots:
     void delayTimeDone();
     void delaySetTrue();
     void collectLoopDone();   
-    void on_pushButton_6_clicked();    
+    void on_pushButton_6_clicked();  //停止采集
     void on_pushButton_7_clicked();  //重新校准
     
     void on_pushButton_8_clicked(); //切换开关
 
+    void on_comboBox_3_currentIndexChanged(int index);
+
+    void on_pushButton_clicked();
+
+    void onInitIni();
+
+
+    void on_pushButton_9_clicked();
+
+    void on_pushButton_10_clicked();
+
+    void on_pushButton_11_clicked();
+    void ontimeout();
+
+    void on_pushButton12_clicked();
+
 protected:
     void initComboxDa(int flag);
     void updateStateAndButton();
+
+    void sleep(unsigned int msec);
+
     
     
     void initText();
@@ -105,6 +123,8 @@ protected:
     void sendControlCmd(quint8 *onBuf, quint8 *offBuf);
     void returnToPacket(QByteArray &array);
     void updataTableData();
+
+    void setAll(); //设置总和数据
     
     void setOnOffState(int row,int column);
     void setCurretnt(int row,int column);

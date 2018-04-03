@@ -84,14 +84,10 @@ void SerialportOperate::disablePort(QString &portName)
 */
 int SerialportOperate::sendDataToPort(QString &portName,quint8 *cmd, int len)
 {
-    //    char buffer[7]={0x01,0x04,0x04,0x01,0x04,0x04};
-
-    //    qDebug()<<"数据:"<<cmd;
-    //    for(int i =0 ;i < sizeof)
     QByteArray array = quintToByte(cmd,len);
 
-    for(int i =0 ; i < len ; i++)
-        qDebug("cmd:%x",*(cmd+i));
+
+    qDebug() << "Array:" << array.toHex();
 
     int writeBytes;
     int ret = serachPort(portName);

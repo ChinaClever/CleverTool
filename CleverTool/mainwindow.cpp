@@ -2,8 +2,10 @@
 #include "ui_mainwindow.h"
 #include"datadefine.h"
 #include<qtimer.h>
+#include <QSettings>
+#include <QTime>
 
-#define isSet 0
+#define isSet 1
 
 static returntableData returnData;
 static collectedData sentData;
@@ -14,12 +16,17 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    cSUM = 7;
     initText();
     initData();
     port = new SerialportOperate;
     initGroupboxThree(0);
     initTablewidget();
     initComboxDa(0);
+    timer2 = new QTimer(this);
+    connect(timer2, SIGNAL(timeout()), this, SLOT(ontimeout()));
+
+
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timeoutDone()));
     timer->start(1*1000);
@@ -33,6 +40,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->pushButton_3->setMinimumSize(110,30);
     ui->pushButton_3->setGeometry(300,120,110,30);
 
+    onInitIni();
+    ui->comboBox_3->setCurrentIndex(1);
 }
 
 MainWindow::~MainWindow()
@@ -47,19 +56,14 @@ void MainWindow::initComboxDa( int flag)
 {
     QStringList list;
     list.clear();
-    //            qDebug()<<"success 0";
     ui->comboBox->clear();
     if(flag == 0)
         list = port->initPortInfo();
     else if (flag == 1)
         list = port->readPortInfo();
-
-    //        qDebug()<<"success 1";
-
     for(int i=0;i < list.size();i++)
     {
         QString str;
-        //            str.clear();
         str = list.at(i);
         ui->comboBox->addItem(str);
     }
@@ -70,20 +74,16 @@ void MainWindow::on_pushButton_2_clicked()
     QString portName = ui->comboBox->currentText();
     if(ui->pushButton_2->text() == "打开串口")
     {
-
         port->enablePort(portName);
-
     }
     else if (ui->pushButton_2->text() == "关闭串口")
     {
         port->disablePort(portName);
     }
-
     updateStateAndButton();
+    //--------------[发送]----------
+    on_comboBox_3_currentIndexChanged(1);
 }
-
-
-
 
 /**
  * @brief combox当前值改变，修改状态栏以及按钮text
@@ -115,6 +115,13 @@ void MainWindow::updateStateAndButton()
     port->checkAllState();
 }
 
+void MainWindow::sleep(unsigned int msec)
+{
+    QTime dieTime = QTime::currentTime().addMSecs(msec);
+    while( QTime::currentTime() < dieTime )
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+}
+
 
 /**
  * @brief 定时刷新串口
@@ -144,6 +151,9 @@ void MainWindow::on_comboBox_2_currentIndexChanged(int index)
     initGroupboxOne(index);
     initGroupboxTwo(index);
     initGroupboxThree(index);
+
+    //--------------[发送]----------
+    on_comboBox_3_currentIndexChanged(1);
 }
 
 void MainWindow::initGroupboxOne(int index)
@@ -206,6 +216,9 @@ void MainWindow::initGroupboxThree(int index)
  */
 void MainWindow::on_pushButton_3_clicked()
 {
+    if(!ui->pushButton_5->isEnabled()) on_pushButton_6_clicked(); //如果是采集状态， 停止采集
+
+    ui->pushButton_3->setEnabled(false);
     //    str.clear();
     //    is_read = false;
     if(mflag == 2)
@@ -318,13 +331,14 @@ void MainWindow::sendCmd(int flag)
  */
 void MainWindow::readAnswer()
 {
-    qDebug()<<"判断uuuu mflg："<<mflag;
+   // qDebug()<<"判断uuuu mflg："<<mflag;
 
     QByteArray answer;
     answer.clear();
     answer = port->readDataFromPort(mCurrentPortName);
-    qDebug()<<"answer -len:"<<answer.length();
+   // qDebug()<<"answer -len:"<<answer.length();
 
+    qDebug() << "get:" << answer.toHex();
     quint8 data[BUFSIZ];
     QString str;
 
@@ -352,12 +366,12 @@ void MainWindow::readAnswer()
         case 2:  //当数据为采集信息数据时，需要判断是显示到采集应答还是表格
             if(is_gather)
             {
-                qDebug()<<"is_gather";
+               // qDebug()<<"is_gather";
                 updateGroupboxThree(data,answer.length());
             }
             else
             {
-                qDebug()<<"is_not_gather";
+               // qDebug()<<"is_not_gather";
                 //                 QString str = quintToStr(data, answer.length());
                 //                 ui->lineEdit_11->setText(str);
 
@@ -371,7 +385,7 @@ void MainWindow::readAnswer()
     else //数据未收到，如果is_read一直为false，那么后面数据将一直无法发送，所以延迟置1，延迟时间内无法发送
     {
 
-        qDebug()<<"数据未收到";
+       // qDebug()<<"数据未收到";
 
         if(!port->checkIsOpen(mCurrentPortName) && mflag !=3)
         {
@@ -387,7 +401,7 @@ void MainWindow::readAnswer()
  */
 void MainWindow::readTableAnswer()
 {
-    qDebug()<<"判断mflg："<<mflag;
+  //  qDebug()<<"判断mflg："<<mflag;
 
     QByteArray answer;
 
@@ -396,7 +410,7 @@ void MainWindow::readTableAnswer()
     if(port->checkIsOpen(mCurrentPortName))
         answer= port->readDataFromPort(mCurrentPortName);
 
-    qDebug()<<"answer -len:"<<answer.length();
+   // qDebug()<<"answer -len:"<<answer.length();
 
     quint8 data[30];
     QString str;
@@ -405,7 +419,7 @@ void MainWindow::readTableAnswer()
     for(int i = 0; i < answer.length() ; i++)
     {
         data[i] = answer.at(i);
-        qDebug("data:%x",data[i]);
+     //   qDebug("data:%x",data[i]);
         str.append(QString::number(data[i],16));
         str.append(" ");
     }
@@ -592,12 +606,13 @@ void MainWindow::button_clicked()
             {
                 mCurrentButtonRow = i; //当前行数
                 switchData = j;        //开关正好与其存值相同
+                if(j == 1) cSUM = i;
                 break;
             }
         }
     }
 
-    qDebug()<<"mCurrentButtonRow:"<<mCurrentButtonRow<<"switchData:"<<switchData;
+//    qDebug()<<"mCurrentButtonRow:"<<mCurrentButtonRow<<"switchData:"<<switchData;
     //    setSwitch(mCurrentButtonRow,switchData);
 
 
@@ -608,6 +623,9 @@ void MainWindow::button_clicked()
  */
 void MainWindow::on_pushButton_5_clicked()
 {
+    on_pushButton_6_clicked(); //先停止采集
+    ui->pushButton_5->setEnabled(false);
+
     if(isSet){
         pass = 1;
     }
@@ -715,6 +733,15 @@ void MainWindow::sentDataToPacket(quint8 &addr, quint8 &flag,quint8 *onbit,quint
         sentData.obligate[i++] = sendData[j++] = 0;
         sentData.obligate[i++] = sendData[j++] = 0;
         sentData.obligate[i++] = sendData[j++] = 0;
+
+
+        sendData[8] = 0xC7;
+        sendData[9] = 0xC8;
+        sendData[10] = 0xC9;
+        sendData[14] =   0xD7;
+        sendData[15] =   0xD8;
+        sendData[16] =     0xD9;
+        sendData[18] = sendData[2];
     }
 
     //异或校验码
@@ -788,6 +815,7 @@ void MainWindow::sendControlCmd(quint8 *onBuf,quint8 *offBuf)
     //    quint8 buffer1[8] = {0,0,0,0,0,0,0,0};
     bool symbol = true;
     sentDataToPacket(addr,flag,onBuf,offBuf,symbol);
+
     port->sendDataToPort(mCurrentPortName,sendData,21);
 }
 
@@ -798,7 +826,7 @@ void MainWindow::sendControlCmd(quint8 *onBuf,quint8 *offBuf)
 void MainWindow::returnToPacket(QByteArray &array)
 {
 
-    qDebug() << array.toHex();
+   // qDebug() << array.toHex();
     int i = 0;
 
     //执行板返回标志
@@ -841,7 +869,7 @@ void MainWindow::returnToPacket(QByteArray &array)
  */
 void MainWindow::updataTableData()
 {
-    qDebug()<<"刷新表格";
+ //   qDebug()<<"刷新表格";
     for(int i = 0 ; i < 8 ;i++ )
     {
        // int j = 0;
@@ -850,14 +878,32 @@ void MainWindow::updataTableData()
         setCurretVolate(i,2);
         setCurretPower(i, 3);
 
-
-
-
+        setAll();
     }
   /*  setFirstVolate();
     setSecondVolate();
     setFirstPower();
     setSecondPower(); */
+}
+
+void MainWindow::setAll()
+{
+    QTableWidgetItem *itemA = ui->tableWidget->item(8, 1);
+    QTableWidgetItem *itemW = ui->tableWidget->item(8, 3);
+    int dataA = 0;
+    int dataW = 0;
+    for(int i = 0; i < 8; i++){
+        int data1 = (returnData.current[i][0]<<8 | returnData.current[i][1])/10;
+        dataA += data1;
+
+        int data2 = returnData.power[i][0]<<8 | returnData.power[i][1];
+        dataW += data2;
+
+    }
+    QString str = QString("%1.%2").arg(dataA/10).arg(dataA%10);
+    itemA->setText(str+ "A");
+    str = QString("%1.%2").arg(dataW/10).arg(dataW%10);
+    itemW->setText(str+ "KW");
 }
 
 /**
@@ -894,24 +940,63 @@ void MainWindow::setCurretnt(int row, int column)
 {
     QTableWidgetItem *item = ui->tableWidget->item(row,column);
     int data = (returnData.current[row][0]<<8 | returnData.current[row][1])/10;
-    QString str = QString("%1.%2A").arg(data/10).arg(data%10);
-    item->setText(str);
+    QString str = QString("%1.%2").arg(data/10).arg(data%10);
+
+    QTableWidgetItem *item2 = ui->tableWidget->item(row,column+3); //+++++++++
+
+    if(ui->lineEditAmin->text().toDouble() <= str.toDouble() &&
+       ui->lineEditAmax->text().toDouble() >= str.toDouble() ) {
+        item->setForeground(QBrush(QColor(0, 0, 0)));
+        item2->setForeground(QBrush(QColor(0, 0, 0)));
+        }
+    else  {
+        item->setForeground(QBrush(QColor(255, 0, 0)));
+        item2->setForeground(QBrush(QColor(255, 0, 0)));
+    }
+
+    if(onbuffer[row]){ //--Add : 不动添加
+        item2->setText(str+ "A");
+    }
+
+    item->setText(str+ "A");
 }
 
 void MainWindow::setCurretVolate(int row, int column)
 {
     QTableWidgetItem *item = ui->tableWidget->item(row,column);
     int data = (returnData.volate[row][0]<<8 | returnData.volate[row][1]);
-    QString str = QString("%1.%2V").arg(data/10).arg(data%10);
-    item->setText(str);
+    QString str = QString("%1.%2").arg(data/10).arg(data%10);
+
+    if(ui->lineEditVmin->text().toDouble() <= str.toDouble() &&
+       ui->lineEditVmax->text().toDouble() >= str.toDouble() ) item->setForeground(QBrush(QColor(0, 0, 0)));
+    else  item->setForeground(QBrush(QColor(255, 0, 0)));
+    item->setText(str + "V");
 }
 
 void MainWindow::setCurretPower(int row, int column)
 {
     QTableWidgetItem *item = ui->tableWidget->item(row,column);
     int data = (returnData.power[row][0]<<8 | returnData.power[row][1]);
-    QString str = QString("%1.%2KW").arg(data/10).arg(data%10);
-    item->setText(str);
+    QString str = QString("%1.%2").arg(data/10).arg(data%10);
+
+    QTableWidgetItem *item2 = ui->tableWidget->item(row,column+2); //+++++++++
+
+    if(ui->lineEditWmin->text().toDouble() <= str.toDouble() &&
+       ui->lineEditWmax->text().toDouble() >= str.toDouble() ) {
+        item->setForeground(QBrush(QColor(0, 0, 0)));
+        item2->setForeground(QBrush(QColor(0, 0, 0)));
+    }
+    else  {
+        item->setForeground(QBrush(QColor(255, 0, 0)));
+        item2->setForeground(QBrush(QColor(255, 0, 0)));
+
+    }
+
+    if(onbuffer[row]){ //--Add : 不动添加
+        item2->setText(str+ "KW");
+    }
+
+    item->setText(str + "KW");
 }
 
 void MainWindow::setFirstVolate()
@@ -955,16 +1040,27 @@ void MainWindow::setSwitch(int row,int onOroff)
 {
     quint8 onbuf[8];
     quint8 offbuf[8];
-    memset(onbuf,0,sizeof(onbuf));
-    memset(offbuf,0,sizeof(offbuf));
+
     if(onOroff)  //开，那么填充开有效位，关有效位不用管
     {
-        onbuf[row] = 1;
+        memset(onbuf,0,sizeof(onbuf));
+        memset(offbuf,1,sizeof(offbuf));
+
+
+        for(int j = 0 ; j < 8 ;j++)
+        {
+           onbuffer[j] = onbuf[j] = 0;
+           offbuffer[j] = offbuf[j] = 1;
+        }
+
+       onbuffer[row] = onbuf[row] = 1;
+       offbuffer[row] = offbuf[row] = 0;
 
     }else        //关，与上面正好相反
     {
+        memset(onbuf,0,sizeof(onbuf));
+        memset(offbuf,0,sizeof(offbuf));
         offbuf[row] = 1;
-
     }
 
     if(is_read)
@@ -983,7 +1079,6 @@ void MainWindow::setSwitch(int row,int onOroff)
  */
 QString MainWindow::quintToStr(quint8 *buf , int len)
 {
-    //    qDebug("buf+i:%x",*(buf + len-1));
     QString str;
     str.clear();
     for(int i = 0 ;i < len ; i++)
@@ -1002,10 +1097,16 @@ void MainWindow::updateGroupboxOne(quint8 *data, int flag, int length ,int len)
 {
     bool ret = responseIsRight(data,flag,length);  //判断应答是否正确
 
-    if(ret)
+    if(ret){
         ui->label_11->setText("正确");
-    else
+        on_pushButton_5_clicked(); //开始采集
+
+        on_pushButton12_clicked(); //自动记录
+
+    }else{
         ui->label_11->setText("错误");
+        on_pushButton_7_clicked(); //重新校准
+    }
 
     QString str = quintToStr(data, len);
     ui->lineEdit_4->setText(str);
@@ -1064,12 +1165,12 @@ void MainWindow::delayTimeDone()
  */
 void MainWindow::collectLoopDone()
 {
-    qDebug()<<"循环开始";
+
     //    is_read = false;
     //    mflag = 2;
 
     //        is_read = false;
-    qDebug()<<"mCurrentButtonRow:"<<mCurrentButtonRow;
+
 
     if( switchFlag ) //已点击切换按钮
     {
@@ -1080,7 +1181,7 @@ void MainWindow::collectLoopDone()
     {
         if(is_once)
         {
-            qDebug()<<"采集指令---------------------------------";
+          //  qDebug()<<"采集指令---------------------------------";
             //            sendGatherCmd(); //发送采集数据命令
             //            is_once = false;
 
@@ -1092,14 +1193,14 @@ void MainWindow::collectLoopDone()
         }
         else
         {
-            qDebug()<<"表格指令---------------------------------";
+         //   qDebug()<<"表格指令---------------------------------";
             delayTimeDone();
             is_once = true;
         }
     }
     else
     {
-        qDebug()<<"按钮指令---------------------------------";
+      //  qDebug()<<"按钮指令---------------------------------";
         if(isSet){
             onbuffer[mCurrentButtonRow] = switchData;
             offbuffer[mCurrentButtonRow] = 1-onbuffer[mCurrentButtonRow];
@@ -1124,6 +1225,9 @@ void MainWindow::on_pushButton_6_clicked()
  //   QMessageBox::information(this,tr("information"),tr("停止数据采集！"),tr("确定"));
     //    initTablewidgetOfButton();//如果停止采集初始化表格
     clearTalbeText();
+
+    ui->pushButton_5->setEnabled(true);
+
 }
 
 /**
@@ -1163,9 +1267,14 @@ void MainWindow::on_pushButton_7_clicked()
 {
     is_read = true; //清空标志位，使命令可发
     mflag = 4;
-    port->sendDataToPort(mCurrentPortName,recalibrateCmd,sizeof(recalibrateCmd));
+
+    port->sendDataToPort(mCurrentPortName,activationCmd,sizeof(activationCmd));
+    sleep(200);
+    port->sendDataToPort(mCurrentPortName,recalibrateCmd[ui->comboBox_2->currentIndex()],sizeof(recalibrateCmd[ui->comboBox_2->currentIndex()]));
     ui->lineEdit_4->clear();
     ui->lineEdit_7->clear();
+
+    ui->pushButton_3->setEnabled(true);
 }
 
 /**
@@ -1227,4 +1336,116 @@ void MainWindow::on_pushButton_8_clicked()
             switchNum = 0;
     }
     //    sendControlCmd(onbuffer,offbuffer);
+}
+
+void MainWindow::on_comboBox_3_currentIndexChanged(int) //模式切换
+{
+    if(!ui->pushButton_5->isEnabled()) on_pushButton_6_clicked(); //如果是采集状态， 停止采集
+    quint8 buf[16];
+    int index = ui->comboBox_3->currentIndex();
+    if(index == 0){ //一键
+        for(int i = 0; i < 16; i++)
+        {
+            buf[i] = modelCmd1[mAddr-1][i];
+        }
+    }else{ //继电器轮流开关模式
+        for(int i = 0; i < 16; i++)
+        {
+            buf[i] = modelCmd2[mAddr-1][i];
+        }
+    }
+    port->sendDataToPort(mCurrentPortName,buf,sizeof(buf));
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    double Amin = ui->lineEditAmin->text().toDouble();
+    double Amax = ui->lineEditAmax->text().toDouble();
+    double Vmin = ui->lineEditVmin->text().toDouble();
+    double Vmax = ui->lineEditVmax->text().toDouble();
+    double Wmin = ui->lineEditWmin->text().toDouble();
+    double Wmax = ui->lineEditWmax->text().toDouble();
+
+    QString iniFile = QCoreApplication::applicationDirPath() + "/config.ini";
+    QSettings ini(iniFile, QSettings::IniFormat);
+    ini.beginGroup("Value");
+    ini.setValue("Amin", Amin);
+    ini.setValue("Amax", Amax);
+    ini.setValue("Vmin", Vmin);
+    ini.setValue("Vmax", Vmax);
+    ini.setValue("Wmin", Wmin);
+    ini.setValue("Wmax", Wmax);
+    ini.endGroup();
+}
+
+void MainWindow::onInitIni()
+{
+
+    double Amin;
+    double Amax;
+    double Vmin;
+    double Vmax;
+    double Wmin;
+    double Wmax;
+
+    QString iniFile = QCoreApplication::applicationDirPath() + "/config.ini";
+    QSettings ini(iniFile, QSettings::IniFormat);
+    ini.beginGroup("Value");
+    Amin = ini.value("Amin", 0).toDouble();
+    Amax = ini.value("Amax", 0).toDouble();
+    Vmin = ini.value("Vmin", 0).toDouble();
+    Vmax = ini.value("Vmax", 0).toDouble();
+    Wmin = ini.value("Wmin", 0).toDouble();
+    Wmax = ini.value("Wmax", 0).toDouble();
+    ini.endGroup();
+
+    ui->lineEditAmin->setText(QString::number(Amin));
+    ui->lineEditAmax->setText(QString::number(Amax));
+    ui->lineEditVmin->setText(QString::number(Vmin));
+    ui->lineEditVmax->setText(QString::number(Vmax));
+    ui->lineEditWmin->setText(QString::number(Wmin));
+    ui->lineEditWmax->setText(QString::number(Wmax));
+
+}
+
+void MainWindow::on_pushButton_9_clicked()
+{
+    mCurrentButtonRow = cSUM--; //当前行数
+    switchData =   1;       //开关正好与其存值相同
+    if( cSUM > 7)  cSUM = 0;
+    if( cSUM < 0)  cSUM = 7;
+}
+
+void MainWindow::on_pushButton_10_clicked()
+{
+    mCurrentButtonRow = cSUM++; //当前行数
+    switchData =   1;       //开关正好与其存值相同
+    if( cSUM > 7)  cSUM = 0;
+}
+
+void MainWindow::on_pushButton_11_clicked()
+{
+    cSUM = 7;
+    int timers = ui->timerLine->text().toInt() ? ui->timerLine->text().toInt() : 3000;
+    timer2->start(timers);
+}
+
+void MainWindow::ontimeout()
+{
+    on_pushButton_9_clicked();
+    if(cSUM == 7) timer2->stop();
+}
+
+void MainWindow::on_pushButton12_clicked() //全开
+{
+    sleep(3000);
+    if(isSet && !pass) return;
+    switchFlag = true;
+    if(isSet){
+        for(int j = 0 ; j < 8 ;j++)
+        {
+                onbuffer[j] = 1;
+                offbuffer[j] = 0;
+        }
+    }
 }
