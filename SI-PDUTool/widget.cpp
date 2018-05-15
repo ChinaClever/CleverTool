@@ -93,13 +93,12 @@ void Widget::on_pushButton_2_clicked()
     if(ui->pushButton_2->text() == "打开串口")
     {
         port->enablePort(portName);
-
     }
     else if (ui->pushButton_2->text() == "关闭串口")
     {
-        port->disablePort(portName);
+        on_pushButton_4_clicked(); //强制停止定时器
+        QTimer::singleShot(300, this, SLOT(onClosePort()));
     }
-
     updateStateAndButton();
 }
 
@@ -338,8 +337,19 @@ void Widget::on_pushButton_3_clicked()
 void Widget::on_pushButton_4_clicked()
 {
     timer->stop();
-    ui->pushButton_3->setEnabled(true);
+    QTimer::singleShot(500, this, SLOT(onClearSlot()));
+}
 
+void Widget::onClearSlot()
+{
+    ui->pushButton_3->setEnabled(true);
+    //-----[笨 -- 清空label]------
+    ui->A_2->clear(); ui->A_3->clear(); ui->A_4->clear();
+    ui->V_2->clear(); ui->V_3->clear(); ui->V_4->clear();
+    ui->W_2->clear(); ui->W_3->clear(); ui->W_4->clear();
+    ui->N_2->clear(); ui->N_3->clear(); ui->N_4->clear();
+    ui->w_2->clear(); ui->w_3->clear(); ui->w_4->clear();
+    //----------------------------
 }
 
 void Widget::onTimer() //时时获取
@@ -619,3 +629,12 @@ void Widget::on_comboBox_3_currentIndexChanged(int index)
         ui->L3B->hide();
     }
 }
+
+void Widget::onClosePort()
+{
+      QString portName = ui->comboBox->currentText();
+      port->disablePort(portName);
+      updateStateAndButton();
+}
+
+

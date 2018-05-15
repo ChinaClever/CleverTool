@@ -109,6 +109,10 @@ private slots:
 
     void on_comboBox_3_currentIndexChanged(int index);
 
+    void onClosePort();
+    void onClearSlot();
+
+
 private:
     Ui::Widget *ui;
    // ShowThread *showThread;

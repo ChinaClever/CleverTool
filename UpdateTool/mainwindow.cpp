@@ -173,7 +173,9 @@ void MainWindow::sleep(unsigned int msec)
  */
 void MainWindow::on_selectfileBtn_clicked()
 {
-    QString filename = QFileDialog::getOpenFileName(this);
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
+                                                    "bin/",
+                                                    tr("Images (*.bin)"));
     ui->nameEdit->setText(filename);
     mUpdateFile = filename;
 }
@@ -441,6 +443,7 @@ void MainWindow::on_pushButton_clicked() //批量
         sendDataAll->start();  //不能点第二下  待优化
     }else{
         QMessageBox::warning(this,tr("waring"),tr("上下地址或升级文件有空白"),tr("确定"));
+        this->setEnabled(true);
     }
 }
 

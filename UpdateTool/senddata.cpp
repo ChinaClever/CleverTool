@@ -147,13 +147,14 @@ int SendData::getPacketNum(int bytes)
 bool SendData::responseSendFile(int num)
 {
     QString responseStr = QString("Receive Packet %1 successful").arg(num);
+    QString responseStr2 = QString("Receive Packet %1 successfu").arg(num);
     int buad;
     if(!mCurrentPort.isEmpty() && myPort->portIsOpen(mCurrentPort, buad))
     {
         QByteArray array = myPort->readData(mCurrentPort);
 
         QString str = QString(array);
-        if(str.compare(responseStr) == 0){
+        if(str.compare(responseStr) == 0 || str.compare(responseStr2) == 0){
              qDebug() << "[Get正确数据:]_" << str;
             return true;
         }
