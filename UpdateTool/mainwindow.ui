@@ -367,6 +367,11 @@
       <string>38400</string>
      </property>
     </item>
+    <item>
+     <property name="text">
+      <string>115200</string>
+     </property>
+    </item>
    </widget>
    <widget class="QLabel" name="label_7">
     <property name="geometry">

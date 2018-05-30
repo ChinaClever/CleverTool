@@ -119,13 +119,16 @@ void MainWindow::initButtonText()
         }else
             ui->pushButton_port->setText(tr("打开串口"));
 
-        if(9600 == baud){
-            ui->baudBox->setCurrentIndex(0);
-        }else if(19200 == baud){
-            ui->baudBox->setCurrentIndex(1);
-        }else if(38400 == baud){
-            ui->baudBox->setCurrentIndex(2);
+        int index = 0;
+        switch (baud) {
+        case 9600: index = 0; break;
+        case 19200: index = 1; break;
+        case 38400: index = 2; break;
+        case 115200: index = 3; break;
+        default:
+            break;
         }
+        ui->baudBox->setCurrentIndex(index);
 
         qDebug() << baud;
     }else
@@ -206,7 +209,7 @@ void MainWindow::on_startBtn_clicked()
         } while (ret < 10);  //收到应答，立即向下执行，否则等待5s再向下执行 */
 
         if(!isPass) {
-             QMessageBox::warning(this,tr("waring"),tr("请确定从机是否启动"),tr("确定"));
+            QMessageBox::warning(this,tr("waring"),tr("请确定从机是否启动"),tr("确定"));
             this->setEnabled(true);
             return;
         } //十次依旧无结果
@@ -225,9 +228,9 @@ void MainWindow::onOSendOkSlot(int value)
 {
     this->setEnabled(true);
     if(value){ //传输OK
-         QMessageBox::information(this,tr("information"),tr("软件升级完毕！"),tr("确定"));
+        QMessageBox::information(this,tr("information"),tr("软件升级完毕！"),tr("确定"));
     }else{  //传输NG
-         QMessageBox::warning(this,tr("information"),tr("数据发送可能存在丢失，请检查！"),tr("确定"));
+        QMessageBox::warning(this,tr("information"),tr("数据发送可能存在丢失，请检查！"),tr("确定"));
     }
 }
 
@@ -265,7 +268,7 @@ bool MainWindow::sendUpdateCmd()  //bool型
     else{
         QMessageBox::warning(this,tr("waring"),tr("请选择执行板地址"),tr("确定"));
         return false;
-        }
+    }
 
     send_to_packet(addr,array); //打包到array
     qDebug() << "initData" << array.toHex();
@@ -407,7 +410,7 @@ int MainWindow::getPacketNum(int bytes)
 
 void MainWindow::closeEvent(QCloseEvent *) //退出事件
 {
-     /*sendData->wait();
+    /*sendData->wait();
      Sleep(20);
      delete sendData; */
 }
@@ -435,7 +438,7 @@ void MainWindow::on_pushButton_clicked() //批量
 {
     this->setEnabled(false);
 
-  //  if(ui->lEditMin->text().isDetached())
+    //  if(ui->lEditMin->text().isDetached())
 
     if(!mUpdateFile.isEmpty() && !ui->lEditMin->text().isEmpty() && !ui->lEditMax->text().isEmpty())  //触发线程 发送文件
     {
@@ -449,13 +452,12 @@ void MainWindow::on_pushButton_clicked() //批量
 
 void MainWindow::on_baudBox_currentIndexChanged(int index) //botelv
 {
-    //mCbaud
-    if(0 == index){
-        mCbaud = QSerialPort::Baud9600;
-    }else if(1 == index){
-        mCbaud = QSerialPort::Baud19200;
-    }else if(2 == index){
-        mCbaud = QSerialPort::Baud38400;
+    switch (index) {
+    case 0: mCbaud = QSerialPort::Baud9600; break;
+    case 1: mCbaud = QSerialPort::Baud19200; break;
+    case 2: mCbaud = QSerialPort::Baud38400; break;
+    case 3: mCbaud = QSerialPort::Baud115200; break;
+    default:
+        break;
     }
-  //  qDebug() << "out";
 }
