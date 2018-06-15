@@ -1,2 +1,9 @@
-build-CleverTool-*/
-CleverTool/CleverTool.pro.user
+build-*/
+*.user
+*.zip
+*.bin
+*.user
+*.rar
+*.exe
+*.exe
+*.user

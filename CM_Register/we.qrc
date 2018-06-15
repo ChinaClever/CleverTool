@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/wdl">
+        <file>image/2.png</file>
+        <file>image/6.jpg</file>
+        <file>image/5.png</file>
+        <file>image/1.png</file>
+        <file>image/3.ico</file>
+        <file>image/9.jpg</file>
+        <file>image/Fish10.jpg</file>
+        <file>image/11.jpg</file>
+        <file>image/4.png</file>
+        <file>image/526912.png</file>
+        <file>image/1203585.png</file>
+    </qresource>
+</RCC>
