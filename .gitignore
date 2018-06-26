@@ -7,3 +7,8 @@ build-*/
 *.exe
 *.exe
 *.user
+*.user
+*.user
+UpdateTool/UpdateTool.pro.user
+*.user
+*.user
