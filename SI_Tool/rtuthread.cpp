@@ -176,14 +176,17 @@ void RtuThread::directd10()
 void RtuThread::readData()
 {
     /* 01 03 00 00 00 D1 05 F8*/
-    static uchar sentData[8] =
-    {0x01, 0x03, 0x00, 0x00, 0x00, 0xD5,  0x05, 0xF8};
+    static uchar sentDataAc[8] = {0x01, 0x03, 0x00, 0x00, 0x00, 0xD5, 0x05, 0xF8};
+    static uchar sentDataDc[8] = {0x01, 0x03, 0x00, 0x00, 0x00, 0x67, 0x04, 0x20};
+    uchar *sentData = sentDataDc;
+    if(mDc) sentData = sentDataAc;
+
     sentData[0] = mAddr;
     ushort crc = CRC16_2((char*)sentData, 6);
     sentData[6] = (0xff)&(crc); /*低8位*/
     sentData[7] = ((crc) >> 8); /*高8位*/
-    emit sendWriteSignal(sentData, sizeof(sentData));
-    // qDebug() << "send" << QByteArray((char*)sentData, sizeof(sentData)).toHex();
+    emit sendWriteSignal(sentData, sizeof(sentDataDc));
+    //qDebug() << "send" << QByteArray((char*)sentData, sizeof(sentDataDc)).toHex();
 
     msleep(500);
     int ret = 0;
@@ -195,7 +198,7 @@ void RtuThread::readData()
         if(ret > 3) break;
     }
     uchar * buf = recvData;
-    // qDebug() << "get3:" << QByteArray((char*)recvData, ret).toHex();
+    //qDebug() << "get3:" << QByteArray((char*)recvData, ret).toHex();
 
     QWriteLocker locker(&lock); //上锁
     memset(pkt,0,sizeof(pkt));
