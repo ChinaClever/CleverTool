@@ -1,47 +1,48 @@
-#include "outputwid.h"
-#include "ui_outputwid.h"
+#include "mpdu_outputswitemwid.h"
+#include "ui_mpdu_outputswitemwid.h"
 #include "common.h"
 
-OutputWid::OutputWid(QWidget *parent) :
+MPDU_OutputSwItemWid::MPDU_OutputSwItemWid(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::OutputWid)
+    ui(new Ui::MPDU_OutputSwItemWid)
 {
     ui->setupUi(this);
     ui->openRadio->setChecked(true);
     com_setBackColour("", this);
 }
 
-OutputWid::~OutputWid()
+MPDU_OutputSwItemWid::~MPDU_OutputSwItemWid()
 {
     delete ui;
 }
 
-void OutputWid::init(int id)
+
+void MPDU_OutputSwItemWid::init(int id)
 {
     ui->checkBox->setText(tr(" %1 输出位").arg(id+1));
 }
 
-void OutputWid::setSelect(bool checked)
+void MPDU_OutputSwItemWid::setSelect(bool checked)
 {
     ui->checkBox->setChecked(checked);
 }
 
-bool OutputWid::select()
+bool MPDU_OutputSwItemWid::select()
 {
     return ui->checkBox->isChecked();
 }
 
-void OutputWid::setOpen(bool checked)
+void MPDU_OutputSwItemWid::setOpen(bool checked)
 {
     ui->openRadio->setChecked(checked);
 }
 
-void OutputWid::setClose(bool checked)
+void MPDU_OutputSwItemWid::setClose(bool checked)
 {
      ui->closeRadio->setChecked(checked);
 }
 
-int OutputWid::status()
+int MPDU_OutputSwItemWid::status()
 {
     int ret = 0;
     if(ui->openRadio->isChecked())

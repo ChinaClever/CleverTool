@@ -8,6 +8,7 @@
 
 SI_RtuThread::SI_RtuThread(QObject *parent) : QThread(parent)
 {
+    mreg = 0;
     mSerial = NULL;
     mBuf = (uchar *)malloc(RTU_BUF_SIZE);
     mMutex = new QMutex();
@@ -76,7 +77,7 @@ void SI_RtuThread::run()
 
         for(int i=0; i<mList.size(); ++i)
         {
-            QString str = tr("输出位 %1 命令执行").arg(mList.at(i).reg - 338);
+            QString str = tr("输出位 %1 命令执行").arg(mList.at(i).reg - mreg+1);
             bool ret = sentSetCmd(mList.at(i).addr,mList.at(i).reg,mList.at(i).value, 5);
             if(ret) {
                 str += tr("成功!!");

@@ -15,14 +15,14 @@ struct sSetCmd
 class SI_RtuThread : public QThread
 {
     Q_OBJECT
-    explicit SI_RtuThread(QObject *parent = nullptr);
-
 public:
+    explicit SI_RtuThread(QObject *parent = nullptr);
     static SI_RtuThread *bulid(QObject *parent = nullptr);
     ~SI_RtuThread();
 
     void init(SerialPort *serial);
     void setCmd(sSetCmd &cmd) {mList.append(cmd);}
+    int mreg;
 
 protected:    
     bool sentSetCmd(int addr, int reg, ushort value, int msecs);

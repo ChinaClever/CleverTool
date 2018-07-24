@@ -1,22 +1,23 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef MPDU_OUTPUTSWWID_H
+#define MPDU_OUTPUTSWWID_H
 
-#include <QMainWindow>
+#include <QWidget>
+#include "mpdu_outputswitemwid.h"
 #include "serialportwid.h"
 #include "modubs_rtu/si_rtuthread.h"
-#include "outputwid.h"
 
 namespace Ui {
-class MainWindow;
+class MPDU_OutputSwWid;
 }
 
-class MainWindow : public QMainWindow
+class MPDU_OutputSwWid : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    explicit MPDU_OutputSwWid(QWidget *parent = 0);
+    ~MPDU_OutputSwWid();
+
 
 protected:
     void initwid();
@@ -31,12 +32,12 @@ private slots:
 
     void on_closeRadio_clicked(bool checked);
 
+
 private:
-    Ui::MainWindow *ui;
+    Ui::MPDU_OutputSwWid *ui;
     SerialPortWid *mSerialPortWid;
     SI_RtuThread *mRtu;
-
-    OutputWid *mWid[24];
+    MPDU_OutputSwItemWid *mWid[24];
 };
 
-#endif // MAINWINDOW_H
+#endif // MPDU_OUTPUTSWWID_H
