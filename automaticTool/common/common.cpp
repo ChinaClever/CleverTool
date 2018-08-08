@@ -9,8 +9,8 @@
 #include <QWidget>
 #include <QHeaderView>
 #include <time.h>
-#include <sys/time.h>
-#include <unistd.h>
+//#include <sys/time.h>
+//#include <unistd.h>
 
 /**
  * @brief 设置背景颜色
