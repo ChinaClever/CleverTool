@@ -250,10 +250,12 @@ void MainWindow::initData()
     switchFlag = false;
     switchNum = 9 ;
     mCurrentButtonRow = 9;
+    mCurrentClearButtonRow = 9;
     mflag = 3;
     is_gather = true;
     is_once = true;
     is_read = true; //默认已读，才能保证发送
+    is_ele = true;
     mAddr = 1;
     //    mTimer = new QTimer(this);
     //    movie = new QMovie(":/new/prefix1/image/camEffectTarget.gif");
@@ -339,6 +341,7 @@ void MainWindow::readAnswer()
    // qDebug()<<"answer -len:"<<answer.length();
 
     qDebug() << "get:" << answer.toHex();
+   // qDebug() << "mflag"<< mflag << "is_gather"<< is_gather << "is_ele"<< is_ele;
     quint8 data[BUFSIZ];
     QString str;
 
@@ -359,21 +362,21 @@ void MainWindow::readAnswer()
         {
         case 0:
             updateGroupboxOne(data,mflag,answer.length()-1,answer.length());
+            //qDebug()<<"updateGroupboxOne()";
             break;
         case 1:
             updateGroupboxTwo(data,mflag,answer.length()-1,answer.length());
             break;
         case 2:  //当数据为采集信息数据时，需要判断是显示到采集应答还是表格
-            if(is_gather)
+            if(is_ele)
             {
-               // qDebug()<<"is_gather";
+              // qDebug()<<"is_gather";
                 updateGroupboxThree(data,answer.length());
-            }
-            else
-            {
-               // qDebug()<<"is_not_gather";
-                //                 QString str = quintToStr(data, answer.length());
-                //                 ui->lineEdit_11->setText(str);
+
+
+//               qDebug()<<"is_not_gather";
+//                                QString str = quintToStr(data, answer.length());
+//                                ui->lineEdit_11->setText(str);
 
                 returnToPacket(answer);
                 updataTableData();
@@ -536,11 +539,25 @@ void MainWindow::initTablewidgetOfButton()
     for(int i =0;i <ui->tableWidget->rowCount(); i++)
         for(int j = 0;j <ui->tableWidget->columnCount(); j++)
         {
-            if(j != (ui->tableWidget->columnCount() - 1))
+            if(j != (ui->tableWidget->columnCount() - 1)&&j != (ui->tableWidget->columnCount() - 2))
             {
                 QTableWidgetItem *item = new QTableWidgetItem(tr("---"));
                 item->setTextAlignment(Qt::AlignHCenter);
                 ui->tableWidget->setItem(i,j,item);
+            }
+            else if(j == (ui->tableWidget->columnCount() - 2))
+            {
+                //QWidget *buttonWidget=new QWidget(this);
+
+                QPushButton *button_clear=new QPushButton(this); //在倒数第二栏添加按钮
+
+                button_clear->setText(tr("清零"));
+
+                mAddrMap.insert(i,button_clear);
+
+                connect(button_clear,SIGNAL(clicked()),this,SLOT(button_clear_clicked()));
+
+                ui->tableWidget->setCellWidget(i,j,button_clear);
             }
             else
             {
@@ -582,7 +599,36 @@ void MainWindow::initTablewidgetNoButton()
             ui->tableWidget->setItem(i,j,item);
         }
 }
+/**
+ * 点击清零按钮的点击事件
+ */
+void MainWindow::button_clear_clicked()
+{
 
+    QPushButton *button = dynamic_cast<QPushButton *>(QObject::sender()); //找到信号发送者
+    //    int mCurrentButtonRow;
+    //遍历map，通过比较地址，获取当前按钮所在回路
+
+    int count = ui->tableWidget->rowCount(); //同时也等于rowcount
+    QPushButton* address;
+    int i;
+    for(i = 0;i < count; i++)
+    {
+        address = NULL;
+        address = mAddrMap.value(i);
+        if(address == button)
+            {
+                mCurrentClearButtonRow = i; //当前行数
+
+                break;
+            }
+    }
+
+//    qDebug()<<"mCurrentButtonRow:"<<mCurrentButtonRow<<"switchData:"<<switchData;
+    //    setSwitch(mCurrentButtonRow,switchData);
+
+
+}
 /**
  * 点击关闭按钮的点击事件
  */
@@ -786,7 +832,36 @@ void MainWindow::sendGatherCmd()
     sentDataToPacket(addr,flag,buffer,buffer1,0);
     port->sendDataToPort(mCurrentPortName,sendData,21);
 }
+/**
+ * @brief 发送采集电能命令
+ */
+void MainWindow::sendGetEleCmd()
+{
+    is_gather = true;
+    quint8 addr = mAddr;
+    quint8 flag =0xE1;
 
+    memset(sendData,0,sizeof(sendData));
+    int j = 0;
+
+    //填充包头
+    sentData.head[0] = sendData[j++] = 0x7B;
+    sentData.head[1] = sendData[j++] = flag;
+
+    //填充地址，可变，需要传参
+    //    sentData.addr = sendData[j++] = 0x01;
+    sentData.addr = sendData[j++] = addr;
+
+    //长度
+    sentData.length = sendData[j++] = 0x10;
+
+    for(int i = 0 ; i < 11; i ++)
+        sendData[j++] = 0x00;
+    //异或校验码
+    sentData.xornumber = sendData[j++] = getXorNumber(sendData,sizeof(sendData));
+    //    qDebug("校验码为：%x" , sentData.xornumber );
+    port->sendDataToPort(mCurrentPortName,sendData,16);
+}
 /**
  * @brief 发送表格相关的命令
  */
@@ -820,7 +895,7 @@ void MainWindow::sendControlCmd(quint8 *onBuf,quint8 *offBuf)
 }
 
 /**
- * @brief 返回数据打包
+ * @brief 返回数据打包，解析数据包
  * @param array
  */
 void MainWindow::returnToPacket(QByteArray &array)
@@ -831,36 +906,55 @@ void MainWindow::returnToPacket(QByteArray &array)
 
     //执行板返回标志
     returnData.sign = array.at(i++);
+    //qDebug()<<returnData.sign;
+    if(returnData.sign==0XC1)
+    {
+        //执行板地址
+        returnData.addr = array.at(i++);
 
-    //执行板地址
-    returnData.addr = array.at(i++);
+        //长度
+        returnData.len = array.at(i++);
 
-    //长度
-    returnData.len = array.at(i++);
+        //开关状态
+        returnData.onoffState = array.at(i++);
 
-    //开关状态
-    returnData.onoffState = array.at(i++);
+        //八位电流值
+        for(int m = 0; m < 8; m++)
+            for(int n = 0 ; n <2 ; n++)
+                returnData.current[m][n] = array.at(i++);
 
-    //八位电流值
-    for(int m = 0; m < 8; m++)
-        for(int n = 0 ; n <2 ; n++)
-            returnData.current[m][n] = array.at(i++);
+        //电压值
+        for(int m = 0; m < 8; m++){
+            int j = i;
+            for(int n = 0 ; n <2 ; n++)
+                returnData.volate[m][n] = array.at(j++);
+            if(3 == m || 7 == m) i += 2;
+        }
 
-    //电压值
-    for(int m = 0; m < 8; m++){
-        int j = i;
-        for(int n = 0 ; n <2 ; n++)
-            returnData.volate[m][n] = array.at(j++);
-        if(3 == m || 7 == m) i += 2;
+        //功率
+        for(int m = 0; m < 8; m++)
+            for(int n = 0 ; n <2 ; n++)
+                returnData.power[m][n] = array.at(i++);
+
+        //异或校验码
+        returnData.xornumber = array.at(i++);
     }
+    else
+    {
 
-    //功率
-    for(int m = 0; m < 8; m++)
-        for(int n = 0 ; n <2 ; n++)
-            returnData.power[m][n] = array.at(i++);
+        //执行板地址
+        returnData.addr = array.at(i++);
 
-    //异或校验码
-    returnData.xornumber = array.at(i++);
+        //八位电能值
+        for(int m = 0; m < 8; m++)
+            for(int n = 0 ; n <3 ; n++)
+                returnData.ele[m][n] = array.at(i++);
+
+        //长度
+        returnData.len = array.at(i++);
+        //异或校验码
+        returnData.xornumber = array.at(i++);
+    }
 
 }
 
@@ -869,14 +963,15 @@ void MainWindow::returnToPacket(QByteArray &array)
  */
 void MainWindow::updataTableData()
 {
- //   qDebug()<<"刷新表格";
+    //qDebug()<<"刷新表格";
     for(int i = 0 ; i < 8 ;i++ )
     {
        // int j = 0;
-        setOnOffState(i,0);
-        setCurretnt(i,1);
-        setCurretVolate(i,2);
+        setOnOffState(i , 0);
+        setCurretnt(i , 1);
+        setCurretVolate(i , 2);
         setCurretPower(i, 3);
+        setCurretEle(i , 6);
 
         setAll();
     }
@@ -885,7 +980,10 @@ void MainWindow::updataTableData()
     setFirstPower();
     setSecondPower(); */
 }
+/**
+ * @brief 计算电流和功率的总和
 
+ */
 void MainWindow::setAll()
 {
     QTableWidgetItem *itemA = ui->tableWidget->item(8, 1);
@@ -960,7 +1058,11 @@ void MainWindow::setCurretnt(int row, int column)
 
     item->setText(str+ "A");
 }
-
+/**
+ * @brief 设置电压值
+ * @param row
+ * @param column
+ */
 void MainWindow::setCurretVolate(int row, int column)
 {
     QTableWidgetItem *item = ui->tableWidget->item(row,column);
@@ -972,6 +1074,23 @@ void MainWindow::setCurretVolate(int row, int column)
     else  item->setForeground(QBrush(QColor(255, 0, 0)));
     item->setText(str + "V");
 }
+/**
+ * @brief 设置电能值
+ * @param row
+ * @param column
+ */
+void MainWindow::setCurretEle(int row, int column)
+{
+    QTableWidgetItem *item = ui->tableWidget->item(row,column);
+    int data = (returnData.ele[row][0]<<8 | returnData.ele[row][1]);
+    data = (data<<8 | returnData.ele[row][2]);
+    //qDebug()<<data;
+    QString str = QString("%1.%2").arg(data/10).arg(data%10);
+
+
+    item->setText(str + "KWh");
+}
+
 
 void MainWindow::setCurretPower(int row, int column)
 {
@@ -1062,9 +1181,58 @@ void MainWindow::setSwitch(int row,int onOroff)
         memset(offbuf,0,sizeof(offbuf));
         offbuf[row] = 1;
     }
-
+     //qDebug()<<row;
     if(is_read)
         sendControlCmd(onbuf,offbuf);
+}
+/**
+ * @brief 清零
+ * @param row为当前所按按钮所在行数
+ */
+void MainWindow::setClearEle(int row)
+{
+
+    if(is_read)
+    {
+
+        quint8 flag = 0xD1;
+
+        //    quint8 sendData[32];
+        memset(sendData,0,sizeof(sendData));
+        int j = 0;
+
+        //填充包头
+        sentData.head[0] = sendData[j++] = 0x7B;
+        sentData.head[1] = sendData[j++] = 0xC1;
+
+        sentData.addr = sendData[j++] = mAddr;
+
+        sentData.length = sendData[j++] = 0x15;//长度
+
+        sentData.flag = sendData[j++] = flag;
+
+        for(int m = 0 ; m < 3 ; m ++ , j++)
+        {
+            //qDebug()<<"AAA"<<row;
+            if( m == sentData.addr-1)
+            {
+                if(row <= 7)
+                    sendData[j] = (row==0?0x80:0x80>>row);
+                else
+                    sendData[j] = 0xFF;
+            }
+            else
+            sendData[j] = 0x00;
+        }
+
+        for(int i = 0 ; i < 12 ; i ++)
+            sendData[j++] = 0x00 ;
+
+        //异或校验码
+        sentData.xornumber = sendData[j++] = getXorNumber(sendData,sizeof(sendData));
+
+        port->sendDataToPort(mCurrentPortName,sendData,21);
+    }
 }
 
 //void MainWindow::updateResponse(QString &str)
@@ -1157,6 +1325,7 @@ void MainWindow::delayTimeDone()
     {
         is_read = false;
         sendTableCmd();  //表格信息采集
+        //qDebug()<<"sendTableCmd()";
     }
 }
 
@@ -1177,7 +1346,7 @@ void MainWindow::collectLoopDone()
         sendControlCmd(onbuffer,offbuffer);
         switchFlag = false;
     }
-    else if(mCurrentButtonRow == 9) //当前行为0 - 7，为9表示初始并无按钮点击
+    else if(mCurrentButtonRow == 9 && mCurrentClearButtonRow == 9) //当前行为0 - 7，为9表示初始并无按钮点击
     {
         if(is_once)
         {
@@ -1185,20 +1354,29 @@ void MainWindow::collectLoopDone()
             //            sendGatherCmd(); //发送采集数据命令
             //            is_once = false;
 
-            if(is_read)
+            if(is_read&&is_ele)
             {
                 sendGatherCmd(); //发送采集数据命令
+                //qDebug()<<"sendGatherCmd()";
                 is_once = false;
+                is_ele = false;
+            }
+            else if(is_read&&!is_ele)
+            {
+                sendGetEleCmd(); //发送采集数据命令
+                //qDebug()<<"sendGetEleCmd()";
+                is_once = false;
+                is_ele = true;
             }
         }
         else
         {
-         //   qDebug()<<"表格指令---------------------------------";
+//         //   qDebug()<<"表格指令---------------------------------";
             delayTimeDone();
             is_once = true;
         }
     }
-    else
+    else if(mCurrentButtonRow != 9 && mCurrentClearButtonRow == 9)//点击开启和关闭响应
     {
       //  qDebug()<<"按钮指令---------------------------------";
         if(isSet){
@@ -1208,6 +1386,11 @@ void MainWindow::collectLoopDone()
 
         setSwitch(mCurrentButtonRow,switchData);
         mCurrentButtonRow = 9;
+    }
+    else if(mCurrentButtonRow == 9 && mCurrentClearButtonRow != 9)//点击清零响应
+    {
+        setClearEle(mCurrentClearButtonRow);
+        mCurrentClearButtonRow = 9;
     }
 
     //    QTimer::singleShot(2*1000 , this , SLOT(delayTimeDone()));  //2s延时后再发送表格信息命令
@@ -1283,7 +1466,7 @@ void MainWindow::on_pushButton_7_clicked()
 void MainWindow::clearTalbeText()
 {
     for(int i = 0; i < ui->tableWidget->rowCount() ; i++)
-        for(int j = 0 ; j < (ui->tableWidget->columnCount() - 1) ; j++)
+        for(int j = 0 ; j < (ui->tableWidget->columnCount() - 2) ; j++)
         {
             QTableWidgetItem *item = ui->tableWidget->item(i,j);
             item->setText(tr("---"));
@@ -1346,6 +1529,7 @@ void MainWindow::on_comboBox_3_currentIndexChanged(int) //模式切换
     if(index == 0){ //一键
         for(int i = 0; i < 16; i++)
         {
+            //qDebug()<<"aaaaaaaaaaaa";
             buf[i] = modelCmd1[mAddr-1][i];
         }
     }else{ //继电器轮流开关模式
@@ -1438,7 +1622,7 @@ void MainWindow::ontimeout()
 
 void MainWindow::on_pushButton12_clicked() //全开
 {
-    sleep(3000);
+    sleep(5000);
     if(isSet && !pass) return;
     switchFlag = true;
     if(isSet){
