@@ -90,7 +90,7 @@ typedef struct returntableData{
    quint8 current[14][2];   //电流，第一位到第十四位，每位两个字节
 
    quint8 powerfactor[14];//功率因素，第一个和第十四个
-   int power[14];   //功率，第一位到第十四位
+   double power[14];   //功率，第一位到第十四位
    quint8 ele[14][3];     //电能，第一位到第十四位，每位三个字节
    quint8 version;        //版本号
    quint8 len;         //长度

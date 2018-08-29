@@ -199,18 +199,18 @@ void MainWindow::on_clearBtn_clicked()
                             .arg(QString(QByteArray((char*)sentDat, sizeof(sentDat)).toHex())));
             }
 
-         /*   sleep(500);
+            sleep(500);
             uchar recvDat[20];
             int ret = 0;
             memset(recvDat,0,sizeof(recvDat));
             for(int i = 0; i < 8; i++){
                 sleep(500);
-                SerialPort *serialPort = mSerialPortPlateWid->getSerialPort();
-                ret = serialPort->read(recvDat, 2);
+                ret = mRtuThread->mSerialPortPlate->read(recvDat, 2);
+                if(ret > 3) break;
             }
             qDebug() << "get3:" << QByteArray((char*)recvDat, ret).toHex();
-          /*  if(ret > 3) onDebugEidt(tr("[地址%1_电能清零]_完成").arg(mRtuThread->mAddr));
-            else onDebugEidt(tr("[地址%1_电能清零]_无回复").arg(mRtuThread->mAddr)); */
+            if(ret > 3) onDebugEidt(tr("[地址%1_电能清零]_完成").arg(mRtuThread->mAddr));
+            else onDebugEidt(tr("[地址%1_电能清零]_无回复").arg(mRtuThread->mAddr));
             onDebugEidt(tr(" "));
         }
     } else {

@@ -1004,6 +1004,9 @@
        <height>351</height>
       </rect>
      </property>
+     <property name="lineWidth">
+      <number>1</number>
+     </property>
      <property name="columnCount">
       <number>9</number>
      </property>

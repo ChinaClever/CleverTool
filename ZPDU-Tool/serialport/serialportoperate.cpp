@@ -90,7 +90,8 @@ int SerialportOperate::sendDataToPort(QString &portName,quint8 *cmd, int len)
 
     qDebug() << "Array:" << array.toHex();
 
-    int writeBytes;
+
+    int writeBytes = 0;
     int ret = serachPort(portName);
     if(mList.at(ret)->isOpen())
     {

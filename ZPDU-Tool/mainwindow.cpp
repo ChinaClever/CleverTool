@@ -98,14 +98,15 @@ bool MainWindow::isDirExist(QString fullPath ,QSettings *ini)
     }
     else
     {
-
       ini->setValue("/Value/Amin",0);
       ini->setValue("/Value/Amax",32);
       ini->setValue("/Value/Vmin",0);
       ini->setValue("/Value/Vmax",270);
       ini->setValue("/Value/Wmin",0);
       ini->setValue("/Value/Wmax",8.64);
+      return true;
     }
+    return false;
 }
 /**
  * @brief combox初始化串口信息
@@ -182,6 +183,10 @@ void MainWindow::initTablewidgetOfButton()
                 QPushButton *button_clear=new QPushButton(this); //在倒数第二栏添加按钮
 
                 button_clear->setText(tr("清零"));
+                button_clear->setStyleSheet(
+
+                            "QPushButton:hover{background-color: qconicalgradient(cx:0.5, cy:0.522909, angle:179.9, stop:0.494318 rgba(181, 225, 250, 255), stop:0.5 rgba(222, 242, 251, 255)); border-radius:5px; border: 1px solid #3C80B1;}"
+                            "QPushButton:focus{background-color: qconicalgradient(cx:0.5, cy:0.522909, angle:179.9, stop:0.494318 rgba(134, 198, 233, 255), stop:0.5 rgba(206, 234, 248, 255));border-radius:5px; border: 1px solid #5F92B2;}");
 
                 mAddrMap.insert(i,button_clear);
 
@@ -197,9 +202,17 @@ void MainWindow::initTablewidgetOfButton()
                 QPushButton *button_on=new QPushButton(this); //在最后一栏添加按钮
                 //button_on->setFixedHeight(30);
                 button_on->setText(tr("开启"));
+                button_on->setStyleSheet(
+
+                            "QPushButton:hover{background-color: qconicalgradient(cx:0.5, cy:0.522909, angle:179.9, stop:0.494318 rgba(181, 225, 250, 255), stop:0.5 rgba(222, 242, 251, 255)); border-radius:5px; border: 1px solid #3C80B1;}"
+                            "QPushButton:focus{background-color: qconicalgradient(cx:0.5, cy:0.522909, angle:179.9, stop:0.494318 rgba(134, 198, 233, 255), stop:0.5 rgba(206, 234, 248, 255));border-radius:5px; border: 1px solid #5F92B2;}");
 
                 QPushButton *button_off=new QPushButton(this);
                 button_off->setText(tr("关闭"));
+                button_off->setStyleSheet(
+
+                            "QPushButton:hover{background-color: qconicalgradient(cx:0.5, cy:0.522909, angle:179.9, stop:0.494318 rgba(181, 225, 250, 255), stop:0.5 rgba(222, 242, 251, 255)); border-radius:5px; border: 1px solid #3C80B1;}"
+                            "QPushButton:focus{background-color: qconicalgradient(cx:0.5, cy:0.522909, angle:179.9, stop:0.494318 rgba(134, 198, 233, 255), stop:0.5 rgba(206, 234, 248, 255));border-radius:5px; border: 1px solid #5F92B2;}");
 
                 buttonLayout->addWidget(button_on);
                 buttonLayout->addWidget(button_off);
@@ -561,11 +574,14 @@ void MainWindow::readAnswer()
         case 2:  //当数据为采集信息数据时，需要判断是显示到采集应答还是表格
             if(is_gather)
             {
-               // qDebug()<<"is_gather";
-                updateGroupboxThree(data,answer.length());
+                if(data[0] == 0x7B && answer.length() == 105)//只对开头是7B和长度是105进行解析
+               {
+                    qDebug()<<answer.length();
+                    updateGroupboxThree(data,answer.length());
 
-                returnToPacket(answer);
-                updataTableData();
+                    returnToPacket(answer);
+                    updataTableData();
+                }
             }
 
             break;
@@ -590,6 +606,8 @@ void MainWindow::readAnswer()
 void MainWindow::updataTableData()
 {
     qDebug()<<"刷新表格";
+    if(returnData.opnum > 14)//大于14开关位不符合
+        return ;
     for(int i = 0 ; i < returnData.opnum ;i++ )
     {
        // int j = 0;
@@ -609,18 +627,18 @@ void MainWindow::setAll()////////
     QTableWidgetItem *itemA = ui->tableWidget->item(14, 1);
     QTableWidgetItem *itemW = ui->tableWidget->item(14, 3);
     int dataA = 0;
-    int dataW = 0;
+    double dataW = 0;
     for(int i = 0; i < returnData.opnum; i++){
         int data1 = (returnData.current[i][0]<<8 | returnData.current[i][1])/10;
         dataA += data1;
 
-        int data2 = returnData.power[i];
+        double data2 = returnData.power[i];
         dataW += data2;
 
     }
     QString str = QString("%1.%2").arg(dataA/10).arg(dataA%10);
     itemA->setText(str+ "A");
-    str = QString::number(dataW/(10.0*10*100)/1000.0, 'f', 3);//取一位小数点，并且判断小数点后一位是否大于等于5，则进一，否则舍弃
+    str = QString::number(dataW, 'f', 3);//取一位小数点，并且判断小数点后一位是否大于等于5，则进一，否则舍弃
     itemW->setText(str+ "KW");
 }
 
@@ -679,8 +697,8 @@ void MainWindow::setCurretnt(int row, int column)
 
     QTableWidgetItem *item2 = ui->tableWidget->item(row,column+3); //+++++++++
 
-    if(ui->doubleSpinBoxAmin->text().toDouble() <= str.toDouble() &&
-       ui->doubleSpinBoxAmax->text().toDouble() >= str.toDouble() ) {
+    if(ui->doubleSpinBoxAmin->value()<= str.toDouble() &&
+       ui->doubleSpinBoxAmax->value() >= str.toDouble() ) {
         item->setForeground(QBrush(QColor(0, 0, 0)));
         item2->setForeground(QBrush(QColor(0, 0, 0)));
         }
@@ -712,8 +730,8 @@ void MainWindow::setCurretVolate(int row, int column)
         str = QString("%1.%2").arg(data/10).arg(data%10);
     }
 
-    if(ui->doubleSpinBoxVmin->text().toDouble() <= str.toDouble() &&
-         ui->doubleSpinBoxVmax->text().toDouble() >= str.toDouble() )
+    if(ui->doubleSpinBoxVmin->value() <= str.toDouble() &&
+         ui->doubleSpinBoxVmax->value() >= str.toDouble() )
           item->setForeground(QBrush(QColor(0, 0, 0)));
     else
           item->setForeground(QBrush(QColor(255, 0, 0)));
@@ -732,13 +750,16 @@ void MainWindow::setCurretPower(int row, int column)
     {
         voldata= (returnData.vol[1][0]<<8 | returnData.vol[1][1]);
     }
-    int curdata = (returnData.current[row][0]<<8 | returnData.current[row][1]);
+    int curdata = (returnData.current[row][0]<<8 | returnData.current[row][1])/10;
     int pfdata = returnData.powerfactor[row];
-    returnData.power[row] = voldata * curdata * pfdata;
-    QString str = QString::number(returnData.power[row]/(10.0*10*100)/1000.0, 'f', 3);
+    if(curdata == 0 || pfdata == 0 || voldata == 0 )
+        returnData.power[row] = 0;
+    else
+    returnData.power[row] = (voldata * curdata /(10.0*10*100)/1000.0)* pfdata;
+    QString str = QString::number(returnData.power[row], 'f', 3);
 
-    if(ui->doubleSpinBoxWmin->text().toDouble() <= str.toDouble() &&
-       ui->doubleSpinBoxWmax->text().toDouble() >= str.toDouble() ) {
+    if(ui->doubleSpinBoxWmin->value() <= str.toDouble() &&
+       ui->doubleSpinBoxWmax->value() >= str.toDouble() ) {
         item->setForeground(QBrush(QColor(0, 0, 0)));
     }
     else  {
@@ -795,7 +816,7 @@ void MainWindow::updateGroupboxOne(quint8 *data, int flag, int length ,int len)
 void MainWindow::updateGroupboxThree(quint8 *data, int len)
 {
     QString str = quintToStr(data, len);
-    ui->CollectResponselineEdit->setText(str);
+    ui->CollectResponsetextEdit->setText(str);
 
     if(*(data + len - 1) == getXorNumber(data,len - 1) )
         ui->CollectStatelable->setText(tr("正常"));
@@ -927,6 +948,11 @@ void MainWindow::sendGatherCmd()
 
     sentDataToPacket(addr);
     port->sendDataToPort(mCurrentPortName,sendData,68);
+    if(is_gather)
+    {
+        QString str = quintToStr(sendData, 68);
+        ui->CollectCommandlinetext->setText(str);
+    }
 }
 
 /**
@@ -1081,7 +1107,7 @@ void MainWindow::clearTalbeText()
 
         }
 
-    ui->CollectResponselineEdit->clear();
+    ui->CollectResponsetextEdit->clear();
 
 }
 void MainWindow::on_RecorrectBtn_clicked()

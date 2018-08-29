@@ -1000,7 +1000,7 @@ void MainWindow::setAll()
     }
     QString str = QString("%1.%2").arg(dataA/10).arg(dataA%10);
     itemA->setText(str+ "A");
-    str = QString("%1.%2").arg(dataW/10).arg(dataW%10);
+    str = QString::number(dataW/1000.0,'f',3);
     itemW->setText(str+ "KW");
 }
 
@@ -1096,7 +1096,7 @@ void MainWindow::setCurretPower(int row, int column)
 {
     QTableWidgetItem *item = ui->tableWidget->item(row,column);
     int data = (returnData.power[row][0]<<8 | returnData.power[row][1]);
-    QString str = QString("%1.%2").arg(data/10).arg(data%10);
+    QString str = QString::number(data/1000.0,'f',3);
 
     QTableWidgetItem *item2 = ui->tableWidget->item(row,column+2); //+++++++++
 
@@ -1453,7 +1453,9 @@ void MainWindow::on_pushButton_7_clicked()
 
     port->sendDataToPort(mCurrentPortName,activationCmd,sizeof(activationCmd));
     sleep(200);
-    port->sendDataToPort(mCurrentPortName,recalibrateCmd[ui->comboBox_2->currentIndex()],sizeof(recalibrateCmd[ui->comboBox_2->currentIndex()]));
+    //--------------[发送]----------
+    on_comboBox_3_currentIndexChanged(1);
+    //port->sendDataToPort(mCurrentPortName,recalibrateCmd[ui->comboBox_2->currentIndex()],sizeof(recalibrateCmd[ui->comboBox_2->currentIndex()]));
     ui->lineEdit_4->clear();
     ui->lineEdit_7->clear();
 
@@ -1529,7 +1531,7 @@ void MainWindow::on_comboBox_3_currentIndexChanged(int) //模式切换
     if(index == 0){ //一键
         for(int i = 0; i < 16; i++)
         {
-            //qDebug()<<"aaaaaaaaaaaa";
+            qDebug()<<"aaaaaaaaaaaa";
             buf[i] = modelCmd1[mAddr-1][i];
         }
     }else{ //继电器轮流开关模式

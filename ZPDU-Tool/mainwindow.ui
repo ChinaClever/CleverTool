@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1200</width>
-    <height>919</height>
+    <width>1407</width>
+    <height>949</height>
    </rect>
   </property>
   <property name="font">
@@ -287,7 +287,7 @@
    <widget class="QLabel" name="titlelable">
     <property name="geometry">
      <rect>
-      <x>460</x>
+      <x>470</x>
       <y>10</y>
       <width>231</width>
       <height>51</height>
@@ -380,10 +380,10 @@
    <widget class="QGroupBox" name="groupBox_3">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>150</y>
-      <width>711</width>
-      <height>171</height>
+      <x>1190</x>
+      <y>10</y>
+      <width>211</width>
+      <height>881</height>
      </rect>
     </property>
     <property name="title">
@@ -425,7 +425,7 @@ p, li { white-space: pre-wrap; }
       <x>40</x>
       <y>330</y>
       <width>1140</width>
-      <height>401</height>
+      <height>571</height>
      </rect>
     </property>
     <property name="title">
@@ -651,7 +651,7 @@ p, li { white-space: pre-wrap; }
        <x>50</x>
        <y>80</y>
        <width>1061</width>
-       <height>351</height>
+       <height>481</height>
       </rect>
      </property>
      <property name="font">
@@ -659,8 +659,11 @@ p, li { white-space: pre-wrap; }
        <pointsize>10</pointsize>
       </font>
      </property>
+     <property name="autoScrollMargin">
+      <number>15</number>
+     </property>
      <property name="rowCount">
-      <number>16</number>
+      <number>15</number>
      </property>
      <property name="columnCount">
       <number>8</number>
@@ -746,7 +749,6 @@ p, li { white-space: pre-wrap; }
        <string>总和</string>
       </property>
      </row>
-     <row/>
      <column>
       <property name="text">
        <string>开关</string>
@@ -915,10 +917,10 @@ p, li { white-space: pre-wrap; }
    <widget class="QGroupBox" name="groupBox_6">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>740</y>
-      <width>941</width>
-      <height>121</height>
+      <x>470</x>
+      <y>142</y>
+      <width>711</width>
+      <height>181</height>
      </rect>
     </property>
     <property name="title">
@@ -937,24 +939,11 @@ p, li { white-space: pre-wrap; }
       <string>采集命令：</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="CollectCommandlineEdit">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>30</y>
-       <width>824</width>
-       <height>30</height>
-      </rect>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_15">
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>70</y>
+       <y>110</y>
        <width>73</width>
        <height>30</height>
       </rect>
@@ -963,76 +952,34 @@ p, li { white-space: pre-wrap; }
       <string>采集应答：</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="CollectResponselineEdit">
+    <widget class="QTextEdit" name="CollectResponsetextEdit">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>110</y>
+       <width>581</width>
+       <height>60</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QTextEdit" name="CollectCommandlinetext">
      <property name="enabled">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="geometry">
       <rect>
        <x>110</x>
-       <y>70</y>
-       <width>824</width>
-       <height>30</height>
+       <y>40</y>
+       <width>581</width>
+       <height>60</height>
       </rect>
      </property>
     </widget>
    </widget>
-   <widget class="QLabel" name="label_16">
-    <property name="geometry">
-     <rect>
-      <x>1000</x>
-      <y>770</y>
-      <width>73</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>电压1：</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_17">
-    <property name="geometry">
-     <rect>
-      <x>1000</x>
-      <y>800</y>
-      <width>73</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>功率1：</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="vollabel">
-    <property name="geometry">
-     <rect>
-      <x>1080</x>
-      <y>770</y>
-      <width>101</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QLabel" name="powlabel">
-    <property name="geometry">
-     <rect>
-      <x>1080</x>
-      <y>800</y>
-      <width>101</width>
-      <height>30</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_18">
     <property name="geometry">
      <rect>
-      <x>720</x>
+      <x>730</x>
       <y>10</y>
       <width>231</width>
       <height>51</height>
@@ -1056,7 +1003,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1200</width>
+     <width>1407</width>
      <height>22</height>
     </rect>
    </property>
