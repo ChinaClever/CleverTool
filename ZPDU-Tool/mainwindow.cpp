@@ -156,11 +156,18 @@ void MainWindow::initData()
 void MainWindow::initTablewidget()
 {
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
+    ui->tableWidget->horizontalHeader()->setStretchLastSection(true);//设置表格是否充满，即行位不留空
     ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);  //设置不可编辑
+//    ui->tableWidget->setStyleSheet("QTableWidget::item:alternate:!selected{background-color: rgb(255, 255, 245);}"
+//                                   "QTableWidget::item:!alternate:!selected{ background-color: rgb(245, 245, 245);}");
+
 
     initTablewidgetOfButton();
-
+    ui->tableWidget->setAlternatingRowColors(true);
+    ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tableWidget->setFrameShape(QFrame::NoFrame);                  //设置无边框
+    ui->tableWidget->setMouseTracking(true);                          //设置鼠标捕捉，不设置，如鼠标进入等动作检测不到
+    ui->tableWidget->setStyleSheet("QTableWidget{ background-color: rgb(202, 232, 234); alternate-background-color: rgb(245, 245, 245); }");
 }
 /**
  * @brief 初始化一个带有按钮的表格
@@ -201,13 +208,20 @@ void MainWindow::initTablewidgetOfButton()
 
                 QPushButton *button_on=new QPushButton(this); //在最后一栏添加按钮
                 //button_on->setFixedHeight(30);
-                button_on->setText(tr("开启"));
+
+                if(i == ui->tableWidget->rowCount()-1)
+                    button_on->setText(tr("全开"));
+                else
+                    button_on->setText(tr("开启"));
                 button_on->setStyleSheet(
 
                             "QPushButton:hover{background-color: qconicalgradient(cx:0.5, cy:0.522909, angle:179.9, stop:0.494318 rgba(181, 225, 250, 255), stop:0.5 rgba(222, 242, 251, 255)); border-radius:5px; border: 1px solid #3C80B1;}"
                             "QPushButton:focus{background-color: qconicalgradient(cx:0.5, cy:0.522909, angle:179.9, stop:0.494318 rgba(134, 198, 233, 255), stop:0.5 rgba(206, 234, 248, 255));border-radius:5px; border: 1px solid #5F92B2;}");
 
                 QPushButton *button_off=new QPushButton(this);
+                if(i == ui->tableWidget->rowCount()-1)
+                    button_off->setText(tr("全关"));
+                else
                 button_off->setText(tr("关闭"));
                 button_off->setStyleSheet(
 
