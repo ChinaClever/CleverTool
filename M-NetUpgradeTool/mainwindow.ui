@@ -14,7 +14,7 @@
    <string>MPDU批量升级工具</string>
   </property>
   <property name="whatsThis">
-   <string/>
+   <string>我们不一样</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QGroupBox" name="ipWid">
