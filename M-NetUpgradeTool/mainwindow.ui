@@ -11,58 +11,80 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>MPDU批量升级工具</string>
+  </property>
+  <property name="whatsThis">
+   <string/>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="ipWid" native="true">
+   <widget class="QGroupBox" name="ipWid">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>20</y>
-      <width>561</width>
-      <height>251</height>
+      <x>50</x>
+      <y>40</y>
+      <width>541</width>
+      <height>281</height>
      </rect>
+    </property>
+    <property name="title">
+     <string>IP生成区</string>
     </property>
    </widget>
-   <widget class="QWidget" name="tftpWid" native="true">
+   <widget class="QGroupBox" name="tftpWid">
     <property name="geometry">
      <rect>
-      <x>620</x>
-      <y>10</y>
-      <width>571</width>
-      <height>251</height>
+      <x>650</x>
+      <y>50</y>
+      <width>541</width>
+      <height>281</height>
      </rect>
+    </property>
+    <property name="title">
+     <string>升级操作区</string>
     </property>
    </widget>
-   <widget class="QWidget" name="ipsTabWid" native="true">
+   <widget class="QGroupBox" name="group">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>310</y>
-      <width>300</width>
-      <height>331</height>
+      <x>50</x>
+      <y>350</y>
+      <width>1131</width>
+      <height>281</height>
      </rect>
     </property>
-   </widget>
-   <widget class="QWidget" name="oksTabWid" native="true">
-    <property name="geometry">
-     <rect>
-      <x>470</x>
-      <y>320</y>
-      <width>300</width>
-      <height>331</height>
-     </rect>
+    <property name="title">
+     <string>列表显示区</string>
     </property>
-   </widget>
-   <widget class="QWidget" name="errsTabWid" native="true">
-    <property name="geometry">
-     <rect>
-      <x>880</x>
-      <y>300</y>
-      <width>300</width>
-      <height>331</height>
-     </rect>
-    </property>
+    <widget class="QWidget" name="oksTabWid" native="true">
+     <property name="geometry">
+      <rect>
+       <x>360</x>
+       <y>40</y>
+       <width>300</width>
+       <height>331</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QWidget" name="ipsTabWid" native="true">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>300</width>
+       <height>331</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QWidget" name="errsTabWid" native="true">
+     <property name="geometry">
+      <rect>
+       <x>780</x>
+       <y>30</y>
+       <width>300</width>
+       <height>331</height>
+      </rect>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">

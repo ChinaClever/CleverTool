@@ -23,7 +23,6 @@ private slots:
     void timeoutDone();
     void on_openBtn_clicked();
     void on_updateBtn_clicked();
-
     void on_exportBtn_clicked();
 
 private:

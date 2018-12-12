@@ -65,7 +65,7 @@ bool IpsWid::readFile(QString &fn, QStringList &list)
         while (!file.atEnd())
         {
             i++;
-            QByteArray array = file.readLine();
+            QString array = QString(file.readLine()).trimmed().remove("\r\n");
             bool ret = cm_isIPaddress(array);
             if(ret) {
                 list  << array;

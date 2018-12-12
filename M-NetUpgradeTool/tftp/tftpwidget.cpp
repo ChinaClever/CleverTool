@@ -54,22 +54,20 @@ void TftpWidget::on_openBtn_clicked()
 
 void TftpWidget::timeoutDone(void)
 {
-    if(mData->isRun)
-    {
-        QString str = mData->status;
-        if(str.isEmpty()) str = tr("请开始");
-        ui->stateLab->setText(str);
+    QString str = mData->status;
+    if(str.isEmpty()) str = tr("请开始");
+    ui->stateLab->setText(str);
 
-        bool en = mData->isRun;
-        if(mData->ips.isEmpty()) en = true;
-        ui->openBtn->setDisabled(en);
-        ui->updateBtn->setDisabled(en);
+    bool en = mData->isRun;
+    if(mData->ips.isEmpty()) en = true;
+    ui->openBtn->setDisabled(en);
+    ui->updateBtn->setDisabled(en);
+    ui->exportBtn->setDisabled(en);
 
-        int x = 0;
-        int count = mData->ips.size();
-        if(count) x = ((mData->progress * 1.0) / count) *100;
-        ui->progressBar->setValue(x);
-    }
+    int x = 0;
+    int count = mData->ips.size();
+    if(count) x = ((mData->progress * 1.0) / count) *100;
+    ui->progressBar->setValue(x);
 }
 
 
