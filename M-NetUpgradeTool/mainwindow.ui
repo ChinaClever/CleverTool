@@ -20,9 +20,9 @@
    <widget class="QGroupBox" name="ipWid">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>40</y>
-      <width>541</width>
+      <x>690</x>
+      <y>10</y>
+      <width>511</width>
       <height>281</height>
      </rect>
     </property>
@@ -33,8 +33,8 @@
    <widget class="QGroupBox" name="tftpWid">
     <property name="geometry">
      <rect>
-      <x>650</x>
-      <y>50</y>
+      <x>670</x>
+      <y>310</y>
       <width>541</width>
       <height>281</height>
      </rect>
@@ -46,10 +46,10 @@
    <widget class="QGroupBox" name="group">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>350</y>
-      <width>1131</width>
-      <height>281</height>
+      <x>20</x>
+      <y>10</y>
+      <width>651</width>
+      <height>521</height>
      </rect>
     </property>
     <property name="title">
@@ -58,10 +58,10 @@
     <widget class="QWidget" name="oksTabWid" native="true">
      <property name="geometry">
       <rect>
-       <x>360</x>
-       <y>40</y>
-       <width>300</width>
-       <height>331</height>
+       <x>220</x>
+       <y>20</y>
+       <width>200</width>
+       <height>471</height>
       </rect>
      </property>
     </widget>
@@ -70,18 +70,18 @@
       <rect>
        <x>10</x>
        <y>30</y>
-       <width>300</width>
-       <height>331</height>
+       <width>200</width>
+       <height>481</height>
       </rect>
      </property>
     </widget>
     <widget class="QWidget" name="errsTabWid" native="true">
      <property name="geometry">
       <rect>
-       <x>780</x>
-       <y>30</y>
-       <width>300</width>
-       <height>331</height>
+       <x>440</x>
+       <y>20</y>
+       <width>200</width>
+       <height>461</height>
       </rect>
      </property>
     </widget>
