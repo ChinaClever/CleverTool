@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QFile>
+#include <QSettings>
 #include <QTextStream>
 #include "common/inofmanaging.h"
 #include "seriorport/myseriorport.h"
@@ -42,6 +43,12 @@ private slots:
 
     void on_baudBox_currentIndexChanged(int index);
 
+    void on_radioButton_clicked();
+
+    void on_SetChannelBtn_clicked();
+
+    void on_SetBaudBtn_clicked();
+
 private:
     void initPortCombox(QStringList &portList);
     int getIndex(QStringList &list ,QString &str);
@@ -52,6 +59,10 @@ private:
     bool responseSendFile(int num);
     void sendFile();
     int getPacketNum(int bytes);
+    void SetChannelSendarray(QString str);
+    bool SetChannelRecvarray(QString str);
+    void SetChannelStatus(bool channelOrbaud, bool flag , int steps);
+    bool isDirExist(QString fullPath ,QSettings *ini);
 
 private:
     Ui::MainWindow *ui;
@@ -66,6 +77,8 @@ private:
 
     //后加波特率
     int mCbaud;
+    bool mIsOpenSerial;
+    QSettings* ini;
 };
 
 #endif // MAINWINDOW_H

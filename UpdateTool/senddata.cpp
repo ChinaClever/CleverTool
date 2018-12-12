@@ -6,12 +6,15 @@
 SendData::SendData(MySeriorport *Port)
 {
     myPort = Port;
+    mWifiSiBusbarFlag = false;
 }
-SendData::init(QString fileName, QString currectPort, int addr)
+void SendData::init(QString fileName, QString currectPort, int addr , bool flag)
 {
     mfileName = fileName;
     mCurrentPort = currectPort;
     mAddr = addr;
+    mWifiSiBusbarFlag = flag;
+    mLastPacketNum = 0;
 }
 
 void SendData::run()
@@ -54,6 +57,7 @@ void SendData::run()
         recvsuccessful = false; //数据包接收成功
         if(ret >= packetNum){  //最后一包
           //  int len = allArray.size() % TEXT_MAX_LEN; //取余
+            mLastPacketNum = ret;
             QByteArray da;
             da = allArray;
             //da= str.toLatin1();
@@ -76,6 +80,8 @@ void SendData::run()
             text_send_packet(addr ,data,array);  //组装数据
         }
 
+//        QByteArray xxx;
+//        send_to_packet(0,xxx);
         QString progress = QString::number(ret) + "/" + QString::number(packetNum);
         emit sendProgress(progress);
         //QString info = QString("packet %1 size is %2").arg(ret).arg(array.size());
@@ -84,11 +90,44 @@ void SendData::run()
         int buad;
 
         int pass = 0;
-        do {
-             pass++;
-            if(!mCurrentPort.isEmpty() && myPort->portIsOpen(mCurrentPort, buad))
-                myPort->sendData(array,mCurrentPort);
-            qDebug() << "[Set正确数据:]_" <<array.toHex();
+        do{
+            pass++;
+
+            if (mWifiSiBusbarFlag)//小于200
+            {
+                int k = 0,len = array.length();
+                int endpos = len / TEXT_LEN ;
+                endpos += len / TEXT_LEN? 1: 0;
+                QByteArray temp = array;
+                while(k < endpos)
+                {
+                    QByteArray arr;
+                    if(len-k*TEXT_LEN > TEXT_LEN)
+                    {
+                        for(int i=0; i<TEXT_LEN; ++i)
+                            arr.append(temp.at(i));
+                        temp.remove(0, TEXT_LEN);
+                    }
+                    else
+                    {
+                        arr = temp;
+                    }
+                    if(!mCurrentPort.isEmpty() && myPort->portIsOpen(mCurrentPort, buad))
+                        myPort->sendData(arr,mCurrentPort);
+                    qDebug() << "[Set正确数据:]_" <<arr.toHex();
+                    k++;
+                    msleep(500);
+                }
+
+            }
+            else//1024
+            {
+                if(!mCurrentPort.isEmpty() && myPort->portIsOpen(mCurrentPort, buad))
+                    myPort->sendData(array,mCurrentPort);
+
+                qDebug() << "[Set正确数据:]_" <<array.toHex();
+            }
+
 
             int tick = 0;//用于延时
 
@@ -159,6 +198,21 @@ bool SendData::responseSendFile(int num)
             return true;
         }
         else {
+            QString responseStr = QString("successful");
+            QString responseStr2 = QString("successfu");
+            if(num > 42) {
+                QStringList list = str.split(" ");
+                str = list.at(list.size()-1);
+            }
+            if(str.compare(responseStr) == 0 || str.compare(responseStr2) == 0){
+                 qDebug() << "[Get正确数据:]_" << str;
+                return true;
+            }
+            if(mLastPacketNum == num&&(str.contains(responseStr)|| str.contains(responseStr2)))
+            {
+                    qDebug() << "[Get正确数据:]_" << str;
+                   return true;
+             }
             if(!str.isEmpty()) qDebug() << "[Get错误数据:]_" << str << QString("[参考数据：%1]").arg(responseStr);
             else qDebug() << "[Get数据失败:]_" << "空";
         }

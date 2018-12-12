@@ -94,7 +94,7 @@ protected:
     void setCurretPower(int row,int column);
     void setCurretEle(int row, int column);
 
-    void setSwitch(int row, int onOroff);
+    void setSwitch(int row, int onOroff , bool flag);
     void setClearEle(int row);
 
     QString quintToStr(quint8 *buf, int len);

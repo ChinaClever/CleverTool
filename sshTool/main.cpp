@@ -1,7 +1,11 @@
 ﻿#include "mainwindow.h"
 #include <QApplication>
 #include <QMutex>
+#include<QFile>
+#include<QTextStream>
 
+static bool flag = true;
+static QString filename("");
 void outputMessage(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     static QMutex mutex;
@@ -27,11 +31,17 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
     }
 
     QString context_info = QString("File:(%1) Line:(%2)").arg(QString(context.file)).arg(context.line);
-    QString current_date_time = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss ddd");
+    QString current_date_time = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
     QString current_date = QString("(%1)").arg(current_date_time);
     QString message = QString("%1 %2 %3").arg(text).arg(msg).arg(current_date);//..arg(context_info);
 
-    QFile file("log.txt");
+    if(flag)
+    {
+        current_date_time.replace(":","-");
+        filename = "log"+current_date_time+".txt";
+        flag = false;
+    }
+    QFile file(filename);
     file.open(QIODevice::WriteOnly | QIODevice::Append);
     QTextStream text_stream(&file);
 
@@ -42,11 +52,9 @@ void outputMessage(QtMsgType type, const QMessageLogContext &context, const QStr
 
     mutex.unlock();
 }
-
 int main(int argc, char *argv[])
 {
     qInstallMessageHandler(outputMessage);//屏蔽所有打印信息
-
     QApplication a(argc, argv);
     MainWindow w;
     w.show();

@@ -30,14 +30,14 @@ public:
     bool checkPortState(QString &portName);       //检测
     void checkAllState();
     bool checkIsOpen(QString &portName);
-
+    QByteArray quintToByte(quint8 *cmd,int len);
 protected:
 
 //    void copyList();
     void initList();
     void initMlist();
     void initCompareList();
-    QByteArray quintToByte(quint8 *cmd,int len);
+    //QByteArray quintToByte(quint8 *cmd,int len);
 
 private:
     QSerialPort *mSerialport;

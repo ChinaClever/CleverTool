@@ -2,7 +2,8 @@
 #include "ui_mainwindow.h"
 
 #include <windows.h>
-
+#include <QDebug>
+#include<QFile>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -25,6 +26,17 @@ MainWindow::MainWindow(QWidget *parent) :
     //--- 没必要的功能
     ui->checkBox->hide();
     mCbaud = QSerialPort::Baud9600;
+
+    mIsOpenSerial = false;
+
+    ui->label_8->hide();
+    ui->spinBox->hide();
+    ui->SetChannelBtn->hide();
+    ui->Statuslabel->hide();
+
+    ui->label_9->hide();
+    ui->SetBaudBtn->hide();
+    ui->StatusBaudlabel->hide();
 
 }
 
@@ -77,6 +89,40 @@ void MainWindow::initPortCombox(QStringList &portList)
         ui->pushButton_port->setText(tr(""));
     }
     //刷新串口信息，将会触发combox的index变化，将在对应槽函数中刷新buttontext；
+
+    QString iniFile = QCoreApplication::applicationDirPath() + "/config.ini";
+    //qDebug()<<iniFile;
+    ini = new QSettings(iniFile, QSettings::IniFormat);
+   if(isDirExist(iniFile ,ini))
+    {
+        ini->beginGroup("File");
+        mUpdateFile = ini->value("FilePath").toString();
+        ini->endGroup();
+
+        ui->nameEdit->setText(mUpdateFile);
+    }
+}
+
+/**
+ * @brief 判断ini文件是否存在，不存在则创建
+ * @param [in] fullPath 文件路径
+ * @param [in&out] ini  文件设置
+ * @return 存在或者创建成功返回true ， 创建失败返回false
+ */
+bool MainWindow::isDirExist(QString fullPath ,QSettings *ini)
+{
+    QFile isFile(fullPath);
+    bool ok = isFile.exists();
+    if( ok )
+    {
+      return true;
+    }
+    else
+    {
+      ini->setValue("/File/FilePath","");
+      return true;
+    }
+    return false;
 }
 
 /**
@@ -155,9 +201,12 @@ void MainWindow::on_pushButton_port_clicked()
     QString portName = ui->comboBox_port->currentText();
     if(str == "打开串口")
     {
-        myPort->openPort(portName, mCbaud);
+       mIsOpenSerial =  myPort->openPort(portName, mCbaud);
     }else if(str == "关闭串口")
+    {
         myPort->closePort(portName);
+        mIsOpenSerial = false;
+    }
     else
         qDebug() << "当前串口不存在！";
 
@@ -179,6 +228,13 @@ void MainWindow::on_selectfileBtn_clicked()
     QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                     "bin/",
                                                     tr("Images (*.bin)"));
+
+    QString iniFile = QCoreApplication::applicationDirPath() + "/config.ini";
+
+   if(isDirExist(iniFile ,ini))
+    {
+        ini->setValue("/File/FilePath",filename);
+    }
     ui->nameEdit->setText(filename);
     mUpdateFile = filename;
 }
@@ -188,6 +244,9 @@ void MainWindow::on_selectfileBtn_clicked()
  */
 void MainWindow::on_startBtn_clicked()
 {
+    ui->Statuslabel->hide();
+    if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("请确认是否有打开串口"),tr("确定"));return;}
+    if(ui->nameEdit->text().isEmpty()){QMessageBox::warning(this,tr("waring"),tr("请选择升级文件"),tr("确定"));return;}
     this->setEnabled(false);
     if(!ui->checkBox->isChecked()){ //从机没有进入升级模式
         int ret = 0 ;
@@ -202,11 +261,16 @@ void MainWindow::on_startBtn_clicked()
         do {  //升级回应
             if(ret == 3 || ret == 6) sendUpdateCmd(); //再次发送
             isPass = responseUpdate();
-            if(isPass)  break;  //收到回复 跳出循环
+            if(isPass)
+             {
+                if( ui->radioButton->isChecked())
+                    sleep(1000);
+                    break;  //收到回复 跳出循环
+            }
             else qDebug() << "NG>" << ret;
             sleep(1*1000);
             ret++;
-        } while (ret < 10);  //收到应答，立即向下执行，否则等待5s再向下执行 */
+        } while (ret < 5);  //收到应答，立即向下执行，否则等待5s再向下执行 */
 
         if(!isPass) {
             QMessageBox::warning(this,tr("waring"),tr("请确定从机是否启动"),tr("确定"));
@@ -217,7 +281,7 @@ void MainWindow::on_startBtn_clicked()
 
     if(!mUpdateFile.isEmpty() && !ui->addrEdit->text().isEmpty())  //触发线程 发送文件
     {
-        sendData->init(mUpdateFile, mCurrentPort,ui->addrEdit->text().toInt());
+        sendData->init(mUpdateFile, mCurrentPort,ui->addrEdit->text().toInt() , ui->radioButton->isChecked());
         sendData->start();  //不能点第二下  待优化
 
     }
@@ -320,6 +384,11 @@ void MainWindow::sendFile()
         QMessageBox::warning(this,tr("warning"),tr("文件打开失败"),tr("确定"));
         return;
     }
+    if(ui->addrEdit->text().isEmpty()) //升级文件是否打开
+    {
+        QMessageBox::warning(this,tr("warning"),tr("没有填写地址"),tr("确定"));
+        return;
+    }
 
 
 
@@ -330,7 +399,7 @@ void MainWindow::sendFile()
     while (!in.atEnd())
     {
         QByteArray array;
-        uchar addr;
+        uchar addr = 0;
         ret++;
         ret = packetNum;
         if(ret == packetNum){  //最后一包
@@ -427,22 +496,36 @@ bool MainWindow::responseSendFile(int num)
     {
         QByteArray array = myPort->readData(mCurrentPort);
         qDebug() << "getData:" << array.toHex();
+
         QString str = QString(array);
+
+
         if(str == responseStr)
             return true;
+        else{
+        QString responseStr = QString("successful");
+        if(num > 42) {
+           if(str.contains(responseStr))return true;
+        }
+        if(str == responseStr)
+            return true;
+        }
     }
     return false;
 }
 
 void MainWindow::on_pushButton_clicked() //批量
 {
+    ui->Statuslabel->hide();
+    if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("请确认是否有打开串口"),tr("确定"));return;}
+    if(ui->nameEdit->text().isEmpty()){QMessageBox::warning(this,tr("waring"),tr("请选择升级文件"),tr("确定"));return;}
     this->setEnabled(false);
 
     //  if(ui->lEditMin->text().isDetached())
 
     if(!mUpdateFile.isEmpty() && !ui->lEditMin->text().isEmpty() && !ui->lEditMax->text().isEmpty())  //触发线程 发送文件
     {
-        sendDataAll->init(mUpdateFile, mCurrentPort,ui->lEditMin->text().toInt(), ui->lEditMax->text().toInt());
+        sendDataAll->init(mUpdateFile, mCurrentPort,ui->lEditMin->text().toInt(), ui->lEditMax->text().toInt() , ui->radioButton->isChecked());
         sendDataAll->start();  //不能点第二下  待优化
     }else{
         QMessageBox::warning(this,tr("waring"),tr("上下地址或升级文件有空白"),tr("确定"));
@@ -460,4 +543,312 @@ void MainWindow::on_baudBox_currentIndexChanged(int index) //botelv
     default:
         break;
     }
+}
+
+void MainWindow::on_radioButton_clicked()
+{
+    if(ui->radioButton->isChecked())
+    {
+        ui->label_8->show();
+        ui->spinBox->show();
+        ui->SetChannelBtn->show();
+
+        ui->label_9->show();
+        ui->SetBaudBtn->show();
+        ui->StatusBaudlabel->show();
+    }
+    else
+    {
+        ui->label_8->hide();
+        ui->spinBox->hide();
+        ui->SetChannelBtn->hide();
+        ui->Statuslabel->hide();
+
+        ui->label_9->hide();
+        ui->SetBaudBtn->hide();
+        ui->StatusBaudlabel->hide();
+    }
+}
+
+void MainWindow::on_SetChannelBtn_clicked()
+{
+    ui->StatusBaudlabel->hide();
+    if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("请确认是否有打开串口"),tr("确定"));return;}
+    if(ui->spinBox->value() < 398 || ui->spinBox->value() > 525)
+    {
+        QMessageBox::warning(this,tr("information"),tr("通道不能小于398MHz或者大于525MHz"),tr("确定"));
+        return;
+    }
+    QString  str("");
+    bool flag = false;
+    bool channelOrbaud = true;//true: channel false: baud
+    int i = 0;//发送次数计数
+    int times = 2;//重复发送次数
+    int steps = 0;//计算步骤数目
+
+    steps ++;
+    while(i < times)//重复发两次
+    {
+        SetChannelSendarray("+++");//发送"+++"
+        if(!SetChannelRecvarray("a")) //接收"a"
+        {
+            if(i == 1)
+            {
+                QMessageBox::warning(this,tr("information"),tr("可能串口线松了。"),tr("确定"));
+                SetChannelStatus(channelOrbaud ,flag , steps);
+                return;
+            }
+        }
+        else
+            flag = true;
+        if(flag) break;
+        i++;
+    }
+
+    i= 0;//重置计数
+    flag = false;//重置标志
+    steps ++;//步骤次数累加
+    while(i < times)
+    {
+        SetChannelSendarray("a");//发送"a"
+        if(!SetChannelRecvarray("OK")) //接收"+OK"
+        {
+            if(i == 1)
+            {
+                QMessageBox::warning(this,tr("information"),tr("可能串口线松了。"),tr("确定"));
+                SetChannelStatus(channelOrbaud , flag, steps);
+                return ;
+            }
+        }
+        else
+            flag = true;
+        if(flag) break;
+        i++;
+    }
+    i= 0;
+    flag = false;
+    steps ++;
+    while(i < times)
+    {
+        str = QString("AT+CH=%1\r\n").arg(ui->spinBox->value() - 398);
+        SetChannelSendarray(str);//发送"AT+CH=398\r\n"
+        if(!SetChannelRecvarray("OK")) //接收"OK"
+        {
+            if(i == 1)
+            {
+                QMessageBox::warning(this,tr("information"),tr("可能串口线松了。"),tr("确定"));
+                SetChannelStatus(channelOrbaud , flag, steps);
+                return;
+            }
+        }
+        else
+            flag = true;
+        if(flag) break;
+        i++;
+    }
+
+
+
+    i= 0;
+    flag = false;
+    steps++;
+    while(i < times)
+    {
+        str = QString("AT+Z\r\n");
+        SetChannelSendarray(str);//发送"AT+CH=398\r\n"
+        if(!SetChannelRecvarray("OK")) //接收"OK"
+        {
+            flag = false;
+            if(i == 1)
+            {
+                QMessageBox::warning(this,tr("information"),tr("可能串口线松了。"),tr("确定"));
+                SetChannelStatus(channelOrbaud , flag ,steps);//失败时，设置状态
+                return;
+            }
+        }
+        else
+            flag = true;
+        if(flag) break;
+        i++;
+    }
+
+    SetChannelStatus(channelOrbaud , flag ,steps);//成功时，设置状态
+}
+
+
+void MainWindow::SetChannelSendarray(QString str)
+{
+    QByteArray sendarray = str.toLatin1();
+    int buad;
+    if(!mCurrentPort.isEmpty() && myPort->portIsOpen(mCurrentPort,buad))
+        myPort->sendData(sendarray,mCurrentPort);
+    sleep(200);
+}
+
+bool MainWindow::SetChannelRecvarray(QString comparestr)
+{
+    int buad;
+    if(!mCurrentPort.isEmpty() && myPort->portIsOpen(mCurrentPort, buad))
+    {
+        QByteArray recvarray = myPort->readData(mCurrentPort);
+
+        QString str = QString(recvarray);
+        QString pattern = ".*"+comparestr+".*";
+        QRegExp rx(pattern);
+        bool match = rx.exactMatch(str);
+        if(match)
+        {
+            qDebug() << "[Get正确数据:]_" << str;
+            sleep(200);
+            return true;
+        }
+        else
+        {
+            if(!str.isEmpty())
+                qDebug() << "[Get错误数据:]_" << str << QString("参考数据")+comparestr;
+            else
+            {
+                qDebug() << "[Get数据失败:]_" << "空";
+            }
+        }
+    }
+    sleep(200);
+    return false;
+}
+
+void MainWindow::SetChannelStatus(bool channelOrbaud , bool flag , int steps)
+{
+
+
+    if(flag && steps == 4)
+     {
+        if(channelOrbaud)
+        {
+            ui->Statuslabel->show();
+            ui->Statuslabel->setText(tr("成功"));
+            ui->Statuslabel->setStyleSheet("color:green");
+        }
+        else
+        {
+            ui->StatusBaudlabel->show();
+            ui->StatusBaudlabel->setText(tr("成功"));
+            ui->StatusBaudlabel->setStyleSheet("color:green");
+        }
+    }
+    else if(!flag)
+    {
+        if(channelOrbaud)
+        {
+            ui->Statuslabel->show();
+            ui->Statuslabel->setText(tr("失败"));
+            ui->Statuslabel->setStyleSheet("color:red");
+        }
+        else
+        {
+            ui->StatusBaudlabel->show();
+            ui->StatusBaudlabel->setText(tr("失败"));
+            ui->StatusBaudlabel->setStyleSheet("color:red");
+        }
+    }
+}
+
+void MainWindow::on_SetBaudBtn_clicked()
+{
+    if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("请确认是否有打开串口"),tr("确定"));return;}
+
+    QString  str("");
+    bool flag = false;
+    bool channelOrbaud = false;//true: channel false: baud
+    int i = 0;//发送次数计数
+    int times = 2;//重复发送次数
+    int steps = 0;//计算步骤数目
+
+    steps ++;
+    while(i < times)//重复发两次
+    {
+        SetChannelSendarray("+++");//发送"+++"
+        if(!SetChannelRecvarray("a")) //接收"a"
+        {
+            if(i == 1)
+            {
+                QMessageBox::warning(this,tr("information"),tr("可能串口线松了。"),tr("确定"));
+                SetChannelStatus(channelOrbaud , flag , steps);
+                return;
+            }
+        }
+        else
+            flag = true;
+        if(flag) break;
+        i++;
+    }
+
+    i= 0;//重置计数
+    flag = false;//重置标志
+    steps ++;//步骤次数累加
+    while(i < times)
+    {
+        SetChannelSendarray("a");//发送"a"
+        if(!SetChannelRecvarray("OK")) //接收"+OK"
+        {
+            if(i == 1)
+            {
+                QMessageBox::warning(this,tr("information"),tr("可能串口线松了。"),tr("确定"));
+                SetChannelStatus(channelOrbaud , flag, steps);
+                return ;
+            }
+        }
+        else
+            flag = true;
+        if(flag) break;
+        i++;
+    }
+
+    i= 0;
+    flag = false;
+    steps ++;
+    while(i < times)
+    {
+        str = QString("AT+UART=9600,8,1,NONE,NFC\r\n");
+        SetChannelSendarray(str);//发送"AT+CH=398\r\n"
+        if(!SetChannelRecvarray("OK")) //接收"OK"
+        {
+            if(i == 1)
+            {
+                QMessageBox::warning(this,tr("information"),tr("可能串口线松了。"),tr("确定"));
+                SetChannelStatus(channelOrbaud , flag, steps);
+                return;
+            }
+        }
+        else
+            flag = true;
+        if(flag) break;
+        i++;
+    }
+
+
+
+    i= 0;
+    flag = false;
+    steps++;
+    while(i < times)
+    {
+        str = QString("AT+Z\r\n");
+        SetChannelSendarray(str);//发送"AT+CH=398\r\n"
+        if(!SetChannelRecvarray("OK")) //接收"OK"
+        {
+            flag = false;
+            if(i == 1)
+            {
+                QMessageBox::warning(this,tr("information"),tr("可能串口线松了。"),tr("确定"));
+                SetChannelStatus(channelOrbaud , flag ,steps);//失败时，设置状态
+                return;
+            }
+        }
+        else
+            flag = true;
+        if(flag) break;
+        i++;
+    }
+
+    SetChannelStatus(channelOrbaud , flag ,steps);//成功时，设置状态
 }

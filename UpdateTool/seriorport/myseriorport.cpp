@@ -1,7 +1,7 @@
 ﻿
 
 #include "myseriorport.h"
-
+#include <QTime>
 MySeriorport::MySeriorport()
 {
     mPort = new QSerialPort;
@@ -111,6 +111,7 @@ bool MySeriorport::sendData(QByteArray &array ,QString &portName)
     int bytes = port->write(array);
     if(bytes == array.size())
     {
+        port->flush();
         return true;
     } else {
        qDebug() << "数据发送失败！";

@@ -88,7 +88,7 @@ int SerialportOperate::sendDataToPort(QString &portName,quint8 *cmd, int len)
     QByteArray array = quintToByte(cmd,len);
 
 
-    qDebug() << "Array:" << array.toHex();
+    //qDebug() << "Array:" << array.toHex();
 
 
     int writeBytes = 0;

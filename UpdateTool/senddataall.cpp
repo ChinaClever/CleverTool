@@ -6,14 +6,17 @@
 SendDataAll::SendDataAll(MySeriorport *Port)
 {
     myPort = Port;
+    mWifiSiBusbarFlag = false;
 }
 
-SendDataAll::init(QString fileName, QString currectPort, int min, int max)
+void SendDataAll::init(QString fileName, QString currectPort, int min, int max , bool flag)
 {
     mfileName = fileName;
     mCurrentPort = currectPort;
     mMin = min;
     mMax = max;
+    mWifiSiBusbarFlag = flag;
+    mLastPacketNum = 0;
 }
 
 void SendDataAll::run()
@@ -51,7 +54,12 @@ void SendDataAll::run()
         do {  //升级回应
             if(cret == 3 || cret == 6) sendUpdateCmd(caddr); //再次发送
             isPass = responseUpdate();
-            if(isPass)  break;  //收到回复 跳出循环
+            if(isPass)
+            {
+                if(mWifiSiBusbarFlag)
+                    Sleep(1000);
+                break;  //收到回复 跳出循环
+            }
             else qDebug() <<"[Get>NG>尝试:]_"<< cret;
             Sleep(1*1000);
             cret++;
@@ -77,6 +85,7 @@ void SendDataAll::run()
             ret++;
             if(ret >= packetNum){  //最后一包
               //  int len = allArray.size() % TEXT_MAX_LEN; //取余
+                mLastPacketNum = ret;
                 QByteArray da;
                 da = allArray;
                 //da= str.toLatin1();
@@ -107,10 +116,39 @@ void SendDataAll::run()
             int pass = 0;
             do {
                 pass ++;
-                if(!mCurrentPort.isEmpty() && myPort->portIsOpen(mCurrentPort, buad))
-                    myPort->sendData(array,mCurrentPort);
 
-                qDebug() << "[Set正确数据:]_" <<array.toHex();
+                if (mWifiSiBusbarFlag)//小于200
+                {
+                    int k = 0,len = array.length();
+                    int endpos = len / TEXT_LEN ;
+                    endpos += len / TEXT_LEN? 1: 0;
+                    QByteArray temp = array;
+                    do{
+                        QByteArray arr;
+                        if(len-k*TEXT_LEN > TEXT_LEN)
+                        {
+                            for(int i=0; i<TEXT_LEN; ++i)
+                                arr.append(temp.at(i));
+                            temp.remove(0, TEXT_LEN);
+                        }
+                        else
+                        {
+                            arr = temp;
+                        }
+                        if(!mCurrentPort.isEmpty() && myPort->portIsOpen(mCurrentPort, buad))
+                            myPort->sendData(arr,mCurrentPort);
+                        qDebug() << "[Set正确数据:]_" <<arr.toHex();
+                        k++;
+                        msleep(500);
+                    }while(k < endpos);
+                }
+                else//1024
+                {
+                    if(!mCurrentPort.isEmpty() && myPort->portIsOpen(mCurrentPort, buad))
+                        myPort->sendData(array,mCurrentPort);
+
+                    qDebug() << "[Set正确数据:]_" <<array.toHex();
+                }
 
                 int tick = 0;//用于延时
                 do {
@@ -169,10 +207,28 @@ bool SendDataAll::responseSendFile(int num)
         QByteArray array = myPort->readData(mCurrentPort);
 
         QString str = QString(array);
+
+        qDebug()<<str;
         if(str.compare(responseStr) == 0 || str.compare(responseStr2) == 0){
              qDebug() << "[Get正确数据:]_" << str;
             return true;
         }else {
+            QString responseStr = QString("successful");
+            QString responseStr2 = QString("successfu");
+            if(num > 42) {
+                QStringList list = str.split(" ");
+                str = list.at(list.size()-1);
+            }
+            if(str.compare(responseStr) == 0 || str.compare(responseStr2) == 0){
+                 qDebug() << "[Get正确数据:]_" << str;
+                return true;
+            }
+            if(mLastPacketNum == num&&(str.contains(responseStr)|| str.contains(responseStr2)))
+            {
+                    qDebug() << "[Get正确数据:]_" << str;
+                   return true;
+             }
+
             if(!str.isEmpty()) qDebug() << "[Get错误数据:]_" << str << array<< QString("[参考数据：%1]").arg(responseStr);
             else qDebug() << "[Get数据失败:]_" << "空";
         }

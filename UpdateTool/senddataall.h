@@ -12,7 +12,7 @@ class SendDataAll : public QThread
     Q_OBJECT
 public:
     SendDataAll(MySeriorport *Port);
-    init(QString fileName, QString currectPort, int , int);
+    void init(QString fileName, QString currectPort, int min, int max, bool flag);
 signals:
     void sendOk(int value);
     void sendProgress(QString progress);
@@ -32,6 +32,8 @@ private:
     QString mCurrentPort;
     MySeriorport *myPort;
     int mMin, mMax;
+    bool mWifiSiBusbarFlag;
+    int mLastPacketNum;
 };
 
 #endif // SENDDATAALL_H

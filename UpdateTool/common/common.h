@@ -6,6 +6,7 @@
 #include <QString>
 
 #define TEXT_MAX_LEN 1024
+#define TEXT_LEN 200
 
 typedef struct
 {
