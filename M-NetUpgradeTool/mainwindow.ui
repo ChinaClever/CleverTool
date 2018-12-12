@@ -10,6 +10,30 @@
     <height>704</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>1216</width>
+    <height>704</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1216</width>
+    <height>704</height>
+   </size>
+  </property>
+  <property name="sizeIncrement">
+   <size>
+    <width>1216</width>
+    <height>704</height>
+   </size>
+  </property>
+  <property name="font">
+   <font>
+    <family>微软雅黑</family>
+    <pointsize>11</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>MPDU批量升级工具</string>
   </property>
@@ -17,75 +41,69 @@
    <string/>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QGroupBox" name="ipWid">
-    <property name="geometry">
-     <rect>
-      <x>690</x>
-      <y>10</y>
-      <width>511</width>
-      <height>281</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>IP生成区</string>
-    </property>
-   </widget>
-   <widget class="QGroupBox" name="tftpWid">
-    <property name="geometry">
-     <rect>
-      <x>670</x>
-      <y>310</y>
-      <width>541</width>
-      <height>281</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>升级操作区</string>
-    </property>
-   </widget>
-   <widget class="QGroupBox" name="group">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>10</y>
-      <width>651</width>
-      <height>521</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>列表显示区</string>
-    </property>
-    <widget class="QWidget" name="oksTabWid" native="true">
-     <property name="geometry">
-      <rect>
-       <x>220</x>
-       <y>20</y>
-       <width>200</width>
-       <height>471</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QWidget" name="ipsTabWid" native="true">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>30</y>
-       <width>200</width>
-       <height>481</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QWidget" name="errsTabWid" native="true">
-     <property name="geometry">
-      <rect>
-       <x>440</x>
-       <y>20</y>
-       <width>200</width>
-       <height>461</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
+   <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,1">
+    <item>
+     <widget class="QGroupBox" name="group">
+      <property name="title">
+       <string>列表显示区</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QWidget" name="ipsTabWid" native="true"/>
+         </item>
+         <item>
+          <widget class="QWidget" name="oksTabWid" native="true"/>
+         </item>
+         <item>
+          <widget class="QWidget" name="errsTabWid" native="true"/>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QGroupBox" name="ipWid">
+        <property name="title">
+         <string>IP生成区</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="tftpWid">
+        <property name="title">
+         <string>升级操作区</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -93,7 +111,7 @@
      <x>0</x>
      <y>0</y>
      <width>1216</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
