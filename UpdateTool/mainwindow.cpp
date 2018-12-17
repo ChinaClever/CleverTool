@@ -555,7 +555,6 @@ void MainWindow::on_radioButton_clicked()
 
         ui->label_9->show();
         ui->SetBaudBtn->show();
-        ui->StatusBaudlabel->show();
     }
     else
     {
@@ -572,6 +571,7 @@ void MainWindow::on_radioButton_clicked()
 
 void MainWindow::on_SetChannelBtn_clicked()
 {
+    ui->Statuslabel->hide();
     ui->StatusBaudlabel->hide();
     if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("请确认是否有打开串口"),tr("确定"));return;}
     if(ui->spinBox->value() < 398 || ui->spinBox->value() > 525)
@@ -754,6 +754,7 @@ void MainWindow::SetChannelStatus(bool channelOrbaud , bool flag , int steps)
 
 void MainWindow::on_SetBaudBtn_clicked()
 {
+    ui->StatusBaudlabel->hide();
     if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("请确认是否有打开串口"),tr("确定"));return;}
 
     QString  str("");
