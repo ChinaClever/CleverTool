@@ -65,12 +65,14 @@ bool IpsWid::readFile(QString &fn, QStringList &list)
         while (!file.atEnd())
         {
             i++;
-            QString array = QString(file.readLine()).trimmed().remove("\r\n");
-            bool ret = cm_isIPaddress(array);
+            QString str = QString(file.readLine()).trimmed().remove("\r\n");
+            if(list.contains(str)) continue;
+
+            bool ret = cm_isIPaddress(str);
             if(ret) {
-                list  << array;
+                list  << str;
             } else {
-                CriticalMsgBox bos(this, tr("第%1条，%2 不是IP地址!!").arg(i).arg(QString(array)));
+                CriticalMsgBox bos(this, tr("第%1条，%2 不是IP地址!!").arg(i).arg(str));
                 return false;
             }
         }
