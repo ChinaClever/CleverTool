@@ -1,7 +1,6 @@
 
 INCLUDEPATH += $$PWD
 
-include(curl/curl.pri)
 
 HEADERS += \	
     $$PWD/tftp.h \

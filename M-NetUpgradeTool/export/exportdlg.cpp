@@ -1,4 +1,4 @@
-#include "exportdlg.h"
+﻿#include "exportdlg.h"
 #include "ui_exportdlg.h"
 #include <QFileDialog>
 #include "common/msgbox.h"
@@ -27,7 +27,7 @@ void ExportDlg::on_pushButton_clicked()
     dlg.setDirectory("E:");
     if(dlg.exec() == QDialog::Accepted) {
         QString fn = dlg.selectedFiles().at(0);
-        if(fn.right(0) != "/")  fn += "/";
+        if(fn.right(1) != "/")  fn += "/";
         ui->pathEdit->setText(fn);
     }
 }
@@ -92,6 +92,17 @@ void ExportDlg::on_exportBtn_clicked()
         ui->quitBtn->setDisabled(true);
 
         sDataPacket *data = DataPacket::bulid()->data;
+        data->file = ui->pathEdit->text() + ui->fileEdit->text();
         mExportThread->saveData(data->file, data->logs);
+    }
+}
+
+void ExportDlg::on_quitBtn_clicked()
+{
+    if(!timer->isActive())
+    this->close();
+    else
+    {
+        InfoMsgBox box(this, tr("\n导出还没有完成，还不能关闭!!\n"));
     }
 }

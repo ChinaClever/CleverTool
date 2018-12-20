@@ -62,11 +62,12 @@ void Excel_SaveThread::writeFile(QList<QStringList> &list)
             for(int j=0; j<list.at(i).size(); ++j) {
                 excel.setCellString(i+1, j+1, list.at(i).at(j));
             }
-            mPro = i;
-            msleep(15);
+            mPro = i+1;
+            msleep(25);
         }
         excel.save();
     }
+
 }
 
 void Excel_SaveThread::run()

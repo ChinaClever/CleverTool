@@ -1,4 +1,4 @@
-#include "tftpwidget.h"
+﻿#include "tftpwidget.h"
 #include "ui_tftpwidget.h"
 #include "common\msgbox.h"
 
@@ -25,11 +25,11 @@ TftpWidget::~TftpWidget()
 bool TftpWidget::checkFile()
 {
     bool ret = false;
-    QString file = ui->lineEdit->text();
-    if(!file.isEmpty()) {
-        QString str = file.section(".", -1);
+    QString fn = ui->lineEdit->text();
+    if(!fn.isEmpty()) {
+        QString str = fn.section(".", -1);
         if(str == "bin") {
-            mData->file = str;
+            mData->file = fn;
             ret = true;
         } else {
             CriticalMsgBox box(this, tr("升级文件格式错误!, 请重新选择"));
@@ -45,9 +45,8 @@ void TftpWidget::on_openBtn_clicked()
 {
     QString fn = QFileDialog::getOpenFileName(0,tr("文件选择"),"/","",0);
     if (!fn.isNull()) {
-        if(checkFile()) {
-            ui->lineEdit->setText(fn);
-        }
+        ui->lineEdit->setText(fn);
+        checkFile();
     }
 }
 
@@ -57,6 +56,14 @@ void TftpWidget::timeoutDone(void)
     QString str = mData->status;
     if(str.isEmpty()) str = tr("请开始");
     ui->stateLab->setText(str);
+
+
+    /////=========
+    ///
+    //ui->progressBar_2->setFormat(mData->subStatus);
+    if(mData->subPorgress==101)
+        mData->subPorgress = 0;
+    ui->progressBar_2->setValue(mData->subPorgress);
 
     bool en = mData->isRun;
     if(mData->ips.isEmpty()) en = true;
@@ -72,7 +79,7 @@ void TftpWidget::timeoutDone(void)
 
 
 void TftpWidget::on_updateBtn_clicked()
-{
+{    
     if(checkFile())
     {
         mTftpThread->startSend();

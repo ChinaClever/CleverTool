@@ -1,4 +1,4 @@
-#ifndef DATAPACKET_H
+﻿#ifndef DATAPACKET_H
 #define DATAPACKET_H
 #include <QtCore>
 
@@ -8,10 +8,10 @@
 struct sDataPacket
 {
     bool isRun;
-    int progress;
+    int progress, subPorgress;
 
     QString file;
-    QString status;
+    QString status, subStatus;
 
     QStringList ips;
     QStringList errs;

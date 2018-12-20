@@ -1,4 +1,4 @@
-#ifndef TFTPWIDGET_H
+﻿#ifndef TFTPWIDGET_H
 #define TFTPWIDGET_H
 
 #include "export/exportdlg.h"

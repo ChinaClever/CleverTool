@@ -1,4 +1,4 @@
-#ifndef EXPORTDLG_H
+﻿#ifndef EXPORTDLG_H
 #define EXPORTDLG_H
 
 #include <QDialog>
@@ -25,6 +25,8 @@ private slots:
     void timeoutDone();
     void on_pushButton_clicked();
     void on_exportBtn_clicked();
+
+    void on_quitBtn_clicked();
 
 private:
     Ui::ExportDlg *ui;

@@ -17,11 +17,15 @@ protected:
     void run(void);
     bool sentFile(void);
 
-    void saveLogs(const QString &ip, bool f);
+    void saveLogs(const QString &ip, bool f , bool exist);
     void initSend();
     void overSend();
 
+protected slots:
+    void subProgressSlot(float f, QString);
+
 private:
+    bool checkIp(const QString &ip);
     Tftp *mTftp;
     sDataPacket *mData;
     QStringList mIps;
