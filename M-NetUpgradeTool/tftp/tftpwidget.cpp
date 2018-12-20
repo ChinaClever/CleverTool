@@ -73,7 +73,6 @@ void TftpWidget::timeoutDone(void)
     if(count) x = ((mData->progress * 1.0) / count) *100;
     ui->progressBar->setValue(x);
 
-
     QStringList ips;
     bool ret = mUdpTesting->check(ips);
     if(ret) {
