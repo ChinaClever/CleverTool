@@ -11,6 +11,7 @@ TftpWidget::TftpWidget(QWidget *parent) :
     mExportDlg = new ExportDlg(this);
     mTftpThread = new TftpThread(this);
     mData = DataPacket::bulid()->data;
+    mUdpTesting = new UdpTesting(this);
 
     timer = new QTimer(this);
     timer->start(200);
@@ -57,12 +58,7 @@ void TftpWidget::timeoutDone(void)
     if(str.isEmpty()) str = tr("请开始");
     ui->stateLab->setText(str);
 
-
-    /////=========
-    ///
-    //ui->progressBar_2->setFormat(mData->subStatus);
-    if(mData->subPorgress==101)
-        mData->subPorgress = 0;
+    if(mData->subPorgress>100) mData->subPorgress = 0;
     ui->progressBar_2->setValue(mData->subPorgress);
 
     bool en = mData->isRun;
@@ -70,11 +66,23 @@ void TftpWidget::timeoutDone(void)
     ui->openBtn->setDisabled(en);
     ui->updateBtn->setDisabled(en);
     ui->exportBtn->setDisabled(en);
+    ui->breakBtn->setEnabled(en);
 
     int x = 0;
     int count = mData->ips.size();
     if(count) x = ((mData->progress * 1.0) / count) *100;
     ui->progressBar->setValue(x);
+
+
+    QStringList ips;
+    bool ret = mUdpTesting->check(ips);
+    if(ret) {
+        QString str = tr("有其它电脑已打开升级工具：");
+        for(int i=0; i<ips.size(); ++i) {
+            str += ips.at(i) + "; ";
+        }
+        ui->ipsLab->setText(str);
+    }
 }
 
 
@@ -89,4 +97,9 @@ void TftpWidget::on_updateBtn_clicked()
 void TftpWidget::on_exportBtn_clicked()
 {
     mExportDlg->exec();
+}
+
+void TftpWidget::on_breakBtn_clicked()
+{
+    mTftpThread->breakDown();
 }

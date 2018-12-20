@@ -41,7 +41,12 @@ SOURCES += \
     bulidip/ipswid.cpp \
     tables/ipstabwid.cpp \
     tables/errstabwid.cpp \
-    tables/okstabwid.cpp
+    tables/okstabwid.cpp \
+    udp/sent/udpbdsent.cpp \
+    udp/sent/udpheartbeat.cpp \
+    udp/sent/udpsentsocket.cpp \
+    udp/recv/udprecvsocket.cpp \
+    udp/udptesting.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -51,7 +56,12 @@ HEADERS += \
     bulidip/ipswid.h \
     tables/ipstabwid.h \
     tables/errstabwid.h \
-    tables/okstabwid.h
+    tables/okstabwid.h \
+    udp/sent/udpbdsent.h \
+    udp/sent/udpheartbeat.h \
+    udp/sent/udpsentsocket.h \
+    udp/recv/udprecvsocket.h \
+    udp/udptesting.h
 
 FORMS += \
         mainwindow.ui \

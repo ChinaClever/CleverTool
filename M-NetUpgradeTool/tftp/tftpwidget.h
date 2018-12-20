@@ -3,6 +3,7 @@
 
 #include "export/exportdlg.h"
 #include "tftpthread.h"
+#include "udp/udptesting.h"
 
 namespace Ui {
 class TftpWidget;
@@ -25,6 +26,8 @@ private slots:
     void on_updateBtn_clicked();
     void on_exportBtn_clicked();
 
+    void on_breakBtn_clicked();
+
 private:
     Ui::TftpWidget *ui;
     sDataPacket *mData;
@@ -32,6 +35,7 @@ private:
     QTimer *timer;
     TftpThread *mTftpThread;
     ExportDlg *mExportDlg;
+    UdpTesting *mUdpTesting;
 };
 
 #endif // TFTPWIDGET_H

@@ -43,6 +43,9 @@ public:
     bool upload(const QString &file, const QString &ip, int port=69, int sec=50);
     bool getload(const QString &file, const QString &ip, int port=69);
 
+    void breakDown();
+    void startDown();
+
 protected:
     void sendReadReqMsg(char *pFilename);
     void sendDataAckMsg(struct TFTPData *pData, QHostAddress sender, quint16 senderPort);
@@ -60,6 +63,7 @@ private:
       QUdpSocket *udpSocketClient;
       QFile *rFile;
       QFile *sFile;
+      bool isRun;
 };
 
 

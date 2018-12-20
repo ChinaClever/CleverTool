@@ -12,6 +12,7 @@ public:
     ~TftpThread();
 
     bool startSend();
+    void breakDown();
 
 protected:
     void run(void);

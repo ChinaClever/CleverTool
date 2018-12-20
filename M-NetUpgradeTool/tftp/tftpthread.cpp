@@ -20,6 +20,7 @@ TftpThread::TftpThread(QObject *parent) : QThread(parent)
 
 TftpThread::~TftpThread()
 {
+    breakDown();
     wait();
 }
 
@@ -124,6 +125,12 @@ void TftpThread::run(void)
         msleep(800);
     }
     overSend();
+}
+
+void TftpThread::breakDown()
+{
+    mTftp->breakDown();
+    mIps.clear();
 }
 
 bool TftpThread::checkIp(const QString& ip)

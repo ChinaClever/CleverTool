@@ -41,8 +41,28 @@ Tftp::Tftp(QObject *parent) : QThread(parent)
     memset(recvData, 0, sizeof(recvData));
 
     operation = GET;
+    isRun = false;
 }
 
+void Tftp::startDown()
+{
+    isRun = true;
+    operation = 0;
+    serverPort = 0;
+    recv_data_bytes = 0;
+    send_data_bytes = 0;
+    send_file_size = 0;
+    wrq_block_no = 0;
+    put_finished_flag = false;
+
+    connect(udpSocketClient, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()));
+}
+
+void Tftp::breakDown()
+{
+    isRun = false;
+    disconnect(udpSocketClient, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()));
+}
 
 void Tftp::sendReadReqMsg(char *pFilename)
 {
@@ -288,6 +308,7 @@ bool Tftp::upload(const QString &file, const QString &ip, int port, int sec)
     put_fileName = put_fileInfo.fileName();
     fileName = put_fileName.toLatin1().data();
 
+    startDown();
     sendWriteReqMsg(fileName);
 
 //    qDebug()<<"tftp Server Ip : "<< ip;
@@ -295,7 +316,7 @@ bool Tftp::upload(const QString &file, const QString &ip, int port, int sec)
 //    qDebug()<<"filename :"<< file << put_fileName;
 
     for(int i=0; i<sec; ++i) {
-        if(put_finished_flag) break;
+        if(put_finished_flag || !isRun) break;
         sleep(1);
     }
 
