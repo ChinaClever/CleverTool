@@ -32,7 +32,7 @@ void UdpTesting::timeoutDone(void)
     QStringList ips;
     for(int i=0; i<list.size(); ++i) {
         UdpBaseData *data = list.at(i);
-        QString ip =  data->addr.toString();
+        QString ip =  data->addr.toString().remove("::ffff:"); // IPV4删除这个字符串;
         if(!ips.contains(ip)) ips << ip;
         delete data;
     }
