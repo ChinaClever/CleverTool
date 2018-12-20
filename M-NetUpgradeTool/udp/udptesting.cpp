@@ -23,9 +23,9 @@ bool UdpTesting::check(QStringList &ips)
 void UdpTesting::timeoutDone(void)
 {
     QList<UdpBaseData *> list;
-
+    UdpBaseData *data = nullptr;
     do {
-         UdpBaseData *data = mRecv->getData();
+         data = mRecv->getData();
          if(data) list.append(data);
     } while (data);
 
