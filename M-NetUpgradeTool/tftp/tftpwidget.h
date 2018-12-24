@@ -3,7 +3,6 @@
 
 #include "export/exportdlg.h"
 #include "tftpthread.h"
-#include "udp/udptesting.h"
 
 namespace Ui {
 class TftpWidget;
@@ -35,7 +34,6 @@ private:
     QTimer *timer;
     TftpThread *mTftpThread;
     ExportDlg *mExportDlg;
-    UdpTesting *mUdpTesting;
 };
 
 #endif // TFTPWIDGET_H

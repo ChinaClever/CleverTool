@@ -11,11 +11,11 @@ TftpWidget::TftpWidget(QWidget *parent) :
     mExportDlg = new ExportDlg(this);
     mTftpThread = new TftpThread(this);
     mData = DataPacket::bulid()->data;
-    mUdpTesting = new UdpTesting(this);
 
     timer = new QTimer(this);
     timer->start(200);
     connect(timer, SIGNAL(timeout()),this, SLOT(timeoutDone()));
+    ui->breakBtn->setHidden(true);
 }
 
 TftpWidget::~TftpWidget()
@@ -44,7 +44,8 @@ bool TftpWidget::checkFile()
 
 void TftpWidget::on_openBtn_clicked()
 {
-    QString fn = QFileDialog::getOpenFileName(0,tr("文件选择"),"/","",0);
+    static QString fn;
+    fn = QFileDialog::getOpenFileName(0,tr("文件选择"),fn,"",0);
     if (!fn.isNull()) {
         ui->lineEdit->setText(fn);
         checkFile();
@@ -72,16 +73,6 @@ void TftpWidget::timeoutDone(void)
     int count = mData->ips.size();
     if(count) x = ((mData->progress * 1.0) / count) *100;
     ui->progressBar->setValue(x);
-
-    QStringList ips;
-    bool ret = mUdpTesting->check(ips);
-    if(ret) {
-        QString str = tr("有其它电脑已打开升级工具：");
-        for(int i=0; i<ips.size(); ++i) {
-            str += ips.at(i) + "; ";
-        }
-        ui->ipsLab->setText(str);
-    }
 }
 
 
@@ -100,5 +91,9 @@ void TftpWidget::on_exportBtn_clicked()
 
 void TftpWidget::on_breakBtn_clicked()
 {
-    mTftpThread->breakDown();
+    if(mData->isRun) {
+        QuMsgBox box(this, tr("是否执行中断?"));
+        if(box.Exec())
+            mTftpThread->breakDown();
+    }
 }

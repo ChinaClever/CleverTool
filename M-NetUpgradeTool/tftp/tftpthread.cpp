@@ -67,6 +67,7 @@ void TftpThread::saveLogs(const QString &ip, bool f, bool exist)
 bool TftpThread::sentFile(void)
 {    
     QString ip = mIps.first();
+    mIps.removeFirst();
 
     bool exist = checkIp(ip);
     bool ret = false;
@@ -87,7 +88,7 @@ bool TftpThread::sentFile(void)
 
     mData->progress++;
     saveLogs(ip, ret , exist);
-    mIps.removeFirst();
+
     return ret && exist;
 }
 

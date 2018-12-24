@@ -40,7 +40,7 @@ class Tftp : public QThread
 public:
     explicit Tftp(QObject *parent = 0);
 
-    bool upload(const QString &file, const QString &ip, int port=69, int sec=50);
+    bool upload(const QString &file, const QString &ip, int port=69, int sec=60);
     bool getload(const QString &file, const QString &ip, int port=69);
 
     void breakDown();

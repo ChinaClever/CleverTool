@@ -32,14 +32,13 @@ QHostAddress tftpServer;
 Tftp::Tftp(QObject *parent) : QThread(parent)
 {
     //Init udpSocketClient
-    udpSocketClient = new QUdpSocket();
-    udpSocketClient->bind(QHostAddress::Any, 7755);
-
+    udpSocketClient = new QUdpSocket(this);
+    udpSocketClient->bind(/*QHostAddress::Any,*/ 17755);
     //set the slot function()
     connect(udpSocketClient, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()));
 
     memset(recvData, 0, sizeof(recvData));
-
+    sFile = nullptr;
     operation = GET;
     isRun = false;
 }
@@ -47,21 +46,19 @@ Tftp::Tftp(QObject *parent) : QThread(parent)
 void Tftp::startDown()
 {
     isRun = true;
-    operation = 0;
-    serverPort = 0;
     recv_data_bytes = 0;
     send_data_bytes = 0;
     send_file_size = 0;
     wrq_block_no = 0;
     put_finished_flag = false;
 
-    connect(udpSocketClient, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()));
+//    connect(udpSocketClient, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()));
 }
 
 void Tftp::breakDown()
 {
     isRun = false;
-    disconnect(udpSocketClient, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()));
+//     disconnect(udpSocketClient, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()));
 }
 
 void Tftp::sendReadReqMsg(char *pFilename)
@@ -137,6 +134,7 @@ void Tftp::sendWriteReqMsg(char *pFilename)
 
     //open localfile and send them to server
     {
+        if(sFile) delete sFile;
         sFile = new QFile(put_filePath);
         if(!sFile->open(QIODevice::ReadOnly))
         {
@@ -218,7 +216,8 @@ void Tftp::sendDataMsg(short blockno, QHostAddress sender, quint16 senderPort)
 
 void Tftp::readPendingDatagrams()
 {
-    if(udpSocketClient->hasPendingDatagrams())
+//    qDebug() << "AAAAAA" << udpSocketClient->hasPendingDatagrams() << isRun;
+    if(udpSocketClient->hasPendingDatagrams()&&isRun)
     {
         QHostAddress sender;
         quint16 senderPort;
@@ -265,6 +264,7 @@ void Tftp::readPendingDatagrams()
             {
                 wrq_block_no = qFromBigEndian<short>(ack->block) + 1;
                 sendDataMsg(wrq_block_no, sender, senderPort);
+                qDebug()<<"---Put --- Block : "<<wrq_block_no<<" --- SendBytes : "<<send_data_bytes<<" ---";
                 info.sprintf("---Put --- Block : %d --- SendBytes : %d ---",wrq_block_no, send_data_bytes);
                 //                    ui->label_Info->setText(info);
                 //                    ui->progressBar->setValue(((float)send_data_bytes/(float)send_file_size)*100 + 1);
@@ -319,6 +319,7 @@ bool Tftp::upload(const QString &file, const QString &ip, int port, int sec)
         if(put_finished_flag || !isRun) break;
         sleep(1);
     }
+
 
     return put_finished_flag;
 }
