@@ -30,24 +30,15 @@ QFileInfo put_fileInfo;
 QHostAddress tftpServer;
 
 Tftp::Tftp(QObject *parent) : QThread(parent)
-{
-    //Init udpSocketClient
-    udpSocketClient = new QUdpSocket();
-    udpSocketClient->bind(QHostAddress::Any, 7755);
-
-    //set the slot function()
-    connect(udpSocketClient, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()));
-
-    memset(recvData, 0, sizeof(recvData));
-
-    operation = GET;
-    isRun = false;
+{   
+    mPort = 7755;
+    udpSocketClient = nullptr;
 }
 
 void Tftp::startDown()
 {
     isRun = true;
-    operation = 0;
+    operation = GET;
     serverPort = 0;
     recv_data_bytes = 0;
     send_data_bytes = 0;
@@ -55,7 +46,16 @@ void Tftp::startDown()
     wrq_block_no = 0;
     put_finished_flag = false;
 
+    if(udpSocketClient) {
+        udpSocketClient->close();
+        delete udpSocketClient;
+    }
+
+    udpSocketClient = new QUdpSocket(this);
+    udpSocketClient->bind(QHostAddress::Any, mPort++);
     connect(udpSocketClient, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()));
+
+    memset(recvData, 0, sizeof(recvData));
 }
 
 void Tftp::breakDown()

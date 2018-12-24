@@ -32,8 +32,6 @@
 #define DATA_PACKET_HEADER_LEN (4)
 #define RECV_BUFFER_SIZE 1024
 
-
-
 class Tftp : public QThread
 {
     Q_OBJECT
@@ -64,6 +62,7 @@ private:
       QFile *rFile;
       QFile *sFile;
       bool isRun;
+      int mPort;
 };
 
 
