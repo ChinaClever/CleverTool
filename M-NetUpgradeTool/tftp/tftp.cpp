@@ -51,11 +51,10 @@ void Tftp::startDown()
         delete udpSocketClient;
     }
 
+    memset(recvData, 0, sizeof(recvData));
     udpSocketClient = new QUdpSocket(this);
     udpSocketClient->bind(QHostAddress::Any, mPort++);
     connect(udpSocketClient, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()));
-
-    memset(recvData, 0, sizeof(recvData));
 }
 
 void Tftp::breakDown()
