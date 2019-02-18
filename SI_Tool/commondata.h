@@ -5,6 +5,7 @@
 #include "datamodel.h"
 
 extern int CRC16_2(char* pchMsg, int wDataLen);//CRC校验
+extern int CRC16_22(char* pchMsg,int start, int wDataLen);//CRC校验
 extern uchar BCC(QByteArray array); //异或校验
 
 void sleep(unsigned int msec);

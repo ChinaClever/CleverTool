@@ -571,7 +571,7 @@
      </font>
     </property>
     <property name="text">
-     <string>设置波特率：</string>
+     <string>设置波特率9600：</string>
     </property>
    </widget>
   </widget>

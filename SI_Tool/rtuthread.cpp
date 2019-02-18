@@ -176,15 +176,18 @@ void RtuThread::directd10()
 void RtuThread::readData()
 {
     /* 01 03 00 00 00 D1 05 F8*/
-    static uchar sentDataAc[8] = {0x01, 0x03, 0x00, 0x00, 0x00, 0xD5, 0x05, 0xF8};
-    static uchar sentDataDc[8] = {0x01, 0x03, 0x00, 0x00, 0x00, 0x67, 0x04, 0x20};
+//    static uchar sentDataAc[8] = {0x01, 0x03, 0x00, 0x00, 0x00, 0xD5, 0x05, 0xF8};
+//    static uchar sentDataDc[8] = {0x01, 0x03, 0x00, 0x00, 0x00, 0x67, 0x04, 0x20};72 61 64 69 6F 61 64 72
+    static uchar sentDataAc[16] = {0x72, 0x61, 0x64, 0x69, 0x6F, 0x61, 0x64, 0x72, 0x01, 0x03, 0x00, 0x00, 0x00, 0xE0, 0x05, 0xF8};
+    static uchar sentDataDc[16] = {0x72, 0x61, 0x64, 0x69, 0x6F, 0x61, 0x64, 0x72, 0x01, 0x03, 0x00, 0x00, 0x00, 0x6C, 0x04, 0x20};
     uchar *sentData = sentDataDc;
     if(mDc) sentData = sentDataAc;
 
-    sentData[0] = mAddr;
-    ushort crc = CRC16_2((char*)sentData, 6);
-    sentData[6] = (0xff)&(crc); /*低8位*/
-    sentData[7] = ((crc) >> 8); /*高8位*/
+    sentData[8] = mAddr;
+    ushort crc = CRC16_22((char*)sentData,8,14);
+    //ushort crc = CRC16_2((char*)sentData, 6);
+    sentData[14] = (0xff)&(crc); /*低8位*/
+    sentData[15] = ((crc) >> 8); /*高8位*/
     emit sendWriteSignal(sentData, sizeof(sentDataDc));
     //qDebug() << "send" << QByteArray((char*)sentData, sizeof(sentDataDc)).toHex();
 

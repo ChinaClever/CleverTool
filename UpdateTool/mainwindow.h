@@ -55,7 +55,7 @@ private:
     void initButtonText();
     void sleep(unsigned int msec);
     bool sendUpdateCmd();
-    bool responseUpdate();
+    int responseUpdate();
     bool responseSendFile(int num);
     void sendFile();
     int getPacketNum(int bytes);

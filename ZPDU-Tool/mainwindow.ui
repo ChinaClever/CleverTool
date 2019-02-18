@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1407</width>
-    <height>977</height>
+    <height>853</height>
    </rect>
   </property>
   <property name="font">
@@ -651,7 +651,7 @@ p, li { white-space: pre-wrap; }
        <x>50</x>
        <y>80</y>
        <width>1061</width>
-       <height>481</height>
+       <height>381</height>
       </rect>
      </property>
      <property name="font">
@@ -991,7 +991,7 @@ p, li { white-space: pre-wrap; }
      </font>
     </property>
     <property name="text">
-     <string>软件版本：v1.0</string>
+     <string>软件版本：v1.2</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>

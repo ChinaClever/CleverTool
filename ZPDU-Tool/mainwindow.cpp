@@ -263,7 +263,9 @@ void MainWindow::sentDataToPacket(quint8 &addr)
     //功能码
     sentData.funcode[0] = sendData[j++] = 0xA1;
     sentData.funcode[1] = sendData[j++] = 0xB1;
-    for(int i = 0 ; i < 61 ; i++)
+
+    sentData.obligate[0] = sendData[j++] = 0x01;
+    for(int i = 1 ; i < 61 ; i++)
         sentData.obligate[i] = sendData[j++] = 0x00;
 
     //长度
@@ -607,9 +609,9 @@ void MainWindow::readAnswer()
         case 2:  //当数据为采集信息数据时，需要判断是显示到采集应答还是表格
             if(is_gather)
             {
-                if(data[0] == 0x7B && answer.length() == 105)//只对开头是7B和长度是105进行解析
+                if(data[0] == 0x7B && answer.length() == 127)//只对开头是7B和长度是105进行解析
                {
-                    //qDebug()<<answer.length();
+                    qDebug()<<answer.length();
                     updateGroupboxThree(data,answer.length());
 
                     returnToPacket(answer);
@@ -753,16 +755,9 @@ void MainWindow::setCurretVolate(int row, int column)
     QTableWidgetItem *item = ui->tableWidget->item(row,column);
     int data = 0;
     QString str="";
-    if(row < returnData.opnum/2)
-    {
-        data= (returnData.vol[0][0]<<8 | returnData.vol[0][1]);
-        str = QString("%1.%2").arg(data/10).arg(data%10);
-    }
-    else
-    {
-        data= (returnData.vol[1][0]<<8 | returnData.vol[1][1]);
-        str = QString("%1.%2").arg(data/10).arg(data%10);
-    }
+    if(row < returnData.opnum)
+    data= (returnData.vol[row][0]<<8 | returnData.vol[row][1]);
+    str = QString("%1.%2").arg(data/10).arg(data%10);
 
     if(ui->doubleSpinBoxVmin->value() <= str.toDouble() &&
          ui->doubleSpinBoxVmax->value() >= str.toDouble() )
@@ -776,14 +771,7 @@ void MainWindow::setCurretPower(int row, int column)
 {
     QTableWidgetItem *item = ui->tableWidget->item(row,column);
     int voldata = 0;
-    if(row < returnData.opnum/2)
-    {
-        voldata= (returnData.vol[0][0]<<8 | returnData.vol[0][1]);
-    }
-    else
-    {
-        voldata= (returnData.vol[1][0]<<8 | returnData.vol[1][1]);
-    }
+    voldata= (returnData.vol[row][0]<<8 | returnData.vol[row][1]);
     int curdata = (returnData.current[row][0]<<8 | returnData.current[row][1])/10;
     int pfdata = returnData.powerfactor[row];
     if(curdata == 0 || pfdata == 0 || voldata == 0 )
@@ -940,10 +928,12 @@ void MainWindow::returnToPacket(QByteArray &array)
     //频率
     returnData.conversefreq = array.at(i++);//4
 
-    //电压
-    for(int m = 0 ; m < 2 ; m++)
-        for(int n = 0 ; n < 2 ; n ++)
-    returnData.vol[m][n] = array.at(i++);//8
+
+    for(int n = 0 ; n < 2 ; n ++)
+    returnData.vol[0][n] = array.at(i++);//6
+
+    for(int n = 0 ; n < 2 ; n ++)
+    returnData.vol[returnData.opnum-1][n] = array.at(i++);//8
 
     //开关状态1
     returnData.onoffState[0] = array.at(i++);//9
@@ -966,10 +956,23 @@ void MainWindow::returnToPacket(QByteArray &array)
     i += 3;//忽略三位97
     returnData.version = array.at(i++);//98
 
-    i += 4;//忽略四位102
-    returnData.len = array.at(i++);//103
+    i += 2;//忽略四位100
+
+    for(int m = 1 ; m < returnData.opnum - 1 ; m ++)
+    for(int n = 0 ; n < 2 ; n ++)
+    returnData.vol[m][n] = array.at(i++);//124
+    if(returnData.opnum < 14)
+    {
+        i += 2;
+        for(int m = returnData.opnum ; m < 13; m ++)
+            for(int n = 0 ; n < 2 ; n ++)
+                i ++;
+    }
+
+
+    returnData.len = array.at(i++);//125
     //异或校验码
-    returnData.xornumber = array.at(i);//104
+    returnData.xornumber = array.at(i);//126
 
 }
 /**

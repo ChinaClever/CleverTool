@@ -1,4 +1,4 @@
-/*
+﻿/*
  * RTU线程
  *
  *  Created on: 2018年1月1日
@@ -19,7 +19,7 @@ SI_RtuThread::SI_RtuThread(QObject *parent) : QThread(parent)
 
 SI_RtuThread::~SI_RtuThread()
 {
-    isRun = false;
+    isRun = true;
     wait();
 }
 
@@ -50,18 +50,55 @@ void SI_RtuThread::init(SerialPort *serial)
  * @param value 值
  * @return true
  */
-bool SI_RtuThread::sentSetCmd(int addr, int reg, ushort value, int msecs)
+bool SI_RtuThread::sentSetCmd(int addr,int fn, int reg, ushort value, int msecs)
 {
     bool ret = false;
     static uchar buf[RTU_BUF_SIZE] = {0};
     QMutexLocker locker(mMutex);
 
-    int len = mRtuSent->sentCmdBuff(addr, reg, value, buf);
+    int len = mRtuSent->sentCmdBuff(addr,fn , reg, value, buf);
+    QByteArray array;
+    QString strArray;
+    array.append((char *)buf, len);
+    strArray = array.toHex(); // 十六进制
+    for(int i=0; i<array.size(); ++i)
+        strArray.insert(2+3*i, " "); // 插入空格
+    strArray = "send:"+strArray;
+    qDebug()<< "send:" << strArray;
+    emit cmdSig(strArray);
     if(mSerial) {
         int rtn = mSerial->transmit(buf, len, mBuf, msecs);
-        if(len == rtn) {
-            if(memcmp(buf, mBuf,rtn) == 0)
+        if(fn == 6)
+        {
+                if(len == rtn) {
+                if(memcmp(buf, mBuf,rtn) == 0)
+                {
+                    array.append((char *)mBuf, len);
+                    strArray = array.toHex(); // 十六进制
+                    for(int i=0; i<array.size(); ++i)
+                        strArray.insert(2+3*i, " "); // 插入空格
+                    strArray = "recv:"+strArray;
+                    qDebug()<< "recv:" << strArray;
+                    emit cmdSig(strArray);
+                    ret = true;
+                }
+                else
+                    qDebug() << "SI sent Set Cmd Err";
+                }
+        }
+        else
+        {
+            if(memcmp(buf, mBuf,2) == 0)
+            {
+                array.append((char *)mBuf, len);
+                strArray = array.toHex(); // 十六进制
+                for(int i=0; i<array.size(); ++i)
+                    strArray.insert(2+3*i, " "); // 插入空格
+                strArray = "recv:"+strArray;
+                qDebug()<< "recv:" << strArray;
+                emit cmdSig(strArray);
                 ret = true;
+            }
             else
                 qDebug() << "SI sent Set Cmd Err";
         }
@@ -72,23 +109,30 @@ bool SI_RtuThread::sentSetCmd(int addr, int reg, ushort value, int msecs)
 
 void SI_RtuThread::run()
 {
-    if(isRun == false) {
-        isRun = true;
+    static int j = 0;
+    isRun = true;
+    while(isRun) {
+
+
 
         for(int i=0; i<mList.size(); ++i)
         {
-            QString str = tr("输出位 %1 命令执行").arg(mList.at(i).reg - mreg+1);
-            bool ret = sentSetCmd(mList.at(i).addr,mList.at(i).reg,mList.at(i).value, 5);
+            //QString str = tr("输出位 %1 命令执行").arg(i);
+            bool ret = sentSetCmd(mList.at(i).addr,mList.at(i).fn,mList.at(i).reg,mList.at(i).value, 1);
             if(ret) {
-                str += tr("成功!!");
+                //str += tr("成功!!");
             } else {
-                 str += tr("失败!!");
+                 //str += tr("失败!!");
+                ++j;
+                emit countSig(j);
             }
-
-            emit cmdSig(str);
         }
-
-        mList.clear();
-        isRun = false;
+        sleep(1);
+        //mList.clear();
     }
+}
+
+void SI_RtuThread::stopThread()
+{
+    isRun = false;
 }

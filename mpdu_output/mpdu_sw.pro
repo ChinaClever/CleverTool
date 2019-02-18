@@ -33,7 +33,8 @@ SOURCES += \
     mpdu_modbus_test/mpdu_test_sw/mpdu_outputswitemwid.cpp \
     mpdu_modbus_test/mpdu_test_sw/mpdu_outputswwid.cpp \
     mpdu_modbus_test/mpdu_test_threshold/mpdu_outputthresholditemwid.cpp \
-    mpdu_modbus_test/mpdu_test_threshold/mpdu_outputthresholdwid.cpp
+    mpdu_modbus_test/mpdu_test_threshold/mpdu_outputthresholdwid.cpp \
+    mpdu_modbus_test/mpdu_test_wrthreshold.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -42,11 +43,13 @@ HEADERS += \
     mpdu_modbus_test/mpdu_test_sw/mpdu_outputswitemwid.h \
     mpdu_modbus_test/mpdu_test_sw/mpdu_outputswwid.h \
     mpdu_modbus_test/mpdu_test_threshold/mpdu_outputthresholditemwid.h \
-    mpdu_modbus_test/mpdu_test_threshold/mpdu_outputthresholdwid.h
+    mpdu_modbus_test/mpdu_test_threshold/mpdu_outputthresholdwid.h \
+    mpdu_modbus_test/mpdu_test_wrthreshold.h
 
 FORMS += \
         mainwindow.ui \
     mpdu_modbus_test/mpdu_test_sw/mpdu_outputswitemwid.ui \
     mpdu_modbus_test/mpdu_test_sw/mpdu_outputswwid.ui \
     mpdu_modbus_test/mpdu_test_threshold/mpdu_outputthresholditemwid.ui \
-    mpdu_modbus_test/mpdu_test_threshold/mpdu_outputthresholdwid.ui
+    mpdu_modbus_test/mpdu_test_threshold/mpdu_outputthresholdwid.ui \
+    mpdu_modbus_test/mpdu_test_wrthreshold.ui

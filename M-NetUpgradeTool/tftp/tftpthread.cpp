@@ -14,8 +14,8 @@
 TftpThread::TftpThread(QObject *parent) : QThread(parent)
 {
     mTftp = new Tftp(this);
-    connect(mTftp, SIGNAL(progressSig(float,QString)), this, SLOT(subProgressSlot(float,QString)));
     mData = DataPacket::bulid()->data;
+    connect(mTftp, SIGNAL(progressSig(float,QString)), this, SLOT(subProgressSlot(float,QString)));
 }
 
 TftpThread::~TftpThread()
@@ -123,15 +123,16 @@ void TftpThread::run(void)
 
     while (mIps.size() > 0) {
         sentFile();
-        msleep(800);
+        if(mIps.size()) sleep(4);
     }
     overSend();
 }
 
 void TftpThread::breakDown()
 {
-    mTftp->breakDown();
     mIps.clear();
+    mTftp->breakDown();
+    wait();
 }
 
 bool TftpThread::checkIp(const QString& ip)

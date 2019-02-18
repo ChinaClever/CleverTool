@@ -85,7 +85,7 @@ typedef struct returntableData{
    quint8 addr;            //执行板地址
    quint8 opnum;           //输出位个数
    quint8 conversefreq;    //交变频率
-   quint8 vol[2][2];          //两个回路的电压
+   quint8 vol[14][2];          //两个回路的电压
    quint8 onoffState[2];      //十四位开关状态
    quint8 current[14][2];   //电流，第一位到第十四位，每位两个字节
 

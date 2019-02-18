@@ -50,16 +50,18 @@ void SendDataAll::run()
         qDebug() << QString("[对象切换_>>地址%1<<]").arg(caddr);
         int cret = 0 ;
         sendUpdateCmd(caddr);
-        bool isPass = false;
+        int isPass = -1;
         do {  //升级回应
             if(cret == 3 || cret == 6) sendUpdateCmd(caddr); //再次发送
             isPass = responseUpdate();
-            if(isPass)
+            if(isPass == 1)
             {
                 if(mWifiSiBusbarFlag)
                     Sleep(1000);
                 break;  //收到回复 跳出循环
             }
+            else if(isPass == 0)
+            {cret = 0;}
             else qDebug() <<"[Get>NG>尝试:]_"<< cret;
             Sleep(1*1000);
             cret++;

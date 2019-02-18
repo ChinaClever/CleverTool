@@ -1,4 +1,4 @@
-/*
+﻿/*
  * RTU发送数据
  *
  *  Created on: 2018年1月1日
@@ -91,14 +91,14 @@ static int rtu_sent_buff(uchar addr, uchar line, uchar *buf)
   * 出口参数：ptr -> 缓冲区
   * 返回值：打包后的长度
   */
-static int rtu_sent_setCmd(uchar addr, ushort reg, ushort value, uchar *buf)
+static int rtu_sent_setCmd(uchar addr,uchar fn, ushort reg, ushort value, uchar *buf)
 {
     static SI_Rtu_Sent msg;
     static QMutex mutex; // 互拆锁
     QMutexLocker locker(&mutex);
 
     msg.addr = addr;
-    msg.fn = 0x06;
+    msg.fn = fn;
     msg.reg = reg;
     msg.len = value;
 
@@ -113,7 +113,7 @@ int SI_RtuSent::sentDataBuff(uchar addr, uchar line, uchar *buf)
     return rtu_sent_buff(addr, line, buf);
 }
 
-int SI_RtuSent::sentCmdBuff(uchar addr, ushort reg, ushort value, uchar *buf)
+int SI_RtuSent::sentCmdBuff(uchar addr,uchar fn, ushort reg, ushort value, uchar *buf)
 {
-    return rtu_sent_setCmd(addr, reg, value, buf);
+    return rtu_sent_setCmd(addr,fn, reg, value, buf);
 }
