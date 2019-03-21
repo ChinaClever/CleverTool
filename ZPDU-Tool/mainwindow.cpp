@@ -435,55 +435,107 @@ void MainWindow::setSwitch(int row,int onOroff ,bool flag)
         //功能码
         sentData.funcode[0] = sendData[j++] = 0xA2;//3
         sentData.funcode[1] = sendData[j++] = 0xB2;//4
-        //打开有效位
-        for(int k = 0; k < 6 ; k++)
-        {
-           if(row == 14 && onOroff)
-               sentData.openeffective[k] = sendData[j++] = 0xFF;//10
-           else
-           sentData.openeffective[k] = sendData[j++] = 0x00;//10
+        if(returnData.opnum>=8){
+            //打开有效位
+            for(int k = 0; k < 6 ; k++)
+            {
+               if(row == 14 && onOroff)
+                   sentData.openeffective[k] = sendData[j++] = 0xFF;//10
+               else
+               sentData.openeffective[k] = sendData[j++] = 0x00;//10
 
-        }
-        if(row != 14 && onOroff)
-         {
-            for(int k = 0 ; k < returnData.opnum ; k++)
-            {
-                if(onbuffer[k] == 1)
-                {
-                    int index = (returnData.opnum * (mAddr-1) +k) / 8 ;
-                    int key = (returnData.opnum * (mAddr-1) +k) % 8 ;
-                    //qDebug()<<"open"<<j<<j-6+index<<k<<index<<key;
-                    sentData.openeffective[index] |= 0x80 >> key;
-                    sendData[j - 6 + index] |= 0x80 >> key;
-                }
             }
-        }
-        //关闭有效位
-        for(int k = 0 ; k < 6 ; k++)
-        {
-            if(row == 14 && !onOroff)
-            {
-                sentData.closeffective[k] = sendData[j++] = 0xFF;//10
-            }
-            else
-           {
-                sentData.closeffective[k] = sendData[j++] = 0x00;
-            }
-        }
-        if(row != 14 && !flag)
-         {
+            if(row != 14 && onOroff)
+             {
                 for(int k = 0 ; k < returnData.opnum ; k++)
                 {
-                    if(offbuffer[k] == 1)
+                    if(onbuffer[k] == 1)
                     {
                         int index = (returnData.opnum * (mAddr-1) +k) / 8 ;
                         int key = (returnData.opnum * (mAddr-1) +k) % 8 ;
-                        //qDebug()<<"close"<<j<<k<<index<<key<<j - 6 + index;
-                        sentData.closeffective[index] |= 0x80 >> key;
+                        //qDebug()<<"open"<<j<<j-6+index<<k<<index<<key;
+                        sentData.openeffective[index] |= 0x80 >> key;
                         sendData[j - 6 + index] |= 0x80 >> key;
-                        //qDebug()<<sendData[j - 6 + index];
                     }
                 }
+            }
+            //关闭有效位
+            for(int k = 0 ; k < 6 ; k++)
+            {
+                if(row == 14 && !onOroff)
+                {
+                    sentData.closeffective[k] = sendData[j++] = 0xFF;//10
+                }
+                else
+               {
+                    sentData.closeffective[k] = sendData[j++] = 0x00;
+                }
+            }
+            if(row != 14 && !flag)
+             {
+                    for(int k = 0 ; k < returnData.opnum ; k++)
+                    {
+                        if(offbuffer[k] == 1)
+                        {
+                            int index = (returnData.opnum * (mAddr-1) +k) / 8 ;
+                            int key = (returnData.opnum * (mAddr-1) +k) % 8 ;
+                            //qDebug()<<"close"<<j<<k<<index<<key<<j - 6 + index;
+                            sentData.closeffective[index] |= 0x80 >> key;
+                            sendData[j - 6 + index] |= 0x80 >> key;
+                            //qDebug()<<sendData[j - 6 + index];
+                        }
+                    }
+            }
+        }
+        else if(returnData.opnum == 4)
+        {
+            //打开有效位
+            for(int k = 0; k < 6 ; k++)
+            {
+               if(row == 14 && onOroff)
+                   sentData.openeffective[k] = sendData[j++] = 0xFF;//10
+               else
+               sentData.openeffective[k] = sendData[j++] = 0x00;//10
+
+            }
+            if(row != 14 && onOroff)
+             {
+                for(int k = 0 ; k < returnData.opnum ; k++)
+                {
+                    if(onbuffer[k] == 1)
+                    {
+                        if(mAddr==3)
+                        sendData[j - 4 ] |= 0x80>>k ;
+                        else if(mAddr==2)
+                        sendData[j - 5 ] |= 0x80>>k ;
+                    }
+                }
+            }
+            //关闭有效位
+            for(int k = 0 ; k < 6 ; k++)
+            {
+                if(row == 14 && !onOroff)
+                {
+                    sentData.closeffective[k] = sendData[j++] = 0xFF;//10
+                }
+                else
+               {
+                    sentData.closeffective[k] = sendData[j++] = 0x00;
+                }
+            }
+            if(row != 14 && !flag)
+             {
+                    for(int k = 0 ; k < returnData.opnum ; k++)
+                    {
+                        if(offbuffer[k] == 1)
+                        {
+                            if(mAddr==3)
+                            sendData[j - 4 ] |= 0x80>>k ;
+                            else if(mAddr==2)
+                            sendData[j - 5 ] |= 0x80>>k ;
+                        }
+                    }
+            }
         }
         //预留位
         sendData[j++] =0xC7;
@@ -932,6 +984,10 @@ void MainWindow::returnToPacket(QByteArray &array)
     for(int n = 0 ; n < 2 ; n ++)
     returnData.vol[0][n] = array.at(i++);//6
 
+    if(returnData.opnum < 8)
+    for(int n = 0 ; n < 2 ; n ++)
+        array.at(i++);
+    else
     for(int n = 0 ; n < 2 ; n ++)
     returnData.vol[returnData.opnum-1][n] = array.at(i++);//8
 
@@ -958,18 +1014,30 @@ void MainWindow::returnToPacket(QByteArray &array)
 
     i += 2;//忽略四位100
 
-    for(int m = 1 ; m < returnData.opnum - 1 ; m ++)
-    for(int n = 0 ; n < 2 ; n ++)
-    returnData.vol[m][n] = array.at(i++);//124
-    if(returnData.opnum < 14)
+    if(returnData.opnum<8)
     {
-        i += 2;
-        for(int m = returnData.opnum ; m < 13; m ++)
-            for(int n = 0 ; n < 2 ; n ++)
-                i ++;
+        for(int m = 1 ; m < returnData.opnum ; m ++)
+        for(int n = 0 ; n < 2 ; n ++)
+        returnData.vol[m][n] = array.at(i++);//124
+        if(returnData.opnum < 14)
+        {
+            for(int m = returnData.opnum ; m < 13; m ++)
+                for(int n = 0 ; n < 2 ; n ++)
+                    i ++;
+        }
     }
-
-
+    else{
+        for(int m = 1 ; m < returnData.opnum - 1 ; m ++)
+        for(int n = 0 ; n < 2 ; n ++)
+        returnData.vol[m][n] = array.at(i++);//124
+        if(returnData.opnum < 14)
+        {
+            i += 2;
+            for(int m = returnData.opnum ; m < 13; m ++)
+                for(int n = 0 ; n < 2 ; n ++)
+                    i ++;
+        }
+    }
     returnData.len = array.at(i++);//125
     //异或校验码
     returnData.xornumber = array.at(i);//126

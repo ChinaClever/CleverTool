@@ -264,10 +264,11 @@ static int rtu_recv_len_dc(uchar *buf, int len)
   * 入口参数：buf -> 缓冲区  len -> 长度
   * 返回值：0 正确
   */
-static int rtu_recv_len(uchar *buf, int len)
+static int rtu_recv_len(uchar *buf, int len , bool flag)
 {
     int ret = 0;
-    int rtn = RTU_SENT_LEN+5;
+
+    int rtn = flag?RTU_SENT_LEN+5:RTU_SENT_DC_LEN+5;
 
     if(0 == rtu_recv_len_dc(buf, len)){ //先判断是否是直流数据
         return ret;
@@ -294,12 +295,12 @@ static int rtu_recv_len(uchar *buf, int len)
   * 出口参数：pkt -> 结构体
   * 返回值：true
   */
-bool rtu_recv_packet(uchar *buf, int len, Rtu_recv *pkt)
+bool rtu_recv_packet(uchar *buf, int len, Rtu_recv *pkt ,bool flag)
 {
     bool ret = false;
 
-    int rtn = rtu_recv_len(buf, len); //判断回收的数据是否完全
-    if(rtn == 0) {
+    int rtn = rtu_recv_len(buf, len , flag); //判断回收的数据是否完全
+    //if(rtn == 0) {
         //qDebug() << len << RTU_SENT_DC_LEN;
         uchar *ptr=buf;
         ptr += rtu_recv_head(ptr, pkt); //指针偏移
@@ -327,7 +328,7 @@ bool rtu_recv_packet(uchar *buf, int len, Rtu_recv *pkt)
         else{
             ptr++; // 直流此字节没有用
             // 读取负载百分比
-            for(int i=0; i<2; ++i)  *(ptr++);
+            for(int i=0; i<2; ++i)  ptr++;
             ptr++; // 此字节没有用，直流只有两路负载百分比
             ptr++; // 此字节没有用，直流谐波通道预留位
             //----------------------[二分二路直流][显示]----------------------------
@@ -349,7 +350,7 @@ bool rtu_recv_packet(uchar *buf, int len, Rtu_recv *pkt)
 #else
         ret = true;
 #endif
-    }
+    //}
     return ret;
 }
 
