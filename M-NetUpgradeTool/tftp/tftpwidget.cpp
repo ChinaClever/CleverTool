@@ -8,14 +8,13 @@ TftpWidget::TftpWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    mData = DataPacket::bulid()->data;
     mExportDlg = new ExportDlg(this);
     mTftpThread = new TftpThread(this);
-    mData = DataPacket::bulid()->data;
 
     timer = new QTimer(this);
-    timer->start(200);
+    timer->start(500);
     connect(timer, SIGNAL(timeout()),this, SLOT(timeoutDone()));
-    ui->breakBtn->setHidden(true);
 }
 
 TftpWidget::~TftpWidget()
@@ -93,7 +92,13 @@ void TftpWidget::on_breakBtn_clicked()
 {
     if(mData->isRun) {
         QuMsgBox box(this, tr("是否执行中断?"));
-        if(box.Exec())
+        if(box.Exec()) {
             mTftpThread->breakDown();
+            InfoMsgBox msg(this, tr("软件即将重启!!!"));
+
+            QProcess *process = new QProcess(this);
+            process->start("M-NetUpgradeTool.exe");
+            exit(0);
+        }
     }
 }

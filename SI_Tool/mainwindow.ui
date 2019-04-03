@@ -26,7 +26,7 @@
       </property>
       <property name="text">
        <string>BUSBAR_SI交直流
-校准工具_V1.0</string>
+校准工具_V1.2</string>
       </property>
       <property name="checkable">
        <bool>false</bool>
@@ -133,7 +133,7 @@
             <string>读取</string>
            </property>
            <property name="checked">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="tristate">
             <bool>false</bool>
@@ -401,23 +401,8 @@ p, li { white-space: pre-wrap; }
       <property name="title">
        <string>显示区</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout_4">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <item row="0" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
         <widget class="QTableWidget" name="tableWidget">
          <attribute name="horizontalHeaderMinimumSectionSize">
           <number>30</number>
@@ -577,8 +562,54 @@ p, li { white-space: pre-wrap; }
          </item>
         </widget>
        </item>
-       <item row="1" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_4"/>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QPushButton" name="ChangeLineBtn">
+           <property name="font">
+            <font>
+             <family>微软雅黑</family>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>改成有线</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="ChangeWifiBtn">
+           <property name="font">
+            <font>
+             <family>微软雅黑</family>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>改成无线</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="Statuslab">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="font">
+            <font>
+             <family>微软雅黑</family>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>改无线成功</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>

@@ -1,4 +1,4 @@
-#ifndef SI_RTUTHREAD_H
+﻿#ifndef SI_RTUTHREAD_H
 #define SI_RTUTHREAD_H
 
 #include "si_rtu_sent.h"
@@ -8,6 +8,7 @@
 struct sSetCmd
 {
     int addr;
+    int fn;
     int reg;
     ushort value;
 };
@@ -19,17 +20,19 @@ public:
     explicit SI_RtuThread(QObject *parent = nullptr);
     static SI_RtuThread *bulid(QObject *parent = nullptr);
     ~SI_RtuThread();
+    void stopThread();
 
     void init(SerialPort *serial);
     void setCmd(sSetCmd &cmd) {mList.append(cmd);}
     int mreg;
 
 protected:    
-    bool sentSetCmd(int addr, int reg, ushort value, int msecs);
+    bool sentSetCmd(int addr, int fn, int reg, ushort value, int msecs);
     void run();
 
 signals:
     void cmdSig(QString);
+    void countSig(int);
 
 public slots:
 

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * 对串口的常用操作：打开、读、写、关闭
  *
  *  Created on: 2018年1月1日
@@ -8,7 +8,7 @@
 #include <QSerialPortInfo>
 #include <QApplication>
 
-#define SERIAL_READ_TIMEOUT  100  // 100MS
+#define SERIAL_READ_TIMEOUT  30  // 30MS
 
 SerialPort::SerialPort(QObject *parent) : QThread(parent)
 {
@@ -144,7 +144,7 @@ int SerialPort::write(const QByteArray &array)
         len = mSerial->write(array);
         if(len > 0) {
             mSerial->flush();
-            mSerial->waitForBytesWritten(SERIAL_READ_TIMEOUT);
+//            mSerial->waitForBytesWritten(SERIAL_READ_TIMEOUT);
 //            msleep(255);
         }
     }
@@ -247,7 +247,7 @@ int SerialPort::transmit(const QByteArray &witeArray, QByteArray &readArray, int
     if(ret > 0) {
         ret = read(readArray, msecs);
         if((ret < 0) || (ret > SERIAL_LEN)) {
-            qDebug() << "SerialPort transmit read err"  << ret;
+
             ret = 0;
         } else if(ret == 0) {
             // qDebug() << "SerialPort transmit read no data"  << ret;

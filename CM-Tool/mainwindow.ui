@@ -23,6 +23,12 @@
       <height>23</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
     <property name="text">
      <string>保存</string>
     </property>
@@ -35,6 +41,12 @@
       <width>471</width>
       <height>161</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>11</pointsize>
+     </font>
     </property>
     <property name="title">
      <string>输入设置</string>
@@ -50,8 +62,8 @@
      </property>
      <property name="font">
       <font>
-       <family>04b_21</family>
-       <pointsize>12</pointsize>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -69,8 +81,8 @@
      </property>
      <property name="font">
       <font>
-       <family>04b_21</family>
-       <pointsize>12</pointsize>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -88,8 +100,8 @@
      </property>
      <property name="font">
       <font>
-       <family>04b_21</family>
-       <pointsize>12</pointsize>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -105,6 +117,12 @@
        <height>25</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
     </widget>
     <widget class="QSpinBox" name="spinBox_2">
      <property name="geometry">
@@ -115,15 +133,27 @@
        <height>25</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
     </widget>
     <widget class="QSpinBox" name="spinBox_3">
      <property name="geometry">
       <rect>
-       <x>110</x>
+       <x>101</x>
        <y>90</y>
-       <width>42</width>
+       <width>51</width>
        <height>25</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
+      </font>
      </property>
      <property name="maximum">
       <number>10000</number>
@@ -144,7 +174,7 @@
      <property name="font">
       <font>
        <family>微软雅黑</family>
-       <pointsize>12</pointsize>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -163,7 +193,7 @@
      <property name="font">
       <font>
        <family>微软雅黑</family>
-       <pointsize>12</pointsize>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -182,7 +212,7 @@
      <property name="font">
       <font>
        <family>微软雅黑</family>
-       <pointsize>12</pointsize>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -200,8 +230,8 @@
      </property>
      <property name="font">
       <font>
-       <family>04b_21</family>
-       <pointsize>12</pointsize>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -213,9 +243,15 @@
       <rect>
        <x>200</x>
        <y>90</y>
-       <width>42</width>
+       <width>51</width>
        <height>25</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
+      </font>
      </property>
      <property name="maximum">
       <number>10000</number>
@@ -236,7 +272,7 @@
      <property name="font">
       <font>
        <family>微软雅黑</family>
-       <pointsize>12</pointsize>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -253,6 +289,12 @@
       <height>161</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
     <property name="title">
      <string>PDU配置</string>
     </property>
@@ -268,7 +310,7 @@
      <property name="font">
       <font>
        <family>微软雅黑</family>
-       <pointsize>12</pointsize>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -289,8 +331,8 @@
      </property>
      <property name="font">
       <font>
-       <family>04b_21</family>
-       <pointsize>12</pointsize>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -308,8 +350,8 @@
      </property>
      <property name="font">
       <font>
-       <family>04b_21</family>
-       <pointsize>12</pointsize>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -327,8 +369,8 @@
      </property>
      <property name="font">
       <font>
-       <family>04b_21</family>
-       <pointsize>12</pointsize>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -346,8 +388,8 @@
      </property>
      <property name="font">
       <font>
-       <family>04b_21</family>
-       <pointsize>12</pointsize>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -365,8 +407,8 @@
      </property>
      <property name="font">
       <font>
-       <family>04b_21</family>
-       <pointsize>12</pointsize>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -384,8 +426,8 @@
      </property>
      <property name="font">
       <font>
-       <family>04b_21</family>
-       <pointsize>12</pointsize>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -403,8 +445,8 @@
      </property>
      <property name="font">
       <font>
-       <family>04b_21</family>
-       <pointsize>12</pointsize>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -422,8 +464,8 @@
      </property>
      <property name="font">
       <font>
-       <family>04b_21</family>
-       <pointsize>12</pointsize>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -442,7 +484,7 @@
      <property name="font">
       <font>
        <family>微软雅黑</family>
-       <pointsize>12</pointsize>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -460,8 +502,8 @@
      </property>
      <property name="font">
       <font>
-       <family>04b_21</family>
-       <pointsize>12</pointsize>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -479,8 +521,8 @@
      </property>
      <property name="font">
       <font>
-       <family>04b_21</family>
-       <pointsize>12</pointsize>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -495,6 +537,12 @@
        <width>131</width>
        <height>25</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
+      </font>
      </property>
      <property name="currentIndex">
       <number>1</number>
@@ -527,6 +575,12 @@
        <height>25</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
      <property name="text">
       <string>clever</string>
      </property>
@@ -542,6 +596,12 @@
        <width>131</width>
        <height>25</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>0</string>
@@ -559,6 +619,12 @@
        <height>25</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
      <property name="text">
       <string>3</string>
      </property>
@@ -574,6 +640,12 @@
        <width>71</width>
        <height>25</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>4</string>
@@ -591,6 +663,12 @@
        <height>25</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
      <property name="text">
       <string>24</string>
      </property>
@@ -606,6 +684,12 @@
        <width>71</width>
        <height>25</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>4</string>
@@ -623,6 +707,12 @@
        <height>25</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_8">
      <property name="geometry">
@@ -632,6 +722,12 @@
        <width>71</width>
        <height>25</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
+      </font>
      </property>
     </widget>
     <widget class="QLineEdit" name="lineEdit_9">
@@ -643,6 +739,12 @@
        <height>25</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
     </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_3">
@@ -653,6 +755,12 @@
       <width>611</width>
       <height>61</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>11</pointsize>
+     </font>
     </property>
     <property name="title">
      <string/>
@@ -668,8 +776,8 @@
      </property>
      <property name="font">
       <font>
-       <family>04b_21</family>
-       <pointsize>12</pointsize>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="styleSheet">
@@ -690,8 +798,8 @@
      </property>
      <property name="font">
       <font>
-       <family>04b_21</family>
-       <pointsize>12</pointsize>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -710,7 +818,7 @@
      <property name="font">
       <font>
        <family>微软雅黑</family>
-       <pointsize>12</pointsize>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -729,7 +837,7 @@
      <property name="font">
       <font>
        <family>微软雅黑</family>
-       <pointsize>12</pointsize>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="styleSheet">
@@ -749,6 +857,12 @@
       <height>501</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
     <property name="title">
      <string>设备状态</string>
     </property>
@@ -760,6 +874,12 @@
        <width>1071</width>
        <height>471</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
+      </font>
      </property>
      <property name="currentIndex">
       <number>3</number>

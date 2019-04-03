@@ -1,10 +1,11 @@
-#include "datapacket.h"
+﻿#include "datapacket.h"
 
 DataPacket::DataPacket()
 {
     data = new sDataPacket;
     data->isRun = false;
     data->progress = 0;
+    data->subPorgress = 0;
 }
 
 DataPacket *DataPacket::bulid()

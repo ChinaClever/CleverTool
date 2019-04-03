@@ -62,8 +62,13 @@ HEADERS += \
     udp/sent/udpsentsocket.h \
     udp/recv/udprecvsocket.h \
     udp/udptesting.h
+RESOURCES += \
+    images/images.qrc
 
 FORMS += \
         mainwindow.ui \
     export/exportdlg.ui \
     bulidip/ipswid.ui
+
+RC_ICONS = logo.ico
+

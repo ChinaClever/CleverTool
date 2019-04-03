@@ -41,6 +41,10 @@ private slots:
 
     void on_clearBtn_clicked(); //电能清零
 
+    void on_ChangeLineBtn_clicked();
+
+    void on_ChangeWifiBtn_clicked();
+
 public slots:
     void onGetShowData(int value, Rtu_recv *data); //显示用参数
 

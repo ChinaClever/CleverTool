@@ -37,6 +37,10 @@
   <property name="windowTitle">
    <string>MPDU批量升级工具</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>images/logo.jpg</normaloff>images/logo.jpg</iconset>
+  </property>
   <property name="whatsThis">
    <string>我们不一样</string>
   </property>

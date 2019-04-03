@@ -6,6 +6,7 @@
  *      Author: Lzy
  */
 #include "tftp.h"
+#include "common/msgbox.h"
 
 #define GET 0
 #define PUT 1
@@ -31,36 +32,40 @@ QHostAddress tftpServer;
 
 Tftp::Tftp(QObject *parent) : QThread(parent)
 {   
+    sFile = nullptr;
+    isRun = false;
     mPort = 7755;
     udpSocketClient = nullptr;
+
+    memset(recvData, 0, sizeof(recvData));
+    udpSocketClient = new QUdpSocket(this);
+    initSocket();
 }
 
 void Tftp::startDown()
 {
     isRun = true;
     operation = GET;
-    serverPort = 0;
     recv_data_bytes = 0;
     send_data_bytes = 0;
     send_file_size = 0;
     wrq_block_no = 0;
     put_finished_flag = false;
+}
 
-    if(udpSocketClient) {
-        udpSocketClient->close();
-        delete udpSocketClient;
-    }
-
-    memset(recvData, 0, sizeof(recvData));
-    udpSocketClient = new QUdpSocket(this);
-    udpSocketClient->bind(QHostAddress::Any, mPort++);
+void Tftp::initSocket()
+{
+    bool ret = false;
+    do {
+        ret = udpSocketClient->bind(QHostAddress::Any, mPort++);
+        if(!ret) qDebug() << "udpSocketClient bind err" << mPort-1;
+    } while(ret == false);
     connect(udpSocketClient, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()));
 }
 
 void Tftp::breakDown()
 {
     isRun = false;
-//     disconnect(udpSocketClient, SIGNAL(readyRead()), this, SLOT(readPendingDatagrams()));
 }
 
 void Tftp::sendReadReqMsg(char *pFilename)
@@ -72,7 +77,7 @@ void Tftp::sendReadReqMsg(char *pFilename)
 
     int filenamelen = strlen(pFilename) + 1;
     int packetsize = sizeof(header) + filenamelen + 5 + 1;
-    char *rrq_packet = (char *)malloc(packetsize);
+    char rrq_packet[2*packetsize] = {0};
     char *mode = "octet";
 
     memcpy(rrq_packet, &header, sizeof(header));
@@ -80,6 +85,7 @@ void Tftp::sendReadReqMsg(char *pFilename)
     memcpy(rrq_packet + sizeof(header) + filenamelen, mode, strlen(mode) + 1);
 
     int bytes = udpSocketClient->writeDatagram(rrq_packet,packetsize,tftpServer,serverPort);
+    if(bytes != packetsize) { isRun=false; return; }
     qDebug()<<"RRQ : "<<bytes<<"had been sent!";
 
     /*according the path and new the file for reveive data*/
@@ -101,12 +107,6 @@ void Tftp::sendReadReqMsg(char *pFilename)
 
         qDebug()<< "Get and save the file info : "<< rFile->fileName();
     }
-
-    if(NULL != rrq_packet)
-    {
-        free(rrq_packet);
-        rrq_packet = NULL;
-    }
 }
 
 void Tftp::sendWriteReqMsg(char *pFilename)
@@ -117,7 +117,7 @@ void Tftp::sendWriteReqMsg(char *pFilename)
         header.opcode = qToBigEndian<short>(OPCODE_WRQ);
         int filenamelen = strlen(pFilename) + 1;
         int packetsize = sizeof(header) + filenamelen + 5 + 1;
-        char *wrq_packet = (char *)malloc(packetsize);
+        char wrq_packet[2*packetsize] = {0};
         char *mode = "octet";
 
         memcpy(wrq_packet, &header, sizeof(header));
@@ -125,13 +125,8 @@ void Tftp::sendWriteReqMsg(char *pFilename)
         memcpy(wrq_packet + sizeof(header) + filenamelen, mode, strlen(mode) + 1);
 
         int bytes = udpSocketClient->writeDatagram(wrq_packet,packetsize,tftpServer,serverPort);
-        qDebug()<<"WRQ : "<<bytes<<"had been sent!";
-
-        if(NULL != wrq_packet)
-        {
-            free(wrq_packet);
-            wrq_packet = NULL;
-        }
+        if(bytes != packetsize) { isRun=false; return; }
+        qDebug()<<"WRQ : "<<bytes<<serverPort<<"had been sent!";
     }
 
     //open localfile and send them to server
@@ -155,27 +150,25 @@ void Tftp::sendDataAckMsg(struct TFTPData *pData, QHostAddress sender, quint16 s
     ack.block = pData->block;
 
     int ack_packet_size = sizeof(ack);
-    char *ack_packet = (char *)malloc(ack_packet_size);
+    char ack_packet[2*ack_packet_size] = {0};
     memcpy(ack_packet, &ack, ack_packet_size);
     int bytes = udpSocketClient->writeDatagram(ack_packet,ack_packet_size,sender,senderPort);
+    if(bytes != ack_packet_size) { isRun=false; return; }
     qDebug("ACK : %d bytes had been sent!\n", bytes);
-    if(NULL != ack_packet)
-    {
-        free(ack_packet);
-        ack_packet = NULL;
-    }
 }
 
 void Tftp::sendDataMsg(short blockno, QHostAddress sender, quint16 senderPort)
 {
-    char *temp_buff = (char *)malloc(BLOCKSIZE);
-    int data_size = sFile->read(temp_buff, BLOCKSIZE);
+    static char temp_buff[4*BLOCKSIZE] = {0};
+    static char data_packet_buff[4*BLOCKSIZE] = {0};
+
     int data_packet_size = 0;
+    int data_size = sFile->read(temp_buff, BLOCKSIZE);
+    if(data_size < 0) { isRun=false; return; }
 
     struct TFTPData send_data;
     send_data.header.opcode = qToBigEndian<short>(OPCODE_DATA);
     send_data.block = qFromBigEndian<short>(blockno);
-
     qDebug()<<"send_data.block :"<< send_data.block;
 
     if(data_size >= 0)
@@ -183,42 +176,28 @@ void Tftp::sendDataMsg(short blockno, QHostAddress sender, quint16 senderPort)
         data_packet_size = DATA_PACKET_HEADER_LEN + data_size;
         send_data_bytes += data_size;
     }
-    char *data_packet_buff = (char *)malloc(data_packet_size);
-
     memcpy(data_packet_buff, &send_data, DATA_PACKET_HEADER_LEN);
     memcpy(data_packet_buff + DATA_PACKET_HEADER_LEN, temp_buff, data_size);
 
     int bytes = udpSocketClient->writeDatagram(data_packet_buff,data_packet_size,sender,senderPort);
+    if(bytes != data_packet_size) { isRun=false; return; }
     qDebug()<<"WRQ : "<<bytes<<" bytes had been sent!";
-
-    if(NULL != temp_buff)
-    {
-        free(temp_buff);
-        temp_buff = NULL;
-    }
-
-    if(NULL != data_packet_buff)
-    {
-        free(data_packet_buff);
-        data_packet_buff = NULL;
-    }
 
     if(data_size >= 0 && data_size < BLOCKSIZE)
     {
         sFile->close();
-        //        wrq_block_no = 0;
-        //        send_data_bytes = 0;
+        wrq_block_no = 0;
+        send_data_bytes = 0;
         put_finished_flag = true;
         f_info = "Put Finished!";
-        //        ui->progressBar->setFormat(f_info);
-        //        ui->progressBar->setMaximum(101);
+        // ui->progressBar->setFormat(f_info);
+        // ui->progressBar->setMaximum(101);
         emit progressSig(101, f_info);
     }
 }
 
 void Tftp::readPendingDatagrams()
 {
-//    qDebug() << "AAAAAA" << udpSocketClient->hasPendingDatagrams() << isRun;
     if(udpSocketClient->hasPendingDatagrams()&&isRun)
     {
         QHostAddress sender;
@@ -226,6 +205,7 @@ void Tftp::readPendingDatagrams()
         int readbytes;
 
         readbytes = udpSocketClient->readDatagram(recvData, sizeof(recvData), &sender, &senderPort);
+        if(readbytes < 0) { isRun=false; return; }
         struct TFTPHeader *header = (struct TFTPHeader*) recvData;
         struct TFTPData *data = (struct TFTPData*) recvData;
         struct TFTPACK *ack = (struct TFTPACK*) recvData;
@@ -313,24 +293,24 @@ bool Tftp::upload(const QString &file, const QString &ip, int port, int sec)
     startDown();
     sendWriteReqMsg(fileName);
 
-//    qDebug()<<"tftp Server Ip : "<< ip;
-//    qDebug()<<"tftp Server Port : "<< serverPort;
-//    qDebug()<<"filename :"<< file << put_fileName;
+    //    qDebug()<<"tftp Server Ip : "<< ip;
+    //    qDebug()<<"tftp Server Port : "<< serverPort;
+    //    qDebug()<<"filename :"<< file << put_fileName;
 
     for(int i=0; i<sec; ++i) {
         if(put_finished_flag || !isRun) break;
         sleep(1);
     }
-
+    //initSocket();
 
     return put_finished_flag;
 }
 
 bool Tftp::getload(const QString &file, const QString &ip, int port)
 {
-//    get_filePath = QFileDialog::getExistingDirectory(this, tr("Choose Directory"),"/home",
-//                                             QFileDialog::ShowDirsOnly
-//                                             |QFileDialog::DontResolveSymlinks);
+    //    get_filePath = QFileDialog::getExistingDirectory(this, tr("Choose Directory"),"/home",
+    //                                             QFileDialog::ShowDirsOnly
+    //                                             |QFileDialog::DontResolveSymlinks);
 
     fileName = file.toLatin1().data();
     serverPort = port;

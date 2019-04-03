@@ -5,6 +5,7 @@
 #include "datamodel.h"
 
 extern int CRC16_2(char* pchMsg, int wDataLen);//CRC校验
+extern int CRC16_22(char* pchMsg,int start, int wDataLen);//CRC校验
 extern uchar BCC(QByteArray array); //异或校验
 
 void sleep(unsigned int msec);
@@ -18,8 +19,8 @@ static int rtu_recv_data(uchar *ptr, RtuRecvLine *msg);
 static int rtu_recv_env(uchar *ptr, RtuEnvUnit *msg);
 static bool rtu_recv_crc(uchar *buf, int len, Rtu_recv *msg);
 static int rtu_recv_len_dc(uchar *buf, int len);
-static int rtu_recv_len(uchar *buf, int len);
-bool rtu_recv_packet(uchar *buf, int len, Rtu_recv *pkt);
+static int rtu_recv_len(uchar *buf, int len, bool flag);
+bool rtu_recv_packet(uchar *buf, int len, Rtu_recv *pkt, bool flag);
 
 
 #endif // COMMONDATA_H

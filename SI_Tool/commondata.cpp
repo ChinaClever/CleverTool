@@ -30,6 +30,28 @@ int CRC16_2(char* pchMsg, int wDataLen)
     return wCRC;
 }
 
+/**
+ * @brief CRC16_2
+ * @param pchMsg
+ * @param wDataLen  pchMsg的长度
+ * @return
+ */
+int CRC16_22(char* pchMsg, int start ,int wDataLen)
+{
+    unsigned short wCRC = 0xFFFF;
+    int i;
+    uchar chChar;
+
+    for (i = start; i < wDataLen; i++)
+    {
+        chChar = *pchMsg++;
+        wCRC = wCRCTalbeAbs[(chChar ^ wCRC) & 15] ^ (wCRC >> 4);
+        wCRC = wCRCTalbeAbs[((chChar >> 4) ^ wCRC) & 15] ^ (wCRC >> 4);
+    }
+   // qDebug() << "校验码：" << wCRC << QString::number(wCRC,16);
+    return wCRC;
+}
+
 QByteArray quintToByte(quint8 *cmd, int len)
 {
     QByteArray array;
@@ -201,6 +223,22 @@ static bool rtu_recv_crc(uchar *buf, int len, Rtu_recv *msg)
     return ret;
 }
 
+static int rtu_recv_thd(uchar *ptr, Rtu_recv *msg)
+{
+    *(ptr++); // 防雷开关
+     // 读取负载百分比
+    for(int i=0; i<3; ++i) *(ptr++);
+    *(ptr++);
+
+    int len = 32;
+    if(msg->addr) len = 3;
+    for(int i=0; i<len; ++i){
+        (*ptr) * 256 + *(ptr+1);  ptr += 2;
+    }
+
+    return (1+3+1+len*2);
+}
+
 static int rtu_recv_len_dc(uchar *buf, int len)
 {
     int ret = 0;
@@ -226,10 +264,11 @@ static int rtu_recv_len_dc(uchar *buf, int len)
   * 入口参数：buf -> 缓冲区  len -> 长度
   * 返回值：0 正确
   */
-static int rtu_recv_len(uchar *buf, int len)
+static int rtu_recv_len(uchar *buf, int len , bool flag)
 {
     int ret = 0;
-    int rtn = RTU_SENT_LEN+5;
+
+    int rtn = flag?RTU_SENT_LEN+5:RTU_SENT_DC_LEN+5;
 
     if(0 == rtu_recv_len_dc(buf, len)){ //先判断是否是直流数据
         return ret;
@@ -256,12 +295,12 @@ static int rtu_recv_len(uchar *buf, int len)
   * 出口参数：pkt -> 结构体
   * 返回值：true
   */
-bool rtu_recv_packet(uchar *buf, int len, Rtu_recv *pkt)
+bool rtu_recv_packet(uchar *buf, int len, Rtu_recv *pkt ,bool flag)
 {
     bool ret = false;
 
-    int rtn = rtu_recv_len(buf, len); //判断回收的数据是否完全
-    if(rtn == 0) {
+    int rtn = rtu_recv_len(buf, len , flag); //判断回收的数据是否完全
+    //if(rtn == 0) {
         //qDebug() << len << RTU_SENT_DC_LEN;
         uchar *ptr=buf;
         ptr += rtu_recv_head(ptr, pkt); //指针偏移
@@ -282,20 +321,36 @@ bool rtu_recv_packet(uchar *buf, int len, Rtu_recv *pkt)
         for(int i=0; i<lineSum; ++i) // 读取电参数
             ptr += rtu_recv_data(ptr, &(pkt->data[i]));
 
-        //----------------------[二分二路直流][显示]----------------------------
-        if(2 == pkt->rate && 2 == pkt->lineNum && 0 == pkt->dc){ //交换2-3数据
-            RtuRecvLine data;
-            data = pkt->data[1];
-            pkt->data[1] = pkt->data[2];
-            pkt->data[2] = data;
-            //swap(pkt->data[1], pkt->data[2]);
+        if(pkt->dc)
+        {
+            ptr += rtu_recv_thd(ptr , pkt);
         }
+        else{
+            ptr++; // 直流此字节没有用
+            // 读取负载百分比
+            for(int i=0; i<2; ++i)  ptr++;
+            ptr++; // 此字节没有用，直流只有两路负载百分比
+            ptr++; // 此字节没有用，直流谐波通道预留位
+            //----------------------[二分二路直流][显示]----------------------------
+            if(2 == pkt->rate && 2 == pkt->lineNum && 0 == pkt->dc){ //交换2-3数据
+                RtuRecvLine data;
+                data = pkt->data[1];
+                pkt->data[1] = pkt->data[2];
+                pkt->data[2] = data;
+                //swap(pkt->data[1], pkt->data[2]);
+            }
+        }
+
+
         //---------------------------------------------------------------
 
+#if 0
         pkt->crc = (ptr[1]*256) + ptr[0]; // 获取校验码
         ret = rtu_recv_crc(buf, len, pkt); //校验码
-        //qDebug() <<  ret;
-    }
+#else
+        ret = true;
+#endif
+    //}
     return ret;
 }
 

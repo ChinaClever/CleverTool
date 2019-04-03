@@ -89,7 +89,7 @@ void MainWindow::onGetShowData(int value, Rtu_recv *data)
         int j = 0;
         setItem(i, j++, data->data[i].cur, 10); //电流
          setItem(i, j++, data->data[i].vol, 1); //电压
-         setItem(i, j++, data->data[i].ele, 1000); //电能
+         setItem(i, j++, data->data[i].ele, 10); //电能
          if(i < 3){
              setItem(i, j++, data->env[i].tem.value, 1); //温度
          }else
@@ -217,4 +217,98 @@ void MainWindow::on_clearBtn_clicked()
         CriticalMsgBox box(this, tr("请打开串口"));
     }
 
+}
+
+void MainWindow::on_ChangeLineBtn_clicked()
+{
+    if(mRtuThread->mSerialPortPlate->isOpened()) {
+        if(mRtuThread->getRun()){
+            CriticalMsgBox box(this, tr("请先停止其他操作"));
+        }else{
+            static uchar sentDat[8] =
+            {0x01, 0x10, 0x10, 0x41, 0x00, 0x00, 0x14, 0x80};
+
+            sentDat[0] = ui->addr->text().toInt();
+            ushort crc = CRC16_2((char*)sentDat, 6);
+            sentDat[6] = (0xff)&(crc); /*低8位*/
+            sentDat[7] = ((crc) >> 8); /*高8位*/
+            mRtuThread->onWrite(sentDat, sizeof(sentDat));
+            qDebug() << "send" << QByteArray((char*)sentDat, sizeof(sentDat)).toHex();
+
+            onDebugEidt(tr("[%1_改变有线通信]_已发送>[%2]").arg(ui->addr->text())
+                        .arg(QString(QByteArray((char*)sentDat, sizeof(sentDat)).toHex())));
+
+
+            sleep(500);
+            uchar recvDat[20];
+            int ret = 0;
+            memset(recvDat,0,sizeof(recvDat));
+            for(int i = 0; i < 8; i++){
+                sleep(500);
+                ret = mRtuThread->mSerialPortPlate->read(recvDat, 2);
+                if(ret > 3) break;
+            }
+            qDebug() << "get3:" << QByteArray((char*)recvDat, ret).toHex();
+            if(ret > 3)
+            {
+                ui->Statuslab->setText(tr("改有线成功"));
+                onDebugEidt(tr("[地址%1_改变有线通信]_完成").arg(mRtuThread->mAddr));
+            }
+            else
+            {
+                ui->Statuslab->setText(tr("改有线失败"));
+                onDebugEidt(tr("[地址%1_改变有线通信]_无回复").arg(mRtuThread->mAddr));
+            }
+            onDebugEidt(tr(" "));
+        }
+    } else {
+        CriticalMsgBox box(this, tr("请打开串口"));
+    }
+}
+
+void MainWindow::on_ChangeWifiBtn_clicked()
+{
+    if(mRtuThread->mSerialPortPlate->isOpened()) {
+        if(mRtuThread->getRun()){
+            CriticalMsgBox box(this, tr("请先停止其他操作"));
+        }else{
+            static uchar sentDat[8] =
+            {0x01, 0x10, 0x10, 0x41, 0x00, 0x01, 0x14, 0x80};
+
+            sentDat[0] = ui->addr->text().toInt();
+            ushort crc = CRC16_2((char*)sentDat, 6);
+            sentDat[6] = (0xff)&(crc); /*低8位*/
+            sentDat[7] = ((crc) >> 8); /*高8位*/
+            mRtuThread->onWrite(sentDat, sizeof(sentDat));
+            qDebug() << "send" << QByteArray((char*)sentDat, sizeof(sentDat)).toHex();
+
+            onDebugEidt(tr("[%1_改变无线通信]_已发送>[%2]").arg(ui->addr->text())
+                        .arg(QString(QByteArray((char*)sentDat, sizeof(sentDat)).toHex())));
+
+
+            sleep(500);
+            uchar recvDat[20];
+            int ret = 0;
+            memset(recvDat,0,sizeof(recvDat));
+            for(int i = 0; i < 8; i++){
+                sleep(500);
+                ret = mRtuThread->mSerialPortPlate->read(recvDat, 2);
+                if(ret > 3) break;
+            }
+            qDebug() << "get3:" << QByteArray((char*)recvDat, ret).toHex();
+            if(ret > 3)
+            {
+                ui->Statuslab->setText(tr("改无线成功"));
+                onDebugEidt(tr("[地址%1_改变无线通信]_完成").arg(mRtuThread->mAddr));
+            }
+            else
+            {
+                ui->Statuslab->setText(tr("改无线成功"));
+                onDebugEidt(tr("[地址%1_改变无线通信]_无回复").arg(mRtuThread->mAddr));
+            }
+            onDebugEidt(tr(" "));
+        }
+    } else {
+        CriticalMsgBox box(this, tr("请打开串口"));
+    }
 }

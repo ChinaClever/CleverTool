@@ -257,16 +257,18 @@ void MainWindow::on_startBtn_clicked()
         qDebug() <<"";
         qDebug() << QString("[>>↓↓↓↓↓↓↓ 定点升级%1 ↓↓↓↓↓↓↓<<]").arg(ui->addrEdit->text().toInt());
 
-        bool isPass = false;
+        int isPass = -1;//-1失败 1成功 0接收到其它的数据
         do {  //升级回应
             if(ret == 3 || ret == 6) sendUpdateCmd(); //再次发送
             isPass = responseUpdate();
-            if(isPass)
+            if(isPass == 1)
              {
                 if( ui->radioButton->isChecked())
                     sleep(1000);
                     break;  //收到回复 跳出循环
             }
+            else if(isPass == 0)
+            {ret = 0;}
             else qDebug() << "NG>" << ret;
             sleep(1*1000);
             ret++;
@@ -347,7 +349,7 @@ bool MainWindow::sendUpdateCmd()  //bool型
 /**
  * @brief MainWindow::responseUpdate  升级命令回应
  */
-bool MainWindow::responseUpdate()
+int MainWindow::responseUpdate()
 {
     QString responseStr = tr("Start Updata");
 
@@ -358,9 +360,11 @@ bool MainWindow::responseUpdate()
         qDebug() << "Data1" << array.toHex();
         QString str = QString(array);
         if(str == responseStr)
-            return true;
+            return 1;
+        if(!str.isEmpty())
+            return 0;
     }
-    return false;
+    return -1;
 }
 
 /**

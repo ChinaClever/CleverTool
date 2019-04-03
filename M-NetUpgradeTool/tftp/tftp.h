@@ -45,6 +45,7 @@ public:
     void startDown();
 
 protected:
+    void initSocket();
     void sendReadReqMsg(char *pFilename);
     void sendDataAckMsg(struct TFTPData *pData, QHostAddress sender, quint16 senderPort);
     void sendWriteReqMsg(char *pFilename);
@@ -57,7 +58,7 @@ private slots:
     void readPendingDatagrams();
 
 private:
-      char recvData[RECV_BUFFER_SIZE];
+      char recvData[2*RECV_BUFFER_SIZE];
       QUdpSocket *udpSocketClient;
       QFile *rFile;
       QFile *sFile;

@@ -1,4 +1,4 @@
-#ifndef SI_RTU_SENT_H
+﻿#ifndef SI_RTU_SENT_H
 #define SI_RTU_SENT_H
 
 #include "serialportwid.h"
@@ -19,7 +19,7 @@ class SI_RtuSent
 {
 public:
     int sentDataBuff(uchar addr, uchar line, uchar *buf);
-    int sentCmdBuff(uchar addr, ushort reg, ushort value, uchar *buf);
+    int sentCmdBuff(uchar addr, uchar fn, ushort reg, ushort value, uchar *buf);
 };
 
 ushort si_rtu_crc(uchar *buf, int len);

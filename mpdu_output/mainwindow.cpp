@@ -1,6 +1,6 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "mpdu_modbus_test/mpdu_test_threshold/mpdu_outputthresholdwid.h"
+#include "mpdu_modbus_test/mpdu_test_wrthreshold.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -10,13 +10,13 @@ MainWindow::MainWindow(QWidget *parent) :
     mSerialPortDlg = new SerialPortDlg(this);
     mSerialPort = mSerialPortDlg->getSerialPort();
 
-    MPDU_OutputThresholdWid *wid = new MPDU_OutputThresholdWid(ui->tabWidget);
-    wid->initwid(0, mSerialPort);
-    ui->tabWidget->addTab(wid, tr("输出位最小值"));
+    Mpdu_Test_WRThreshold *wid = new Mpdu_Test_WRThreshold(ui->tabWidget);
+    wid->initwid(mSerialPort);
+    ui->tabWidget->addTab(wid, tr("MPDU修改读取阈值轮发"));
 
-    wid = new MPDU_OutputThresholdWid(ui->tabWidget);
-    wid->initwid(1, mSerialPort);
-    ui->tabWidget->addTab(wid, tr("输出位最大值"));
+    //    wid = new MPDU_OutputThresholdWid(ui->tabWidget);
+    //    wid->initwid(1, mSerialPort);
+    //    ui->tabWidget->addTab(wid, tr("输出位最大值"));
 }
 
 MainWindow::~MainWindow()
