@@ -89,7 +89,7 @@ void MainWindow::onGetShowData(int value, Rtu_recv *data)
         int j = 0;
         setItem(i, j++, data->data[i].cur, 10); //电流
          setItem(i, j++, data->data[i].vol, 1); //电压
-         setItem(i, j++, data->data[i].ele, 1000); //电能
+         setItem(i, j++, data->data[i].ele, 10); //电能
          if(i < 3){
              setItem(i, j++, data->env[i].tem.value, 1); //温度
          }else
