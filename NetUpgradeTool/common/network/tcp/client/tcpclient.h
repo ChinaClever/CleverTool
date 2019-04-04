@@ -22,6 +22,7 @@ public:
     explicit TcpClient(QObject *parent = 0);
     ~TcpClient();
 
+    bool isOver;
     void newConnect(const QString &host, int port=TCP_PORT); //连接服务器
     bool sentMessage(uchar *buf,  int len);
     bool sentMessage(const QByteArray &data);

@@ -23,6 +23,8 @@ TcpClient::TcpClient(QObject *parent) : QObject(parent)
 {
     isNew = false;
     isConnect = false;
+    isOver = false;
+
     mTcpSocket = new QTcpSocket(this);
     connect(mTcpSocket, SIGNAL(connected()), this,SLOT(connectedSlot()));
     connect(mTcpSocket, SIGNAL(disconnected()), this,SLOT(disconnectedSlot()));
@@ -52,7 +54,7 @@ void TcpClient::closeConnect(void)
         QReadLocker locker(mLock);
         mSentData.clear();
         isConnect = false;
-        mTcpSocket->abort(); //取消已有的连接
+        mTcpSocket->close(); //取消已有的连接
     }
 }
 
@@ -62,6 +64,7 @@ void TcpClient::newConnect(const QString &host, int port)
     {
         isNew = true;
         mServerIP = host;
+        isOver = isConnect = false;
     }
 }
 
@@ -153,13 +156,15 @@ int TcpClient::writeMessage(QByteArray &data)
 void TcpClient::timeoutDone(void)
 {
     if(isConnect && mSentData.size()) {
+        QReadLocker locker(mLock); /*获取线程状态*/
         QByteArray data = mSentData.first();
         writeMessage(data);
-        QReadLocker locker(mLock); /*获取线程状态*/
         mSentData.removeFirst();
     } else {
         newConnectSlot();
     }
+
+    if(isOver) closeConnect();
 }
 
 /**

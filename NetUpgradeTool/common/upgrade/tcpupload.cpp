@@ -99,6 +99,7 @@ void TcpUpload::upload(sTcpUpload &tcpStr)
     mTcpUpdateStr = tcpStr;
     connectServer(tcpStr.ip);
     mSentLen = 0;
+    emit progressSig(0, "OK");
 }
 
 /**
@@ -175,7 +176,9 @@ void TcpUpload::breakDown()
 {
     isStart = false;
     mByFile.clear();
-    mTcpClient->closeConnect();
+    mTcpClient->isOver = true;
+
+    //    mTcpClient->closeConnect();
 }
 
 

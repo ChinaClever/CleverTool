@@ -81,10 +81,7 @@ void UpgradeWid::on_updateBtn_clicked()
     else mUpgradeThread = mTftpThread;
 
     if(checkFile()) {
-//        mUpgradeThread->startSend();
-
-        if(mData->devtype) mTcpThread->startSend();
-        else mTftpThread->startSend();
+        mUpgradeThread->startSend();
     }
 }
 

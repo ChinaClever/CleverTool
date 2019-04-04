@@ -35,7 +35,7 @@ bool TcpUpgrade::upload(const QString &file, const QString &ip)
 
     bool ret = false;
     if(mStatus > 0) ret = true;
-    breakSent();
+     breakSent();
 
     return ret;
 }
