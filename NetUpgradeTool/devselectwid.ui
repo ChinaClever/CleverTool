@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>836</width>
-    <height>57</height>
+    <height>97</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <x>-10</x>
      <y>10</y>
      <width>831</width>
-     <height>41</height>
+     <height>71</height>
     </rect>
    </property>
    <property name="title">
@@ -28,7 +28,7 @@
    <widget class="QRadioButton" name="ipRadio">
     <property name="geometry">
      <rect>
-      <x>90</x>
+      <x>110</x>
       <y>10</y>
       <width>151</width>
       <height>21</height>
@@ -44,8 +44,8 @@
    <widget class="QRadioButton" name="rzRadio">
     <property name="geometry">
      <rect>
-      <x>240</x>
-      <y>10</y>
+      <x>110</x>
+      <y>40</y>
       <width>101</width>
       <height>19</height>
      </rect>
@@ -57,7 +57,7 @@
    <widget class="QLineEdit" name="userEdit">
     <property name="geometry">
      <rect>
-      <x>410</x>
+      <x>338</x>
       <y>10</y>
       <width>113</width>
       <height>21</height>
@@ -70,8 +70,8 @@
    <widget class="QLineEdit" name="pwdEdit">
     <property name="geometry">
      <rect>
-      <x>610</x>
-      <y>10</y>
+      <x>330</x>
+      <y>40</y>
       <width>113</width>
       <height>21</height>
      </rect>
@@ -83,7 +83,7 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>351</x>
+      <x>279</x>
       <y>10</y>
       <width>61</width>
       <height>21</height>
@@ -96,8 +96,8 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>570</x>
-      <y>15</y>
+      <x>290</x>
+      <y>45</y>
       <width>51</width>
       <height>21</height>
      </rect>
@@ -109,8 +109,8 @@
    <widget class="QPushButton" name="okBtn">
     <property name="geometry">
      <rect>
-      <x>752</x>
-      <y>10</y>
+      <x>490</x>
+      <y>20</y>
       <width>71</width>
       <height>28</height>
      </rect>
