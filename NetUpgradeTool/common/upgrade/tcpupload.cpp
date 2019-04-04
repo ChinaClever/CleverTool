@@ -50,9 +50,9 @@ bool TcpUpload::startSent(void)
 {
     bool ret = sentLen(); // 发送文件长度
     if(ret) {
-        ret =  mTcpClient->sentMessage(mTcpUpdateStr.usr.toUtf8());
-        ret =  mTcpClient->sentMessage(mTcpUpdateStr.pwd.toUtf8()); // 发送用户名信息
-        QTimer::singleShot(1000,this,SLOT(timeoutDone()));
+        ret =  mTcpClient->sentMessage(mTcpUpdateStr.usr.toLatin1());
+        ret =  mTcpClient->sentMessage(mTcpUpdateStr.pwd.toLatin1()); // 发送用户名信息
+//        QTimer::singleShot(1000,this,SLOT(timeoutDone()));
     }
     return ret;
 }
@@ -72,7 +72,7 @@ bool TcpUpload::recvVerify(void)
     if(rtn > 0) {
         QString str;
         str.append(data);
-        if(str != "OK"){ // 验证错误
+        if(!str.contains("OK")){ // 验证错误
             ret = isStart = isRun = false;
             if(!isVeried) id = UP_CMD_PWDERR; // 账号错误
             else id = UP_CMD_ERR; // 账号错误
@@ -88,12 +88,11 @@ bool TcpUpload::recvVerify(void)
 bool TcpUpload::connectServer(const QString &ip)
 {
     if(!ip.isEmpty()) {
-        isStart = true; // 开始运行
         isVeried = false;
-        return mTcpClient->newConnect(ip);
+        mTcpClient->newConnect(ip);
     }
 
-    return false;
+    return true;
 }
 
 void TcpUpload::upload(sTcpUpload &tcpStr)
@@ -155,6 +154,7 @@ void TcpUpload::connectSlot(int step)
     switch (step) {
     case UP_CMD_CONNECT: // 连接成功 首先发送文件长度
         startSent();
+        isStart = true; // 开始运行
         emit connectSig(UP_CMD_CONNECT); // 账号错误
         break;
 
@@ -176,7 +176,7 @@ void TcpUpload::breakDown()
 {
     isStart = false;
     mByFile.clear();
-    mTcpClient->closeConnect();
+//    mTcpClient->closeConnect();
 }
 
 

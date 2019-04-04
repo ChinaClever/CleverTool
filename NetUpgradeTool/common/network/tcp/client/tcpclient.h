@@ -22,7 +22,7 @@ public:
     explicit TcpClient(QObject *parent = 0);
     ~TcpClient();
 
-    bool newConnect(const QString &host, int port=TCP_PORT); //连接服务器
+    void newConnect(const QString &host, int port=TCP_PORT); //连接服务器
     bool sentMessage(uchar *buf,  int len);
     bool sentMessage(const QByteArray &data);
     bool getSentStatue(void);
@@ -43,13 +43,17 @@ protected slots:
     void connectedSlot();
     void disconnectedSlot();
     void readMessageSlot();  //接收数据
+    void newConnectSlot(); //连接服务器
     void displayError(QAbstractSocket::SocketError);  //显示错误
 
 private:
-    QHostAddress *mServerIP;
     QTcpSocket *mTcpSocket;
     QList<QByteArray> mSentData;
     QByteArray mRecvData;
+    QString mServerIP;
+    bool isNew;
+    QTimer *timer;
+    QReadWriteLock *mLock;
 };
 
 bool get_tcp_connect(void);

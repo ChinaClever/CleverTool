@@ -28,13 +28,13 @@ bool TcpUpgrade::upload(const QString &file, const QString &ip)
     mStatus = 0;
     mTcpSent->upload(tcpStr);
 
-    for(int i=0; i<4*60; ++i) {
+    for(int i=0; i<10*60; ++i) {
         if(mStatus) break;
-        else sleep(1);
+        else sleep(1);        
     }
 
-    bool ret = true;
-    if(mStatus < 0) ret = false;
+    bool ret = false;
+    if(mStatus > 0) ret = true;
     breakSent();
 
     return ret;

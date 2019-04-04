@@ -21,23 +21,24 @@ bool get_tcp_connect(void)
 
 TcpClient::TcpClient(QObject *parent) : QObject(parent)
 {
+    isNew = false;
     isConnect = false;
-    mServerIP = new QHostAddress();
-
     mTcpSocket = new QTcpSocket(this);
     connect(mTcpSocket, SIGNAL(connected()), this,SLOT(connectedSlot()));
     connect(mTcpSocket, SIGNAL(disconnected()), this,SLOT(disconnectedSlot()));
     connect(mTcpSocket,SIGNAL(readyRead()),this,SLOT(readMessageSlot()));
     connect(mTcpSocket,SIGNAL(error(QAbstractSocket::SocketError)),
             this,SLOT(displayError(QAbstractSocket::SocketError)));
+
+    mLock = new QReadWriteLock();
+    timer = new QTimer(this);
+    timer->start(10);
+    connect(timer, SIGNAL(timeout()),this, SLOT(timeoutDone()));
 }
 
 TcpClient::~TcpClient()
 {
-    delete mServerIP;
-
-    if(mTcpSocket)
-        closeConnect();
+    if(mTcpSocket) closeConnect();
 }
 
 
@@ -54,29 +55,29 @@ void TcpClient::closeConnect(void)
     }
 }
 
+void TcpClient::newConnect(const QString &host, int port)
+{
+//    if((mServerIP != host) || (!isConnect))
+    {
+        isNew = true;
+        mServerIP = host;
+    }
+}
+
 /**
  * @brief 建立新的连接
  * @param host 目标主机
  * @return true
  */
-bool TcpClient::newConnect(const QString &host, int port)
+void TcpClient::newConnectSlot()
 {
-    QHostAddress address(host);
-    if((*mServerIP == address) && (isConnect)) return true;
-
-    bool ret = mServerIP->setAddress(host);
-    if(ret)
-    {
-        if(isConnect)
-            closeConnect(); //先关闭
-
-        mTcpSocket->connectToHost(*mServerIP,port);//连接到主机，机地址和端口号
+    if(!mServerIP.isEmpty() && isNew) {
+        if(isConnect) closeConnect(); //先关闭
+        QHostAddress host(mServerIP);
+        mTcpSocket->connectToHost(host,TCP_PORT);//连接到主机，机地址和端口号
         mSentData.clear();
+        isNew = false;
     }
-    else
-        qDebug() << "newConnect set ip err" << host;
-
-    return ret;
 }
 
 /**
@@ -100,8 +101,8 @@ bool TcpClient::sentMessage(uchar *buf,  int len)
  */
 bool TcpClient::sentMessage(const QByteArray &data)
 {   
+    QReadLocker locker(mLock); /*获取线程状态*/
     mSentData.append(data);
-    QTimer::singleShot(1,this,SLOT(timeoutDone()));
 
     return isConnect;
 }
@@ -131,17 +132,18 @@ int TcpClient::writeMessage(QByteArray &data)
 
     if(isConnect)
     {
+        QReadLocker locker(mLock); /*获取线程状态*/
         if(mTcpSocket->isWritable())
         {
-
             rtn = mTcpSocket->write(data);
             if(rtn == data.size()) {
-                mTcpSocket->waitForBytesWritten();
+                mTcpSocket->flush();
+                // mTcpSocket->waitForBytesWritten();
             } else {
-                 emit connectSig(UP_CMD_ERR);
-                emit sentErr(mServerIP->toString());
+                emit connectSig(UP_CMD_ERR);
             }
         }
+        qDebug() << "BBBBBBBB" << rtn;
     }
     data.clear();
 
@@ -154,7 +156,10 @@ void TcpClient::timeoutDone(void)
     if(isConnect && mSentData.size()) {
         QByteArray data = mSentData.first();
         writeMessage(data);
+        QReadLocker locker(mLock); /*获取线程状态*/
         mSentData.removeFirst();
+    } else {
+        newConnectSlot();
     }
 }
 
@@ -184,16 +189,20 @@ void TcpClient::disconnectedSlot()
  */
 void TcpClient::readMessageSlot(void)
 {
+    int ret = 0;
+    QReadLocker locker(mLock); /*获取线程状态*/
     while(mTcpSocket->bytesAvailable() > 0)
     {
         QByteArray datagram;
         datagram.resize(mTcpSocket->bytesAvailable());
-        mTcpSocket->read(datagram.data(), datagram.size());
+        ret += mTcpSocket->read(datagram.data(), datagram.size());
         mRecvData = datagram;
-        emit connectSig(UP_CMD_READ);
 
-        // qDebug() << datagram.data();
+        qDebug() << datagram.data();
     }
+
+    if(ret)
+        emit connectSig(UP_CMD_READ);
 }
 
 /**
@@ -202,9 +211,7 @@ void TcpClient::readMessageSlot(void)
 void TcpClient::displayError(QAbstractSocket::SocketError)
 {
     closeConnect();
-    emit sentErr(mServerIP->toString());
     emit connectSig(UP_CMD_ERR); // 连接错误
-    //    qDebug() << mTcpSocket->errorString(); //输出错误信息
 }
 
 /**

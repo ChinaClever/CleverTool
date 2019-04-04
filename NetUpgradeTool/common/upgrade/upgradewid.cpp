@@ -28,8 +28,7 @@ bool UpgradeWid::checkFile()
     bool ret = false;
     QString fn = ui->lineEdit->text();
     if(!fn.isEmpty()) {
-        QString str = fn.section(".", -1);
-        if((str == "bin"&& 0 == mData->devtype) ||  (str == "tar"&& 1 == mData->devtype)) {
+        if(fn.contains("bin") || fn.contains("tar")) {
             mData->file = fn;
             ret = true;
         } else {
@@ -82,7 +81,10 @@ void UpgradeWid::on_updateBtn_clicked()
     else mUpgradeThread = mTftpThread;
 
     if(checkFile()) {
-        mUpgradeThread->startSend();
+//        mUpgradeThread->startSend();
+
+        if(mData->devtype) mTcpThread->startSend();
+        else mTftpThread->startSend();
     }
 }
 
