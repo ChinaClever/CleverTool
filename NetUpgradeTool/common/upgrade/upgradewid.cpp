@@ -1,5 +1,5 @@
 ﻿#include "upgradewid.h"
-#include "ui_tftpwidget.h"
+#include "ui_upgradewid.h"
 #include "msgbox.h"
 
 UpgradeWid::UpgradeWid(QWidget *parent) :
