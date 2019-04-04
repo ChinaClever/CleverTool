@@ -49,15 +49,16 @@ void TcpClient::closeConnect(void)
 {
     if(isConnect)
     {
+        QReadLocker locker(mLock);
+        mSentData.clear();
         isConnect = false;
         mTcpSocket->abort(); //取消已有的连接
-        mSentData.clear();
     }
 }
 
 void TcpClient::newConnect(const QString &host, int port)
 {
-//    if((mServerIP != host) || (!isConnect))
+    if((mServerIP != host) || (!isConnect))
     {
         isNew = true;
         mServerIP = host;
@@ -136,16 +137,14 @@ int TcpClient::writeMessage(QByteArray &data)
         if(mTcpSocket->isWritable())
         {
             rtn = mTcpSocket->write(data);
-            if(rtn == data.size()) {
-                mTcpSocket->flush();
-                // mTcpSocket->waitForBytesWritten();
-            } else {
-                emit connectSig(UP_CMD_ERR);
+            if(rtn != data.size()) {
+                 emit connectSig(UP_CMD_ERR);
             }
+            mTcpSocket->flush();
+           // mTcpSocket->waitForBytesWritten()
         }
         qDebug() << "BBBBBBBB" << rtn;
     }
-    data.clear();
 
     return rtn;
 }
@@ -198,7 +197,7 @@ void TcpClient::readMessageSlot(void)
         ret += mTcpSocket->read(datagram.data(), datagram.size());
         mRecvData = datagram;
 
-        qDebug() << datagram.data();
+        qDebug() << "readMessageSlot" << datagram.data();
     }
 
     if(ret)

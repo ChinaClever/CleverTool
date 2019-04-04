@@ -42,6 +42,7 @@ bool TcpUpgrade::upload(const QString &file, const QString &ip)
 
 void TcpUpgrade::breakSent()
 {
+    mStatus = -1;
     mTcpSent->breakDown();
 }
 

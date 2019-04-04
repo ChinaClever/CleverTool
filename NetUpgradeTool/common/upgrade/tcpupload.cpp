@@ -52,7 +52,6 @@ bool TcpUpload::startSent(void)
     if(ret) {
         ret =  mTcpClient->sentMessage(mTcpUpdateStr.usr.toLatin1());
         ret =  mTcpClient->sentMessage(mTcpUpdateStr.pwd.toLatin1()); // 发送用户名信息
-//        QTimer::singleShot(1000,this,SLOT(timeoutDone()));
     }
     return ret;
 }
@@ -176,7 +175,7 @@ void TcpUpload::breakDown()
 {
     isStart = false;
     mByFile.clear();
-//    mTcpClient->closeConnect();
+    mTcpClient->closeConnect();
 }
 
 
