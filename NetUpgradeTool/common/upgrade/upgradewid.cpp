@@ -94,13 +94,13 @@ void UpgradeWid::on_exportBtn_clicked()
 void UpgradeWid::on_breakBtn_clicked()
 {
     if(mData->isRun) {
-        QuMsgBox box(this, tr("是否执行中断?"));
+        QuMsgBox box(this, tr("是否要中断传输?"));
         if(box.Exec()) {
             mUpgradeThread->breakDown();
             if(!mData->devtype) {
                 InfoMsgBox msg(this, tr("软件即将重启!!!"));
                 QProcess *process = new QProcess(this);
-                process->start("M-NetUpgradeTool.exe");
+                process->start("NetUpgradeTool.exe");
                 exit(0);
             }
         }
