@@ -1,11 +1,12 @@
-﻿#ifndef MAINWINDOW_H
+#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "bulidip/ipswid.h"
-#include "tftpwidget.h"
-#include "tables/okstabwid.h"
-#include "udp/udptesting.h"
+#include "ipswid.h"
+#include "upgradewid.h"
+#include "okstabwid.h"
+#include "udptesting.h"
+#include "devselectwid.h"
 
 namespace Ui {
 class MainWindow;
@@ -24,14 +25,14 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QTimer* timer;
     IpsWid *mIpsWid;
-    UpgradeWid *mTftpWid;
-
+    UpgradeWid *mUpgradeWid;
     IpsTabWid *mIpsTabWid;
     OksTabWid *mOksTabWid;
     ErrsTabWid *mErrsTabWid;
-    QTimer* timer;
     UdpTesting* mUdpTesting;
+    DevSelectWid *mDevSelectWid;
 };
 
 #endif // MAINWINDOW_H

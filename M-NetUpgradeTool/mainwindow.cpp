@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     DataPacket::bulid()->data;
     mIpsWid = new IpsWid(ui->ipWid);
-    mTftpWid = new TftpWidget(ui->tftpWid);
+    mTftpWid = new UpgradeWid(ui->tftpWid);
 
     mIpsTabWid = new IpsTabWid(ui->ipsTabWid);
     mOksTabWid = new OksTabWid(ui->oksTabWid);

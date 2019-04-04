@@ -1,6 +1,6 @@
-﻿#include "tftpwidget.h"
+﻿#include "upgradewid.h"
 #include "ui_tftpwidget.h"
-#include "common\msgbox.h"
+#include "msgbox.h"
 
 UpgradeWid::UpgradeWid(QWidget *parent) :
     QWidget(parent),
@@ -10,7 +10,8 @@ UpgradeWid::UpgradeWid(QWidget *parent) :
 
     mData = DataPacket::bulid()->data;
     mExportDlg = new ExportDlg(this);
-    mTftpThread = new TftpThread(this);
+    mTcpThread = new TcpUpgrade(this);
+    mTftpThread = new TftpUpgrade(this);
 
     timer = new QTimer(this);
     timer->start(500);
@@ -76,10 +77,12 @@ void UpgradeWid::timeoutDone(void)
 
 
 void UpgradeWid::on_updateBtn_clicked()
-{    
-    if(checkFile())
-    {
-        mTftpThread->startSend();
+{
+    if(mData->devtype) mUpgradeThread = mTcpThread;
+    else mUpgradeThread = mTftpThread;
+
+    if(checkFile()) {
+        mUpgradeThread->startSend();
     }
 }
 
@@ -93,12 +96,13 @@ void UpgradeWid::on_breakBtn_clicked()
     if(mData->isRun) {
         QuMsgBox box(this, tr("是否执行中断?"));
         if(box.Exec()) {
-            mTftpThread->breakDown();
-            InfoMsgBox msg(this, tr("软件即将重启!!!"));
-
-            QProcess *process = new QProcess(this);
-            process->start("M-NetUpgradeTool.exe");
-            exit(0);
+            mUpgradeThread->breakDown();
+            if(!mData->devtype) {
+                InfoMsgBox msg(this, tr("软件即将重启!!!"));
+                QProcess *process = new QProcess(this);
+                process->start("M-NetUpgradeTool.exe");
+                exit(0);
+            }
         }
     }
 }

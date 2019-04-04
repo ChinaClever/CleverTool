@@ -1,8 +1,8 @@
 ﻿#ifndef TFTPWIDGET_H
 #define TFTPWIDGET_H
 
-#include "export/exportdlg.h"
-#include "tftpthread.h"
+#include "exports/exportdlg.h"
+#include "tcpupgrade.h"
 
 namespace Ui {
 class UpgradeWid;
@@ -32,8 +32,10 @@ private:
     sDataPacket *mData;
 
     QTimer *timer;
-    TftpThread *mTftpThread;
     ExportDlg *mExportDlg;
+    TcpUpgrade *mTcpThread;
+    TftpUpgrade *mTftpThread;
+    UpgradeThread *mUpgradeThread;
 };
 
 #endif // TFTPWIDGET_H

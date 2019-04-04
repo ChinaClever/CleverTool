@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1216</width>
+    <height>704</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1216</width>
+    <height>704</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1216</width>
+    <height>704</height>
+   </size>
+  </property>
+  <property name="sizeIncrement">
+   <size>
+    <width>1216</width>
+    <height>704</height>
+   </size>
+  </property>
+  <property name="font">
+   <font>
+    <family>微软雅黑</family>
+    <pointsize>11</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>MPDU批量升级工具</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>images/logo.jpg</normaloff>images/logo.jpg</iconset>
+  </property>
+  <property name="whatsThis">
+   <string>我们不一样</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QGroupBox" name="group">
+    <property name="geometry">
+     <rect>
+      <x>11</x>
+      <y>51</y>
+      <width>581</width>
+      <height>501</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>列表显示区</string>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <item row="0" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QWidget" name="ipsTabWid" native="true"/>
+       </item>
+       <item>
+        <widget class="QWidget" name="oksTabWid" native="true"/>
+       </item>
+       <item>
+        <widget class="QWidget" name="errsTabWid" native="true"/>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="devWid" native="true">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>0</y>
+      <width>561</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>16777215</width>
+      <height>60</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>612</x>
+      <y>11</y>
+      <width>591</width>
+      <height>581</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QGroupBox" name="ipWid">
+       <property name="title">
+        <string>IP生成区</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="upWid">
+       <property name="title">
+        <string>升级操作区</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1216</width>
+     <height>26</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
