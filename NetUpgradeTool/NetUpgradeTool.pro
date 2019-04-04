@@ -43,3 +43,9 @@ HEADERS += \
 FORMS += \
         mainwindow.ui \
     devselectwid.ui
+
+
+RESOURCES += \
+    images/images.qrc
+
+RC_ICONS = logo.ico
