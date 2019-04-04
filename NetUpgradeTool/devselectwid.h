@@ -21,6 +21,8 @@ private slots:
     void on_ipRadio_clicked(bool checked);
     void on_rzRadio_clicked(bool checked);
 
+    void on_okBtn_clicked();
+
 private:
     Ui::DevSelectWid *ui;
     sDataPacket *mData;

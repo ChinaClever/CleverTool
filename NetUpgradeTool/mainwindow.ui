@@ -49,7 +49,7 @@
     <property name="geometry">
      <rect>
       <x>11</x>
-      <y>51</y>
+      <y>110</y>
       <width>581</width>
       <height>501</height>
      </rect>
@@ -97,17 +97,17 @@
       <x>20</x>
       <y>0</y>
       <width>561</width>
-      <height>41</height>
+      <height>100</height>
      </rect>
     </property>
     <property name="maximumSize">
      <size>
       <width>16777215</width>
-      <height>60</height>
+      <height>100</height>
      </size>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>612</x>
