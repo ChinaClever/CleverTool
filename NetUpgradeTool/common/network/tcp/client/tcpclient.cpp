@@ -146,6 +146,7 @@ int TcpClient::writeMessage(QByteArray &data)
             mTcpSocket->flush();
             mTcpSocket->waitForBytesWritten();
         }
+
         qDebug() << "BBBBBBBB" << rtn;
     }
 
