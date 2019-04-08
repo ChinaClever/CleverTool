@@ -88,6 +88,7 @@ bool TcpUpload::connectServer(const QString &ip)
 {
     if(!ip.isEmpty()) {
         isVeried = false;
+        isStart = true; // 开始运行
         mTcpClient->newConnect(ip);
     }
 
@@ -154,7 +155,6 @@ void TcpUpload::connectSlot(int step)
     switch (step) {
     case UP_CMD_CONNECT: // 连接成功 首先发送文件长度
         startSent();
-        isStart = true; // 开始运行
         emit connectSig(UP_CMD_CONNECT); // 账号错误
         break;
 
@@ -178,7 +178,7 @@ void TcpUpload::breakDown()
     mByFile.clear();
     mTcpClient->isOver = true;
 
-    //    mTcpClient->closeConnect();
+    // mTcpClient->closeConnect();
 }
 
 
