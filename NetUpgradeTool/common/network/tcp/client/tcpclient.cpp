@@ -144,7 +144,7 @@ int TcpClient::writeMessage(QByteArray &data)
                  emit connectSig(UP_CMD_ERR);
             }
             mTcpSocket->flush();
-           // mTcpSocket->waitForBytesWritten()
+            mTcpSocket->waitForBytesWritten();
         }
         qDebug() << "BBBBBBBB" << rtn;
     }
