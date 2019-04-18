@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     mFile = new QFile;
+    mMutex = new QMutex();
     mSnmp = new SnmpThread(this);
     m_timer =  new QTimer(this);
     m_timer->start(1000);
@@ -73,6 +74,7 @@ void MainWindow::openFile()
 void MainWindow::writeLog(const QString &str)
 {
     if(isSave) {
+        QMutexLocker locker(mMutex);
         mFile->write(str.toUtf8() + "\n");
         mFile->flush();
     }
@@ -175,30 +177,33 @@ void MainWindow::timeoutDone()
 {
     if(ui->overBtn->isEnabled()) {
         updateData();
+        writeLog(logs);
     }
 }
 
 void MainWindow::requestSlot(const QString& str)
 {
+    QMutexLocker locker(mMutex);
     QString  timestr = QTime::currentTime().toString("hh:mm:ss.zzz");
     QString text = "\n----------------------------------------------";
     ui->textEdit->append(text);
-    writeLog(text);
+    logs += text + "\n";
 
     text = tr("请求:") + timestr + "  " + str;
     ui->textEdit->append(text);
-    writeLog(text);
+    logs += text + "\n";
 }
 
 void MainWindow::responseSlot(const QtSnmpDataList& values)
 {
+    QMutexLocker locker(mMutex);
     for( const auto& value : values ) {
         QString  str = tr("应答:") + QTime::currentTime().toString("hh:mm:ss.zzz") +  "  ";
         str += qPrintable( value.address() );
         str += "  ";
         str += qPrintable( value.data());
         ui->textEdit->append(str);
-        writeLog(str);
+        logs += str + "\n";
     }
 }
 

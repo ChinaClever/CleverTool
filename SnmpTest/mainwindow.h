@@ -39,6 +39,8 @@ private:
     QTimer *m_timer;
     QFile *mFile;
     bool isSave;
+    QString logs;
+    QMutex *mMutex;
 };
 
 #endif // MAINWINDOW_H
