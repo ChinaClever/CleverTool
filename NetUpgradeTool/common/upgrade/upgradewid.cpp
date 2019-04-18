@@ -28,7 +28,7 @@ bool UpgradeWid::checkFile()
     bool ret = false;
     QString fn = ui->lineEdit->text();
     if(!fn.isEmpty()) {
-        if(fn.contains("bin") || fn.contains("tar")) {
+        if(fn.contains("bin") || (1 == mData->devtype&&fn.contains("tar"))) {
             mData->file = fn;
             ret = true;
         } else {
