@@ -73,7 +73,7 @@ void MainWindow::openFile()
 void MainWindow::writeLog(const QString &str)
 {
     if(isSave) {
-        mFile->write(str.toUtf8());
+        mFile->write(str.toUtf8() + "\n");
         mFile->flush();
     }
 }
