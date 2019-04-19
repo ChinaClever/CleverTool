@@ -96,9 +96,9 @@ void SnmpThread::onResponseReceived(const qint32, const QtSnmpDataList& values )
     getReqTime();
 
     emit responseSig(values);
-//    for( const auto& value : values ) {
-//        qDebug( "%s | %s : %s\n", qPrintable( "192" ),  qPrintable( value.address() ),  qPrintable( value.data()) );
-//    }
+    for( const auto& value : values ) {
+        qDebug( "%s | %s : %s\n", qPrintable( "192" ),  qPrintable( value.address() ),  qPrintable( value.data()) );
+    }
 }
 
 void SnmpThread::onRequestFailed( const qint32 request_id ) {
@@ -116,7 +116,7 @@ bool SnmpThread::makeRequest()
         m_snmp_client->requestValues(mOids);
         emit requestSig(mOids.first());
     }else if(!mSubOid.isEmpty()) {
-        m_snmp_client->requestSubValues(mSubOid);
+        qint32 ret =m_snmp_client->requestSubValues(mSubOid);
         emit requestSig(mSubOid);
     } else {
         ret = false;
