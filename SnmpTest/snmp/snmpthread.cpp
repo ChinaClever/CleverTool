@@ -107,7 +107,6 @@ void SnmpThread::onRequestFailed( const qint32 request_id ) {
     emit reqErrSig();
 }
 
-
 bool SnmpThread::makeRequest()
 {    
     bool ret = true;
@@ -116,7 +115,23 @@ bool SnmpThread::makeRequest()
         m_snmp_client->requestValues(mOids);
         emit requestSig(mOids.first());
     }else if(!mSubOid.isEmpty()) {
-        qint32 ret =m_snmp_client->requestSubValues(mSubOid);
+//        QString str = mSubOid;
+//        if(str.length() == 21)
+//            str += "1";
+//        else if(str.length() == 20)
+//            str += ".1";
+
+//        m_snmp_client->requestSubValues(str);
+//        emit requestSig(mSubOid);
+//        int index = 1;
+//        while(index < 8)
+//        {
+//            ++index;
+//            str.replace(str.length()-1,1,tr("%1").arg(index));
+//            qDebug()<<"oid"<<index<<str;
+//            m_snmp_client->requestSubValues(str);
+//        }
+        m_snmp_client->requestSubValues(mSubOid);
         emit requestSig(mSubOid);
     } else {
         ret = false;
