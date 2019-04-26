@@ -1,4 +1,4 @@
-﻿/*
+/*
  * common.cpp
  * 公共方法接口
  *
@@ -41,7 +41,7 @@ void com_setBackColour(const QString &str,QWidget *target)
 QString cm_pathOfData(const QString& name)
 {
     QDir dataDir(QDir::home());
-    QString dirName = ".CleverTestSystem";
+    QString dirName = ".safetytest";
     if(!dataDir.exists(dirName))
         dataDir.mkdir(dirName);
     dataDir.cd(dirName);

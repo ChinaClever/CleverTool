@@ -13,14 +13,16 @@ HEADERS += \
     $$PWD/msgbox.h \
     $$PWD/common.h \
     $$PWD/configbase.h \
-    $$PWD/sysconfigfile.h
+    $$PWD/sysconfigfile.h \
+    $$PWD/datapacket.h
    
 	
 SOURCES += \	
     $$PWD/msgbox.cpp \
     $$PWD/common.cpp \
     $$PWD/configbase.cpp \
-    $$PWD/sysconfigfile.cpp
+    $$PWD/sysconfigfile.cpp \
+    $$PWD/datapacket.cpp
    
 
 FORMS += \
