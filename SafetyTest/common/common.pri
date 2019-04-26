@@ -7,6 +7,7 @@ include(chars/chars.pri)
 include(logcom/logcom.pri)
 include(sqlcom/sqlcom.pri)
 include(tablecom/tablecom.pri)
+include(testcom/testcom.pri)
 include(serialport/serialport.pri)
 
 HEADERS += \	

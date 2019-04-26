@@ -4,16 +4,19 @@
 #include "serialportdlg.h"
 #include "datapacket.h"
 
-class TestConfig
+class ConfigBase
 {
 public:
-    TestConfig();
+    ConfigBase();
 
     sTestConfigItem *item;
     void initConfig(sSnItem *it=nullptr);
     void saveConfig(sSnItem *it=nullptr);
 
 protected:
+    QString getName();
+    void setName(const QString &arg);
+
     QString getOp();
     void setOp(const QString &arg);
 

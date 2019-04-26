@@ -6,43 +6,60 @@
  */
 #include "configbase.h"
 
-TestConfig::TestConfig()
+ConfigBase::ConfigBase()
 {
     item = new sTestConfigItem();
 }
 
-void TestConfig::initConfig(sSnItem *it)
+void ConfigBase::initConfig(sSnItem *it)
 {
     if(!it) it = &(item->sn);
 
     it->op = getOp();
     it->cn = getCn();
+    it->name = getName();
     it->barCode = getBarCode();
     it->batch = getBatch();
     it->purpose = getPurpose();
     it->snClear = getSnClear();
 }
 
-void TestConfig::saveConfig(sSnItem *it)
+void ConfigBase::saveConfig(sSnItem *it)
 {
     if(!it) it = &(item->sn);
 
     setOp(it->op);
     setCn(it->cn);
+    setName(it->name);
     setBarCode(it->barCode);
     setBatch(it->batch);
     setPurpose(it->purpose);
     setSnClear(it->snClear);
 }
 
-QString TestConfig::getOp()
+
+QString ConfigBase::getName()
+{
+    QString prefix = getPrefix();
+    QString str = QString("%1_name").arg(prefix);
+    return sys_configFile_readStr(str, prefix);
+}
+
+void ConfigBase::setName(const QString &arg)
+{
+    QString prefix = getPrefix();
+    QString str = QString("%1_name").arg(prefix);
+    sys_configFile_writeParam(str, arg, prefix);
+}
+
+QString ConfigBase::getOp()
 {
     QString prefix = getPrefix();
     QString str = QString("%1_op").arg(prefix);
     return sys_configFile_readStr(str, prefix);
 }
 
-void TestConfig::setOp(const QString &arg)
+void ConfigBase::setOp(const QString &arg)
 {
     QString prefix = getPrefix();
     QString str = QString("%1_op").arg(prefix);
@@ -50,14 +67,14 @@ void TestConfig::setOp(const QString &arg)
 }
 
 
-QString TestConfig::getCn()
+QString ConfigBase::getCn()
 {
     QString prefix = getPrefix();
     QString str = QString("%1_cn").arg(prefix);
     return sys_configFile_readStr(str, prefix);
 }
 
-void TestConfig::setCn(const QString &arg)
+void ConfigBase::setCn(const QString &arg)
 {
     QString prefix = getPrefix();
     QString str = QString("%1_cn").arg(prefix);
@@ -65,14 +82,14 @@ void TestConfig::setCn(const QString &arg)
 }
 
 
-QString TestConfig::getBarCode()
+QString ConfigBase::getBarCode()
 {
     QString prefix = getPrefix();
     QString str = QString("%1_barcode").arg(prefix);
     return sys_configFile_readStr(str, prefix);
 }
 
-void TestConfig::setBarCode(const QString &arg)
+void ConfigBase::setBarCode(const QString &arg)
 {
     QString prefix = getPrefix();
     QString str = QString("%1_barcode").arg(prefix);
@@ -80,28 +97,28 @@ void TestConfig::setBarCode(const QString &arg)
 }
 
 
-QString TestConfig::getBatch()
+QString ConfigBase::getBatch()
 {
     QString prefix = getPrefix();
     QString str = QString("%1_batch").arg(prefix);
     return sys_configFile_readStr(str, prefix);
 }
 
-void TestConfig::setBatch(const QString &arg)
+void ConfigBase::setBatch(const QString &arg)
 {
     QString prefix = getPrefix();
     QString str = QString("%1_batch").arg(prefix);
     sys_configFile_writeParam(str, arg, prefix);
 }
 
-QString TestConfig::getPurpose()
+QString ConfigBase::getPurpose()
 {
     QString prefix = getPrefix();
     QString str = QString("%1_purpose").arg(prefix);
     return sys_configFile_readStr(str, prefix);
 }
 
-void TestConfig::setPurpose(const QString &arg)
+void ConfigBase::setPurpose(const QString &arg)
 {
     QString prefix = getPrefix();
     QString str = QString("%1_purpose").arg(prefix);
@@ -113,7 +130,7 @@ void TestConfig::setPurpose(const QString &arg)
  * @brief 获取相数
  * @return
  */
-bool TestConfig::getSnClear()
+bool ConfigBase::getSnClear()
 {
     bool ret = true;
     QString prefix = getPrefix();
@@ -127,7 +144,7 @@ bool TestConfig::getSnClear()
  * @brief 设置相数
  * @param num
  */
-void TestConfig::setSnClear(bool mode)
+void ConfigBase::setSnClear(bool mode)
 {
     int ret = 0;
     if(mode) ret = 1;
