@@ -1,7 +1,6 @@
 #ifndef CONFIGBASH
 #define CONFIGBASH
 #include "sysconfigfile.h"
-#include "serialportdlg.h"
 #include "datapacket.h"
 
 class ConfigBase
@@ -12,6 +11,9 @@ public:
     sTestConfigItem *item;
     void initConfig(sSnItem *it=nullptr);
     void saveConfig(sSnItem *it=nullptr);
+
+    QString getSerialName();
+    void setSerialName(const QString &name);
 
 protected:
     QString getName();

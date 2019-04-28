@@ -1,6 +1,7 @@
 #ifndef DATAPACKET_H
 #define DATAPACKET_H
 #include <QtCore>
+#include "serialportdlg.h"
 
 struct sSnItem
 {
@@ -52,11 +53,10 @@ struct sTestDataItem
 
 struct sTestConfigItem
 {
-    sTestConfigItem() {mode=0; devId=1;}
+    sTestConfigItem() {mode=0;}
+    SerialPort *serial; // 串口对象
 
-    int devId;
     int mode;
-    bool isSnmp;
     sSnItem sn;
     sTestProgress progress;
 

@@ -21,12 +21,13 @@ void ConfigBase::initConfig(sSnItem *it)
     it->barCode = getBarCode();
     it->batch = getBatch();
     it->purpose = getPurpose();
-    it->snClear = getSnClear();
+    it->snClear = getSnClear();    
 }
 
 void ConfigBase::saveConfig(sSnItem *it)
 {
     if(!it) it = &(item->sn);
+
 
     setOp(it->op);
     setCn(it->cn);
@@ -35,6 +36,28 @@ void ConfigBase::saveConfig(sSnItem *it)
     setBatch(it->batch);
     setPurpose(it->purpose);
     setSnClear(it->snClear);
+}
+
+/**
+ * @brief 获取串口名称
+ * @return 串口名
+ */
+QString ConfigBase::getSerialName()
+{
+    QString prefix = getPrefix();
+    QString str = QString("%1_COM").arg(prefix);
+    return sys_configFile_readStr(str, prefix);
+}
+
+/**
+ * @brief 设置串口名
+ * @param name
+ */
+void ConfigBase::setSerialName(const QString &name)
+{
+    QString prefix = getPrefix();
+    QString str = QString("%1_COM").arg(prefix);
+    sys_configFile_writeParam(str, name, prefix);
 }
 
 

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * tableWidget公共蕨类
  *     提供接口，protect所有方法
  *
@@ -7,14 +7,14 @@
  */
 #include "comtablewid.h"
 #include "ui_comtablewid.h"
-
+#include "common.h"
 
 ComTableWid::ComTableWid(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ComTableWid)
 {
     ui->setupUi(this);
-//    groupBox_background_icon(this);   
+    groupBox_background_icon(this);
 
     QGridLayout *gridLayout = new QGridLayout(parent);
     gridLayout->setContentsMargins(0, 0, 0, 10);
