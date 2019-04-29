@@ -42,6 +42,9 @@ void MainWindow::initWid()
     mItemWid = new TestItemTableWid(ui->stackedWid);
     ui->stackedWid->addWidget(mItemWid);
 
+    mTgsWid = new TgsWid(ui->stackedWid);
+    ui->stackedWid->addWidget(mTgsWid);
+
     mLogWid = new LogWid(ui->stackedWid);
     ui->stackedWid->addWidget(mLogWid);
 }
@@ -108,4 +111,9 @@ void MainWindow::on_dataBtn_clicked()
 void MainWindow::on_testBtn_clicked()
 {
     ui->stackedWid->setCurrentWidget(mResultWid);
+}
+
+void MainWindow::on_tgBtn_clicked()
+{
+    ui->stackedWid->setCurrentWidget(mTgsWid);
 }

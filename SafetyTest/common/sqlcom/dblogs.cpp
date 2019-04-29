@@ -22,7 +22,7 @@ void DbLogs::createTable()
             "id             INTEGER primary key autoincrement not null,"
             "date           VCHAR,"
             "time           VCHAR,"
-            "status         VCHAR,"
+            "result         VCHAR,"
             "barcode        VCHAR,"
             "batch          VCHAR,"
             "purpose        VCHAR,"
@@ -39,8 +39,8 @@ bool DbLogs::insertItem(DbLogItem &item)
 {
     bool ret = false;
 //    item.id = maxId()+1;
-    QString cmd = "insert into %1 (id, date, time, cn, barcode, batch, purpose, sn, status) "
-                  "values(:id,:date,:time,:cn,:barcode,:batch,:purpose,:sn,:status)";
+    QString cmd = "insert into %1 (id, date, time, cn, barcode, batch, purpose, sn, result) "
+                  "values(:id,:date,:time,:cn,:barcode,:batch,:purpose,:sn,:result)";
     ret = modifyItem(item,cmd.arg(tableName()));
     if(ret)
         emit itemChanged(item.id,Insert);
@@ -62,7 +62,7 @@ bool DbLogs::modifyItem(const DbLogItem &item, const QString &cmd)
     query.bindValue(":batch",item.batch);
     query.bindValue(":purpose",item.purpose);
     query.bindValue(":sn",item.sn);
-    query.bindValue(":status",item.status);
+    query.bindValue(":result",item.result);
     ret = query.exec();
     if(!ret)
         throwError(query.lastError());
@@ -79,5 +79,5 @@ void DbLogs::selectItem(QSqlQuery &query, DbLogItem &item)
     item.batch = query.value("batch").toString();
     item.purpose = query.value("purpose").toString();
     item.sn = query.value("sn").toString();
-    item.status = query.value("status").toString();
+    item.result = query.value("result").toString();
 }

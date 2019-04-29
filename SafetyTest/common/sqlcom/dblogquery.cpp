@@ -45,6 +45,31 @@ int DbLogQuery::todayCodeOkCount(const QString &code)
     return count("id", cmd);
 }
 
+int DbLogQuery::todayAllCount(const QString &code)
+{
+    int ret = 0;
+    if(code.isEmpty()) {
+        ret = todayAllCount();
+    } else {
+        ret = todayCodeAllCount(code);
+    }
+
+    return ret;
+}
+
+int DbLogQuery::todayOkCount(const QString &code)
+{
+    int ret = 0;
+    if(code.isEmpty()) {
+        ret = todayOkCount();
+    } else {
+        ret = todayCodeOkCount(code);
+    }
+
+    return ret;
+}
+
+
 int DbLogQuery::trAllCount(const QDate &start, const QDate &end)
 {
     QString cmd = QString(" where %1").arg(getTimeRange(start, end));
@@ -53,15 +78,15 @@ int DbLogQuery::trAllCount(const QDate &start, const QDate &end)
 
 int DbLogQuery::trOkCount(const QDate &start, const QDate &end)
 {
-    QString cmd = QString(" where %1 %2")
-            .arg(getTimeRange(start, end))
-            .arg(getPassField());
+    QString cmd = QString(" where %1 and %2")
+            .arg(getPassField())
+            .arg(getTimeRange(start, end));
     return count("id", cmd);
 }
 
 int DbLogQuery::trCodeAllCount(const QString &code, const QDate &start, const QDate &end)
 {
-    QString cmd = QString(" where %1 %2")
+    QString cmd = QString(" where %1 and %2")
             .arg(getTimeRange(start, end))
             .arg(getBarcode(code));
     return count("id", cmd);
@@ -69,12 +94,39 @@ int DbLogQuery::trCodeAllCount(const QString &code, const QDate &start, const QD
 
 int DbLogQuery::trCodeOkCount(const QString &code, const QDate &start, const QDate &end)
 {
-    QString cmd = QString(" where %1 %2 %3")
-            .arg(getTimeRange(start, end))
+    QString cmd = QString(" where %1 and %2 and %3")
             .arg(getBarcode(code))
-            .arg(getPassField());
+            .arg(getPassField())
+            .arg(getTimeRange(start, end));
     return count("id", cmd);
 }
+
+
+int DbLogQuery::byCodeAllCount(const QDate &start, const QDate &end, const QString &code)
+{
+    int ret = 0;
+    if(code.isEmpty()) {
+        ret = trAllCount(start, end);
+    } else {
+        ret = trCodeAllCount(code, start, end);
+    }
+
+    return ret;
+}
+
+int DbLogQuery::byCodeOkCount(const QDate &start, const QDate &end, const QString &code)
+{
+    int ret = 0;
+    if(code.isEmpty()) {
+        ret = trOkCount(start, end);
+    } else {
+        ret = trCodeOkCount(code, start, end);
+    }
+
+    return ret;
+}
+
+
 
 QString DbLogQuery::getTimeRange(const QDate &start, const QDate &end)
 {
@@ -95,7 +147,7 @@ QString DbLogQuery::getTimeCurrent()
 
 QString DbLogQuery::getPassField()
 {
-    QString cmd = QString(" status = \'%1\'")
+    QString cmd = QString(" result = \'%1\'")
             .arg(tr("通过"));
 
     return cmd;

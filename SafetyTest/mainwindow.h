@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "logwid.h"
 #include "testcorethread.h"
+#include "tgswid.h"
 
 namespace Ui {
 class MainWindow;
@@ -31,11 +32,14 @@ private slots:
     void on_dataBtn_clicked();
     void on_testBtn_clicked();
 
+    void on_tgBtn_clicked();
+
 private:
     Ui::MainWindow *ui;
     sTestConfigItem  *mItem;
     TestDataSave *mDataSave;
 
+    TgsWid *mTgsWid;
     LogWid *mLogWid;
     TestResultWid *mResultWid;
     TestDataTableWid *mDataWid;
