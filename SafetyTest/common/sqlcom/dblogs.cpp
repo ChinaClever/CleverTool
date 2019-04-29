@@ -54,7 +54,7 @@ bool DbLogs::modifyItem(const DbLogItem &item, const QString &cmd)
     bool ret = false;
     QSqlQuery query;
     query.prepare(cmd);
-    query.bindValue(":id",item.id);
+//    query.bindValue(":id",item.id);
     query.bindValue(":date",item.date);
     query.bindValue(":time",item.time);
     query.bindValue(":cn",item.cn);

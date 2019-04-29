@@ -12,6 +12,7 @@ TestSerialNumDlg::TestSerialNumDlg(QWidget *parent) :
     ui(new Ui::TestSerialNumDlg)
 {
     ui->setupUi(this);
+    init();
     this->setWindowTitle(tr("请输入被测模块序列号"));
 }
 
@@ -20,18 +21,18 @@ TestSerialNumDlg::~TestSerialNumDlg()
     delete ui;
 }
 
-void TestSerialNumDlg::init(TestConfig *con)
+void TestSerialNumDlg::init()
 {
-    mTestConfig = con;
-    mTestConfig->initConfig();
-    mItem = &(mTestConfig->item->sn);
+    TestConfig *con = TestConfig::bulid();
+    con->initConfig();
+    mItem = &(con->item->sn);
     ui->dateEdit->setDate(QDate::currentDate());
 
     ui->opLineEdit->setText(mItem->op);
     ui->cnLineEdit->setText(mItem->cn);
     ui->barCodeLineEdit->setText(mItem->barCode);
     ui->clearRadioButton->setChecked(mItem->snClear);
-    ui->typeComboBox->setCurrentText(mItem->name);
+    if(!mItem->name.isEmpty()) ui->typeComboBox->setCurrentText(mItem->name);
     if(!mItem->batch.isEmpty()) ui->batchComboBox->setCurrentText(mItem->batch);
     if(!mItem->purpose.isEmpty()) ui->purposeComboBox->setCurrentText(mItem->purpose);
 }
@@ -120,7 +121,7 @@ void TestSerialNumDlg::on_okBtn_clicked()
     bool ret = inputCheck();
     if(ret) {
         this->close();
-        mTestConfig->saveConfig(mItem);
+        TestConfig::bulid()->saveConfig(mItem);
         this->accept();
     }
 }

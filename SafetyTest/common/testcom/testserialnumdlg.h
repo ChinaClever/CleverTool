@@ -17,10 +17,10 @@ public:
     explicit TestSerialNumDlg(QWidget *parent = 0);
     ~TestSerialNumDlg();
 
-    void init(TestConfig *con);
     bool getSerialNum();
 
 protected:
+    void init();
     bool inputCheck();
 
 private slots:
@@ -31,7 +31,6 @@ private slots:
 
 private:
     Ui::TestSerialNumDlg *ui;
-    TestConfig *mTestConfig;
     sSnItem *mItem;
 };
 

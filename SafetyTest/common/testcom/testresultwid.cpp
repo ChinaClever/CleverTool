@@ -12,9 +12,10 @@ TestResultWid::TestResultWid(QWidget *parent) :
     ui(new Ui::TestResultWid)
 {
     ui->setupUi(this);
-    initSerialPort();
     groupBox_background_icon(this);
     mItem = TestConfig::bulid()->item;
+    initSerialPort();
+
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()),this, SLOT(progressSlot()));
 }
@@ -101,6 +102,7 @@ bool TestResultWid::checkSerial()
             on_comBtn_clicked();
         }
     }
+    return ret;
 }
 
 void TestResultWid::on_comBtn_clicked()
@@ -131,7 +133,7 @@ bool TestResultWid::initSerialPort()
     {
         ret = serial->isContains(com);
         if(ret) {
-             ret = serial->open(com);
+            ret = serial->open(com);
             updateSerialWid();
         }
     }
