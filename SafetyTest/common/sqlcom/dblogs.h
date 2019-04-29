@@ -15,8 +15,8 @@ struct DbLogItem : public DbBasicItem {
 
 class DbLogs: public SqlBasic<DbLogItem>
 {
-    DbLogs();
 public:
+    DbLogs();
     static DbLogs *bulid();
     bool insertItem(DbLogItem &item); // 插入
     QString tableName(){return QString("%1").arg(DB_Logs);}
