@@ -72,7 +72,7 @@ void MainWindow::overSlot()
     mItem->mode = Test_Over;
     mResultWid->resultSlot();
     mDataSave->saveTestData();
-//    mWebSocket->saveTestData();
+    mWebSocket->saveTestData();
     mSerialNumDlg->getSerialNum();
 }
 

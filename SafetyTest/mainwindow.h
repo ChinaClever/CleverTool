@@ -5,6 +5,7 @@
 #include "logwid.h"
 #include "testcorethread.h"
 #include "tgswid.h"
+#include "testwebsocket.h"
 
 namespace Ui {
 class MainWindow;
@@ -41,6 +42,7 @@ private:
 
     TgsWid *mTgsWid;
     LogWid *mLogWid;
+    TestWebSocket *mWebSocket;
     TestResultWid *mResultWid;
     TestDataTableWid *mDataWid;
     TestItemTableWid *mItemWid;

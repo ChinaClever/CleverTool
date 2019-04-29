@@ -11,7 +11,8 @@ HEADERS += \
     $$PWD/testdatatablewid.h \
     $$PWD/testresultwid.h \
     $$PWD/testcorethread.h \
-    $$PWD/testtransthread.h
+    $$PWD/testtransthread.h \
+    $$PWD/testwebsocket.h
 	
 SOURCES += \
     $$PWD/testserialnumdlg.cpp \
@@ -22,7 +23,8 @@ SOURCES += \
     $$PWD/testdatatablewid.cpp \
     $$PWD/testresultwid.cpp \
     $$PWD/testcorethread.cpp \
-    $$PWD/testtransthread.cpp
+    $$PWD/testtransthread.cpp \
+    $$PWD/testwebsocket.cpp
 
 FORMS += \
     $$PWD/testserialnumdlg.ui \
