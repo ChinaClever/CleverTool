@@ -10,7 +10,7 @@ struct DbLogItem : public DbBasicItem {
     QString batch; // 批次
     QString purpose; // 用途
     QString sn; // 产品条码
-    QString result;  // 结果
+    QString passed;  // 结果
 };
 
 class DbLogs: public SqlBasic<DbLogItem>

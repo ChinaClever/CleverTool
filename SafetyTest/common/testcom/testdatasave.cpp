@@ -24,7 +24,7 @@ void TestDataSave::saveDb()
 
     QString str = tr("通过");
     if(mItem->progress.errNum) str = tr("未通过");
-    item.result = str;  // 结果
+    item.passed = str;  // 结果
     DbLogs::bulid()->insertItem(item);
 }
 

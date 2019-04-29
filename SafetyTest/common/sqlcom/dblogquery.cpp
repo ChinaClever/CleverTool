@@ -147,7 +147,7 @@ QString DbLogQuery::getTimeCurrent()
 
 QString DbLogQuery::getPassField()
 {
-    QString cmd = QString(" result = \'%1\'")
+    QString cmd = QString(" passed = \'%1\'")
             .arg(tr("通过"));
 
     return cmd;
