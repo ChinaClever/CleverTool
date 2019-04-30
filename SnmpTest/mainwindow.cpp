@@ -29,8 +29,11 @@ MainWindow::MainWindow(QWidget *parent) :
     mSnmp = new SnmpThread(this);
     m_timer =  new QTimer(this);
     m_timer->start(2000);
+    m_cleartimer = new QTimer(this);
+
     this->setWindowTitle(tr("SnmpTest"));
     connect(m_timer, SIGNAL(timeout()), SLOT(timeoutDone()));
+    connect(m_cleartimer, SIGNAL(timeout()), SLOT(timeoutClearDone()));
 
     connect(mSnmp, SIGNAL(requestSig(QString)), this, SLOT(requestSlot(QString)));
     connect(mSnmp, SIGNAL(responseSig(QtSnmpDataList)), this, SLOT(responseSlot(QtSnmpDataList)));
@@ -59,13 +62,14 @@ void MainWindow::openFile()
     }
 }
 
-void MainWindow::writeLog(const QString &str)
+void MainWindow::writeLog(QString &str)
 {
+    QMutexLocker locker(mMutex);
     if(isSave) {
-        QMutexLocker locker(mMutex);
         mFile->write(str.toUtf8() + "\n");
         mFile->flush();
     }
+    str.clear();
 }
 
 bool MainWindow::checkInput()
@@ -119,6 +123,7 @@ bool MainWindow::startFun()
         isSave = ui->logCheckBox->isChecked();
         if(isSave) openFile();
         ui->starttime->setDateTime(QDateTime::currentDateTime());
+        m_cleartimer->start(30*60*1000);
     }
 
     return ret;
@@ -146,6 +151,7 @@ void MainWindow::on_overBtn_clicked()
         ui->overBtn->setEnabled(ret);
         mSnmp->stopRun();
         if(mFile->isOpen()) mFile->close();
+        m_cleartimer->stop();
     }
 }
 
@@ -159,10 +165,16 @@ void MainWindow::updateData()
     sSnmpRes *res = mSnmp->getSnmpRes();
     ui->allLcd->display(res->all);
     ui->okLcd->display(res->ok);
+    ui->outLcd->display(res->out);
     ui->errLcd->display(res->err);
     ui->longLcd->display(res->longmsec);
     ui->resLcd->display(res->risimsec);
     ui->currenttime->setDateTime(QDateTime::currentDateTime());
+}
+
+void MainWindow::timeoutClearDone()
+{
+   ui->textEdit->clear();
 }
 
 void MainWindow::timeoutDone()
@@ -170,7 +182,6 @@ void MainWindow::timeoutDone()
     if(ui->overBtn->isEnabled()) {
         updateData();
         writeLog(logs);
-        logs.clear();
     }
 }
 
@@ -200,9 +211,9 @@ void MainWindow::responseSlot(const QtSnmpDataList& values)
     }
 }
 
+
 void MainWindow::reqErrSlot()
 {
-    on_overBtn_clicked();
-    QString str = tr("SNMP请求错误，测试中断!!");
-    CriticalMsgBox box(this, str);
+    //on_overBtn_clicked();
+    // CriticalMsgBox box(this, str);
 }

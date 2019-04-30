@@ -26,7 +26,8 @@ struct sSnmpRes
 {
     int all; // 请求次数
     int ok;  // 正常回复次数
-    int err; // 超时响应次数
+    int out; // 超时响应次数
+    int err;
 
     int longmsec; // 最长响应时间
     int risimsec; // 平均响应时间
@@ -59,6 +60,7 @@ signals:
     void reqErrSig();
 
 protected:
+    //void initSnmp();
     bool makeRequest();
     void getResTime();
     void getReqTime();

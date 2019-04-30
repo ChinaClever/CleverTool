@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -21,10 +21,11 @@ protected:
     bool checkInput();
     void updateData();
     void openFile();
-    void writeLog(const QString &str);
+    void writeLog(QString &str);
 
 private slots:
     void timeoutDone();
+    void timeoutClearDone();
     void requestSlot(const QString& str);
     void responseSlot(const QtSnmpDataList& values);
     void reqErrSlot();
@@ -37,6 +38,7 @@ private:
     Ui::MainWindow *ui;
     SnmpThread *mSnmp;
     QTimer *m_timer;
+    QTimer *m_cleartimer;
     QFile *mFile;
     bool isSave;
     QString logs;

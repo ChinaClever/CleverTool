@@ -37,6 +37,7 @@ void SnmpThread::startRead(const QString &addr, int msec)
     memset(mSnmpRes, 0, sizeof(sSnmpRes));
     mSnmpRes->timeoutmsec = msec;
     m_snmp_client->setAgentAddress(QHostAddress(addr));
+    m_snmp_client->cancelWork();
 }
 
 
@@ -67,7 +68,7 @@ void SnmpThread::getReqTime()
     int msec = mSnmpRes->resmsec - mSnmpRes->reqmsec;
     if(msec > 0) {
         if(msec > mSnmpRes->timeoutmsec)
-            mSnmpRes->err++;
+            mSnmpRes->out++;
         else
             mSnmpRes->ok++;
     } else {
@@ -79,13 +80,20 @@ void SnmpThread::getReqTime()
         mSnmpRes->longmsec = msec;
 
     // 计算平均响应时间
-    if(mSnmpRes->risimsec) {
+#if 1
+    if(mSnmpRes->all) {
         msec +=  mSnmpRes->risimsec;
         mSnmpRes->risimsec = msec / 2;
         if(mSnmpRes->risimsec == 0) mSnmpRes->risimsec = 1;
     } else {
         mSnmpRes->risimsec = msec;
     }
+#else
+    if(mSnmpRes->all) {
+        int n = mSnmpRes->all;
+        mSnmpRes->risimsec =(int) ((double)(n-1)/n*mSnmpRes->risimsec + msec/n);
+    }
+#endif
 
     mSnmpRes->reqmsec = 0;
 }
@@ -96,14 +104,16 @@ void SnmpThread::onResponseReceived(const qint32, const QtSnmpDataList& values )
     getReqTime();
 
     emit responseSig(values);
-    for( const auto& value : values ) {
-        qDebug( "%s | %s : %s\n", qPrintable( "192" ),  qPrintable( value.address() ),  qPrintable( value.data()) );
-    }
+//    for( const auto& value : values ) {
+//        qDebug( "%s | %s : %s\n", qPrintable( "192" ),  qPrintable( value.address() ),  qPrintable( value.data()) );
+//    }
 }
 
-void SnmpThread::onRequestFailed( const qint32 request_id ) {
-//    qDebug() << request_id;
+void SnmpThread::onRequestFailed( const qint32 request_id )
+{
+    qDebug() << request_id;
     mSnmpRes->err++;
+    mSnmpRes->reqmsec = 0;
     emit reqErrSig();
 }
 
@@ -115,22 +125,6 @@ bool SnmpThread::makeRequest()
         m_snmp_client->requestValues(mOids);
         emit requestSig(mOids.first());
     }else if(!mSubOid.isEmpty()) {
-//        QString str = mSubOid;
-//        if(str.length() == 21)
-//            str += "1";
-//        else if(str.length() == 20)
-//            str += ".1";
-
-//        m_snmp_client->requestSubValues(str);
-//        emit requestSig(mSubOid);
-//        int index = 1;
-//        while(index < 8)
-//        {
-//            ++index;
-//            str.replace(str.length()-1,1,tr("%1").arg(index));
-//            qDebug()<<"oid"<<index<<str;
-//            m_snmp_client->requestSubValues(str);
-//        }
         m_snmp_client->requestSubValues(mSubOid);
         emit requestSig(mSubOid);
     } else {
