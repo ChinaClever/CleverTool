@@ -98,7 +98,6 @@ void TestWebSocket::objData(const sTestDataItem &item, QJsonObject &obj)
 void TestWebSocket::listData(QList<sTestDataItem> &items, QJsonObject &json)
 {
     QJsonArray jsonArray;
-    QString modeStr = "line";
 
     int num = items.size();
     for(int i=0; i<num; ++i)

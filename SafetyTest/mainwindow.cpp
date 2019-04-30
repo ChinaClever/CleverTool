@@ -28,6 +28,7 @@ void MainWindow::initWid()
 {
     mSerialNumDlg = new TestSerialNumDlg(this);
     mDataSave = new TestDataSave(this);
+    mWebSocket = new TestWebSocket(this);
 
     mResultWid = new TestResultWid(ui->stackedWid);
     ui->stackedWid->addWidget(mResultWid);
