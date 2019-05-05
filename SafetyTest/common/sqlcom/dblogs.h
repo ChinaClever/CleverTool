@@ -1,4 +1,4 @@
-#ifndef DBLOGS_H
+﻿#ifndef DBLOGS_H
 #define DBLOGS_H
 #include "sqltablemodel.h"
 
