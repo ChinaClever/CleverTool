@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TestResultWid</class>
+ <widget class="QWidget" name="TestResultWid">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>910</width>
+    <height>623</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+     <property name="title">
+      <string>设备测试</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QWidget" name="widget" native="true">
+        <property name="font">
+         <font>
+          <family>微软雅黑</family>
+          <pointsize>15</pointsize>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QWidget#widget{border-image: url(:/image/resultpix.jpg);border-radius:5px;}
+QWidget{font: 15pt &quot;微软雅黑&quot;; color:white;}
+QProgressBar {
+   border:2px solid blue;
+   background-color:transparent;
+   border-radius: 5px;
+   text-align: center;
+}
+</string>
+        </property>
+        <widget class="ProgressBarWater" name="progressBarWater">
+         <property name="geometry">
+          <rect>
+           <x>59</x>
+           <y>159</y>
+           <width>261</width>
+           <height>241</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="startBtn">
+         <property name="geometry">
+          <rect>
+           <x>70</x>
+           <y>420</y>
+           <width>241</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>立即测试</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="comBtn">
+         <property name="geometry">
+          <rect>
+           <x>760</x>
+           <y>510</y>
+           <width>81</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>串口</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="serialLab">
+         <property name="geometry">
+          <rect>
+           <x>590</x>
+           <y>510</y>
+           <width>161</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>请打开</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="titleTab">
+         <property name="geometry">
+          <rect>
+           <x>370</x>
+           <y>130</y>
+           <width>481</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>微软雅黑</family>
+           <pointsize>15</pointsize>
+           <weight>50</weight>
+           <italic>false</italic>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>产品：PDU  批次：通用</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::AutoText</enum>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="snLab">
+         <property name="geometry">
+          <rect>
+           <x>380</x>
+           <y>200</y>
+           <width>461</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>微软雅黑</family>
+           <pointsize>15</pointsize>
+           <weight>50</weight>
+           <italic>false</italic>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>SN:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="statusLab">
+         <property name="geometry">
+          <rect>
+           <x>380</x>
+           <y>290</y>
+           <width>461</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>微软雅黑</family>
+           <pointsize>15</pointsize>
+           <weight>50</weight>
+           <italic>false</italic>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>请开始</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="itemNumLab">
+         <property name="geometry">
+          <rect>
+           <x>380</x>
+           <y>360</y>
+           <width>461</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>微软雅黑</family>
+           <pointsize>15</pointsize>
+           <weight>50</weight>
+           <italic>false</italic>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>-------</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ProgressBarWater</class>
+   <extends>QWidget</extends>
+   <header>progressbarwater.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
