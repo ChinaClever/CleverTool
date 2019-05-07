@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -19,9 +19,20 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void translateUi();
+    QTranslator *qtrans;
+
+public slots:
+    void languageChanged();
+
+protected:
+    void changeEvent(QEvent *);
 
 private slots:
     void timeoutDone(void);
+
+signals:
+    void languageChangeSig();
 
 private:
     Ui::MainWindow *ui;

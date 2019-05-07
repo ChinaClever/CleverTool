@@ -1,4 +1,4 @@
-#include "upgradethread.h"
+﻿#include "upgradethread.h"
 
 UpgradeThread::UpgradeThread(QObject *parent) : QThread(parent)
 {
@@ -40,9 +40,12 @@ void UpgradeThread::saveLogs(const QString &ip, bool f, bool exist)
     str << ip;
     if(exist){
         if(f) str << tr("成功");
+            //str << tr("successful");
         else str << tr("失败");
+            //str << tr("failure");
     } else {
         str << tr("IP不存在");
+        //str << tr("IP isn't existence");
     }
 
     mData->logs << str;
@@ -60,18 +63,22 @@ bool UpgradeThread::sentFile(void)
     bool exist = checkIp(ip);
     bool ret = false;
     if(exist) {
+        //mData->status = tr("starting transmission：%1").arg(ip);
         mData->status = tr("开始传输：%1").arg(ip);
         ret = upload(mData->file, ip);
         if(ret){
             mData->oks << ip;
             mData->status = tr("传输成功：%1").arg(ip);
+            //mData->status = tr("transmission successful:%1").arg(ip);
         } else {
             mData->errs << ip;
             mData->status = tr("传输失败：%1").arg(ip);
+            //mData->status = tr("transmission failure：%1").arg(ip);
         }
     }  else {
         mData->errs << ip;
         mData->status = tr("目标IP不存在：%1").arg(ip);
+         //mData->status = tr("destination IP isn't existence：%1").arg(ip);
     }
 
     mData->progress++;
@@ -99,8 +106,10 @@ void UpgradeThread::overSend()
     QString str;
     if(mData->errs.size()) {
         str = tr("%1台失败 %2台成功 ").arg(mData->errs.size()).arg(mData->oks.size());
+        //str = tr("%1 failure %2 successful").arg(mData->errs.size()).arg(mData->oks.size());
     } else {
         str = tr("%1台成功 ").arg(mData->oks.size());
+        //str = tr("%1 successful ").arg(mData->oks.size());
     }
     mData->status = str;
 }

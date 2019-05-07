@@ -7,7 +7,7 @@
  */
 #include "comtablewid.h"
 #include "ui_comtablewid.h"
-
+#include <QDebug>
 
 ComTableWid::ComTableWid(QWidget *parent) :
     QWidget(parent),
@@ -28,6 +28,10 @@ ComTableWid::ComTableWid(QWidget *parent) :
 ComTableWid::~ComTableWid()
 {
     delete ui;
+}
+
+void ComTableWid::languageChanged()
+{
 }
 
 
@@ -238,4 +242,9 @@ void ComTableWid::setItemColor(int id, int column, int alarm)
     default:
         break;
     }
+}
+
+void ComTableWid::changeHeader(QStringList& header)
+{
+    ui->tableWidget->setHorizontalHeaderLabels(header);
 }

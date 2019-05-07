@@ -9,8 +9,10 @@ IpsTabWid::IpsTabWid(QWidget *parent) : ComTableWid(parent)
 void IpsTabWid::initWid()
 {
     QString title = tr("需升级IP列表");
+    //QString title = tr("list of need to upgrade");
     QStringList header;
-    header <<tr("需升级IP列表");
+    header <<title;
+    //header <<tr("list of need to upgrade");
 
     initTableWid(header, 0, title);
 }
@@ -34,4 +36,22 @@ void IpsTabWid::updateData(QStringList &lst)
 void IpsTabWid::timeoutDone()
 {
     updateData(mData->ips);
+}
+
+void IpsTabWid::languageChanged()
+{
+    mheader.clear();
+    static int count = 1;
+    if(count%3)
+    {
+        if(count == 5)
+            count = 1;
+        mheader<<"需升级IP列表";
+    }
+    else
+    {
+        mheader<<"list of need to upgrade";
+    }
+    count++;
+    changeHeader(mheader);
 }

@@ -34,7 +34,7 @@ bool Excel_SaveThread::init()
     if (r != S_OK && r != S_FALSE)
     {
         qWarning("Qt:初始化Ole失败（error %x）",(unsigned int)r);
-        CriticalMsgBox box(0, tr("Qt:初始化Ole失败"));
+        CriticalMsgBox box(0, tr("Qt:Initialization of Ole failed"));
         ret = false;
     }
     return ret;

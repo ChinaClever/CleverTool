@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>550</width>
-    <height>103</height>
+    <height>108</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -73,13 +73,13 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>30</width>
+          <width>100</width>
           <height>20</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>50</width>
+          <width>100</width>
           <height>20</height>
          </size>
         </property>
@@ -104,13 +104,13 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>200</width>
+          <width>150</width>
           <height>25</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>200</width>
+          <width>150</width>
           <height>25</height>
          </size>
         </property>
@@ -173,13 +173,13 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>30</width>
+          <width>100</width>
           <height>20</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>50</width>
+          <width>100</width>
           <height>20</height>
          </size>
         </property>
@@ -204,13 +204,13 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>200</width>
+          <width>150</width>
           <height>25</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>200</width>
+          <width>150</width>
           <height>25</height>
          </size>
         </property>

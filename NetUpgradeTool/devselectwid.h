@@ -1,4 +1,4 @@
-#ifndef DEVSELECTWID_H
+﻿#ifndef DEVSELECTWID_H
 #define DEVSELECTWID_H
 
 #include <QWidget>
@@ -25,6 +25,9 @@ private slots:
     void on_ipRadio_clicked(bool checked);
     void on_rzRadio_clicked(bool checked);
     void on_okBtn_clicked();
+
+public slots:
+    void languageChanged();
 
 private:
     Ui::DevSelectWid *ui;

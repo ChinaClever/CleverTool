@@ -1,4 +1,4 @@
-#ifndef IPSWID_H
+﻿#ifndef IPSWID_H
 #define IPSWID_H
 
 #include <QWidget>
@@ -20,6 +20,9 @@ protected:
     bool readFile(QString &fn, QStringList &list);
     int bulidIps(QString startIp, QString &endIp);
     int getIpInt(QString &ip);
+
+public slots:
+    void languageChanged();
 
 private slots:
     void on_radio_1_clicked(bool checked);

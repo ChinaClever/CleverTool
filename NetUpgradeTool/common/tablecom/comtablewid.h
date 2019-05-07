@@ -1,4 +1,4 @@
-#ifndef COMTABLEWID_H
+﻿#ifndef COMTABLEWID_H
 #define COMTABLEWID_H
 
 #include <QWidget>
@@ -30,8 +30,10 @@ protected:
     void delTable();
     void setBackgroundColor(int id);
     void setItemColor(int id, int column, int alarm);
+    void changeHeader(QStringList& header);
 
 protected slots:
+    virtual void languageChanged();
     virtual void timeoutDone(){}
     virtual void itemDoubleClicked(QTableWidgetItem* ){}
     virtual void itemClicked(QTableWidgetItem* ){}
@@ -47,7 +49,7 @@ private:
     void addTableRows(int line);
     void delTableRows(int line);
 
-private:
+protected:
     Ui::ComTableWid *ui;
 };
 
