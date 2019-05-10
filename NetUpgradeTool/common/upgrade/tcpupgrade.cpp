@@ -1,4 +1,4 @@
-#include "tcpupgrade.h"
+﻿#include "tcpupgrade.h"
 #include "msgbox.h"
 
 TcpUpgrade::TcpUpgrade(QObject *parent) : UpgradeThread(parent)
@@ -57,11 +57,13 @@ void TcpUpgrade::connectSlot(int step)
 
     case UP_CMD_PWDERR:
         msg = tr(" 用户名错误，传输失败!!");
+        // msg = tr(" username error，transmission failure!!");
         break;
 
     case UP_CMD_DIS: // 只有当断开、链接错误时，才发出相应信号出来
     case UP_CMD_ERR:
          msg = tr(" 传输失败，请检查网络!!");
+        //msg = tr(" transmission failure，please check network!!");
         break;
     }
 

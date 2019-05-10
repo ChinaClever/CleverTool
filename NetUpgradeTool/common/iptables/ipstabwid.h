@@ -1,4 +1,4 @@
-#ifndef IPSTABWID_H
+﻿#ifndef IPSTABWID_H
 #define IPSTABWID_H
 
 #include "comtablewid.h"
@@ -9,9 +9,11 @@ class IpsTabWid : public ComTableWid
     Q_OBJECT
 public:
     explicit IpsTabWid(QWidget *parent = nullptr);
+    Ui::ComTableWid* get();
 
 protected slots:
    virtual void timeoutDone();
+   virtual void languageChanged();
 
 protected:
     virtual void initWid();
@@ -19,6 +21,7 @@ protected:
 
 protected:
     sDataPacket *mData;
+    QStringList mheader;
 };
 
 #endif // IPSTABWID_H

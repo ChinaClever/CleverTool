@@ -1,4 +1,4 @@
-#ifndef ERRSTABWID_H
+﻿#ifndef ERRSTABWID_H
 #define ERRSTABWID_H
 
 #include "ipstabwid.h"
@@ -14,6 +14,8 @@ protected slots:
 
 protected:
     virtual void initWid();
+    virtual void languageChanged();
+    QStringList mheader;
 };
 
 #endif // ERRSTABWID_H

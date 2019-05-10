@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "QtSnmpData.h"
 #include <QObject>
@@ -23,6 +23,8 @@ public:
     Q_SLOT void setReponseTimeout( const int );
 
     bool isBusy() const;
+
+    void cancelWork();
 
     qint32 requestValue( const QString& );
 

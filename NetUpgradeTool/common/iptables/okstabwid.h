@@ -1,4 +1,4 @@
-#ifndef OKSTABWID_H
+﻿#ifndef OKSTABWID_H
 #define OKSTABWID_H
 
 #include "errstabwid.h"
@@ -14,6 +14,8 @@ protected slots:
 
 protected:
     virtual void initWid();
+    virtual void languageChanged();
+    QStringList mheader;
 };
 
 #endif // OKSTABWID_H

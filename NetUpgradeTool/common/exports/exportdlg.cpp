@@ -23,6 +23,7 @@ ExportDlg::~ExportDlg()
 void ExportDlg::on_pushButton_clicked()
 {
     QFileDialog dlg(this,tr("路径选择"));
+    //QFileDialog dlg(this,tr("path select"));
     dlg.setFileMode(QFileDialog::DirectoryOnly);
     dlg.setDirectory("E:");
     if(dlg.exec() == QDialog::Accepted) {
@@ -41,12 +42,14 @@ bool ExportDlg::checkInput()
     QString str = ui->pathEdit->text();
     if(str.isEmpty()) {
         CriticalMsgBox box(this, tr("导出路径不能为空！"));
+        //CriticalMsgBox box(this, tr("the export path isn't empty！"));
         return false;
     }
 
     str = ui->fileEdit->text();
     if(str.isEmpty()) {
         CriticalMsgBox box(this, tr("导出文件名不能为空！"));
+        //CriticalMsgBox box(this, tr("the export file name isn't empty！"));
         return false;
     }
 
@@ -54,6 +57,7 @@ bool ExportDlg::checkInput()
     QFile file(str);
     if (file.exists()){
         CriticalMsgBox box(this, str + tr("\n文件已存在！!"));
+        //CriticalMsgBox box(this, str + tr("\nfile already exists！!"));
         return false;
     }
 
@@ -68,6 +72,7 @@ void ExportDlg::exportDone()
     ui->exportBtn->setEnabled(true);
     ui->quitBtn->setEnabled(true);
     InfoMsgBox box(this, tr("\n导出完成!!\n"));
+    //InfoMsgBox box(this, tr("\nexport successful!!\n"));
 }
 
 
@@ -104,5 +109,6 @@ void ExportDlg::on_quitBtn_clicked()
     else
     {
         InfoMsgBox box(this, tr("\n导出还没有完成，还不能关闭!!\n"));
+        //InfoMsgBox box(this, tr("\nExport is not complete and cannot be shut down!!\n"));
     }
 }

@@ -1,4 +1,4 @@
-#include "devselectwid.h"
+﻿#include "devselectwid.h"
 #include "ui_devselectwid.h"
 #include "msgbox.h"
 
@@ -13,6 +13,11 @@ DevSelectWid::DevSelectWid(QWidget *parent) :
     connect(timer, SIGNAL(timeout()),this, SLOT(timeoutDone()));
     on_ipRadio_clicked(true);
     mCount = 1;
+
+//    ui->groupBox->setTitle("Type Of Equipment Selection Zone");
+//    ui->label->setText("username");
+//    ui->label_2->setText("password");
+//    ui->okBtn->setText("confirm");
 }
 
 DevSelectWid::~DevSelectWid()
@@ -48,10 +53,14 @@ bool DevSelectWid::checkInput()
 {
     QString str;
     QString user =ui->userEdit->text();
-    if(user.isEmpty()) str = tr("用户名不能为空，请重新输入!!");
+    if(user.isEmpty())
+        str = tr("用户名不能为空，请重新输入!!");
+        //str = tr("Username is empty，please re-enter!!");
 
     QString pwd = ui->pwdEdit->text();
-    if(pwd.isEmpty())  str = tr("用户名不能为空，请重新输入!!");
+    if(pwd.isEmpty())
+        str = tr("密码不能为空，请重新输入!!");
+        //str = tr("Password is empty，please re-enter!!");
 
     bool ret = true;
     if(str.isEmpty()) {
@@ -77,6 +86,7 @@ void DevSelectWid::on_okBtn_clicked()
 {
     bool en = false;
     QString str = tr("修改");
+    //QString str = tr("modify");
     if(mCount++ %2) {
         if(mData->devtype) {
             if(!checkInput()) {
@@ -86,8 +96,14 @@ void DevSelectWid::on_okBtn_clicked()
     } else {
         en = true;
         str = tr("确认");
+        //str = tr("confirm");
     }
 
     setenabled(en);
     ui->okBtn->setText(str);
+}
+
+void DevSelectWid::languageChanged()
+{
+    ui->retranslateUi(this);
 }

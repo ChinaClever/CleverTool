@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QFile>
 #include <QDir>
@@ -18,19 +18,6 @@ bool cm_isIPaddress(const QString& ip)
     return false;
 }
 
-/***
-  * 获取程序数据目录
-  */
-QString cm_pathOfData(const QString& name)
-{
-    QDir dataDir(QDir::home());
-    QString dirName = ".CleverTestSystem";
-    if(!dataDir.exists(dirName))
-        dataDir.mkdir(dirName);
-    dataDir.cd(dirName);
-    return dataDir.absoluteFilePath(name);
-}
-
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -41,8 +28,12 @@ MainWindow::MainWindow(QWidget *parent) :
     mMutex = new QMutex();
     mSnmp = new SnmpThread(this);
     m_timer =  new QTimer(this);
-    m_timer->start(1000);
+    m_timer->start(2000);
+    m_cleartimer = new QTimer(this);
+
+    this->setWindowTitle(tr("SnmpTest"));
     connect(m_timer, SIGNAL(timeout()), SLOT(timeoutDone()));
+    connect(m_cleartimer, SIGNAL(timeout()), SLOT(timeoutClearDone()));
 
     connect(mSnmp, SIGNAL(requestSig(QString)), this, SLOT(requestSlot(QString)));
     connect(mSnmp, SIGNAL(responseSig(QtSnmpDataList)), this, SLOT(responseSlot(QtSnmpDataList)));
@@ -71,13 +62,14 @@ void MainWindow::openFile()
     }
 }
 
-void MainWindow::writeLog(const QString &str)
+void MainWindow::writeLog(QString &str)
 {
+    QMutexLocker locker(mMutex);
     if(isSave) {
-        QMutexLocker locker(mMutex);
         mFile->write(str.toUtf8() + "\n");
         mFile->flush();
     }
+    str.clear();
 }
 
 bool MainWindow::checkInput()
@@ -131,6 +123,7 @@ bool MainWindow::startFun()
         isSave = ui->logCheckBox->isChecked();
         if(isSave) openFile();
         ui->starttime->setDateTime(QDateTime::currentDateTime());
+        m_cleartimer->start(30*60*1000);
     }
 
     return ret;
@@ -149,12 +142,17 @@ void MainWindow::on_startBtn_clicked()
 
 void MainWindow::on_overBtn_clicked()
 {
-    bool ret = false;
-    ui->groupBox->setDisabled(ret);
-    ui->startBtn->setDisabled(ret);
-    ui->overBtn->setEnabled(ret);
-    mSnmp->stopRun();
-    if(mFile->isOpen()) mFile->close();
+    QString str = tr("是否停止测试!!");
+    QuMsgBox box(this,str);
+    if(box.Exec()){
+        bool ret = false;
+        ui->groupBox->setDisabled(ret);
+        ui->startBtn->setDisabled(ret);
+        ui->overBtn->setEnabled(ret);
+        mSnmp->stopRun();
+        if(mFile->isOpen()) mFile->close();
+        m_cleartimer->stop();
+    }
 }
 
 void MainWindow::on_clearBtn_clicked()
@@ -167,10 +165,16 @@ void MainWindow::updateData()
     sSnmpRes *res = mSnmp->getSnmpRes();
     ui->allLcd->display(res->all);
     ui->okLcd->display(res->ok);
+    ui->outLcd->display(res->out);
     ui->errLcd->display(res->err);
     ui->longLcd->display(res->longmsec);
     ui->resLcd->display(res->risimsec);
     ui->currenttime->setDateTime(QDateTime::currentDateTime());
+}
+
+void MainWindow::timeoutClearDone()
+{
+   ui->textEdit->clear();
 }
 
 void MainWindow::timeoutDone()
@@ -207,9 +211,9 @@ void MainWindow::responseSlot(const QtSnmpDataList& values)
     }
 }
 
+
 void MainWindow::reqErrSlot()
 {
-    on_overBtn_clicked();
-    QString str = tr("SNMP请求错误，测试中断!!");
-    CriticalMsgBox box(this, str);
+    //on_overBtn_clicked();
+    // CriticalMsgBox box(this, str);
 }

@@ -27,6 +27,9 @@ private slots:
 
     void on_breakBtn_clicked();
 
+public slots:
+    void languageChanged();
+
 private:
     Ui::UpgradeWid *ui;
     sDataPacket *mData;
