@@ -107,6 +107,18 @@ int TestDataSave::bulidHead(sSnItem *item)
     list <<"" << QString::number(id++) << tr("批次") << item->batch;
     mList << list; list.clear();
 
+    list <<"" << QString::number(id++) << tr("接地电阻") << item->gnd;
+    mList << list; list.clear();
+
+    list <<"" << QString::number(id++) << tr("绝缘电阻") << item->ir;
+    mList << list; list.clear();
+
+    list <<"" << QString::number(id++) << tr("直流耐压") << item->dcw;
+    mList << list; list.clear();
+
+    list <<"" << QString::number(id++) << tr("交流耐压") << item->acw;
+    mList << list; list.clear();
+
     list << ""; mList << list; list.clear();
 
     return id;

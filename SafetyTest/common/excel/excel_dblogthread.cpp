@@ -1,4 +1,4 @@
-﻿/*
+/*
  * excel_exportlogthread.cpp
  * excel导出线程
  *
@@ -31,8 +31,7 @@ void Excel_DbLogThread::set(sExcel_DbItem &ex)
  */
 void Excel_DbLogThread::readSql(QList<QStringList> &list)
 {
-    ////////////============
-//    DB_selectTableByTime(mEx.db, mEx.start, mEx.end, list);
+    DB_selectTableByTime(mEx.db, mEx.start, mEx.end, list);
 }
 
 
