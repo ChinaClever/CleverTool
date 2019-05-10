@@ -15,6 +15,18 @@ struct sSnItem
     QString purpose;
     QDate date;
 
+    bool isGnd; // 接地测试
+    QString gnd; // 接地测试结果
+
+    bool isIr; //绝缘测试
+    QString ir; // 绝缘测试结果
+
+    bool isDcw; //直流耐压测试
+    QString dcw; // 直流耐压测试结果
+
+    bool isAcw; //交流耐压测试
+    QString acw; // 交流耐压测试结果
+
     bool snClear;
     bool errStop;
     bool isSave;
@@ -65,10 +77,6 @@ struct sTestConfigItem
     QList<sTestDataItem> logItems;
 };
 
-class DataPacket
-{
-public:
-    DataPacket();
-};
+
 
 #endif // DATAPACKET_H
