@@ -137,5 +137,27 @@ void TestCoreThread::run()
 {
     testReady();
 
+    sSnItem *sn = &(mItem->sn);
+    if(sn->isGnd) { // 接地电阻测试
+
+        sn->gnd = "X"; // 接地电阻测试结果
+    }
+
+    if(sn->isIr) {  // 绝缘电阻测试
+
+        sn->ir = "A"; // 绝缘电阻测试结果
+    }
+
+    if(sn->isDcw) {  // 直流压耐测试
+
+        sn->dcw = "A"; // 直流压耐测试结果
+    }
+
+    if(sn->isAcw) {  // 交流压耐测试
+
+        sn->acw = "A"; // 交流压耐测试结果
+    }
+
+
     emit overSig();
 }

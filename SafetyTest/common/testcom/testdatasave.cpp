@@ -21,6 +21,10 @@ void TestDataSave::saveDb()
     item.batch = mItem->sn.batch; // 批次
     item.purpose = mItem->sn.purpose; // 用途
     item.sn = mItem->sn.sn; // 产品条码
+    item.gnd = mItem->sn.gnd; // 接地测试结果
+    item.ir = mItem->sn.ir; // 绝缘测试结果
+    item.dcw = mItem->sn.dcw; // 直流耐压测试结果
+    item.acw = mItem->sn.acw; // 交流耐压测试结果
 
     QString str = tr("通过");
     if(mItem->progress.errNum) str = tr("未通过");

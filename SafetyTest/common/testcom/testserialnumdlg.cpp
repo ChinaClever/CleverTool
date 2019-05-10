@@ -112,6 +112,10 @@ bool TestSerialNumDlg::inputCheck()
     mItem->snClear = ui->clearRadioButton->isChecked();
     mItem->errStop = ui->errStopCheckBox->isChecked();
     mItem->isSave = ui->saveCheckBox->isChecked();
+    mItem->isGnd = ui->gndBox->isChecked();
+    mItem->isIr = ui->irBox->isChecked();
+    mItem->isDcw = ui->dcwBox->isChecked();
+    mItem->isAcw = ui->acwBox->isChecked();
 
     return true;
 }

@@ -27,6 +27,10 @@ void DbLogs::createTable()
             "batch          VCHAR,"
             "purpose        VCHAR,"
             "cn             VCHAR,"
+            "gnd            VCHAR,"
+            "ir             VCHAR,"
+            "dcw            VCHAR,"
+            "acw            VCHAR,"
             "sn             VCHAR);";
     QSqlQuery query;
     if(!query.exec(cmd.arg(tableName())))
@@ -39,8 +43,8 @@ bool DbLogs::insertItem(DbLogItem &item)
 {
     bool ret = false;
 //    item.id = maxId()+1;
-    QString cmd = "insert into %1 (id, date, time, cn, barcode, batch, purpose, sn, passed) "
-                  "values(:id,:date,:time,:cn,:barcode,:batch,:purpose,:sn,:passed)";
+    QString cmd = "insert into %1 (id, date, time, cn, barcode, batch, purpose, sn, gnd, ir, dcw, acw, passed) "
+                  "values(:id,:date,:time,:cn,:barcode,:batch,:purpose,:sn,:gnd,:ir,:dcw,:acw,:passed)";
     ret = modifyItem(item,cmd.arg(tableName()));
     if(ret)
         emit itemChanged(item.id,Insert);
@@ -62,6 +66,10 @@ bool DbLogs::modifyItem(const DbLogItem &item, const QString &cmd)
     query.bindValue(":batch",item.batch);
     query.bindValue(":purpose",item.purpose);
     query.bindValue(":sn",item.sn);
+    query.bindValue(":gnd",item.gnd);
+    query.bindValue(":ir",item.ir);
+    query.bindValue(":dcw",item.dcw);
+    query.bindValue(":acw",item.acw);
     query.bindValue(":passed",item.passed);
     ret = query.exec();
     if(!ret)
@@ -79,5 +87,9 @@ void DbLogs::selectItem(QSqlQuery &query, DbLogItem &item)
     item.batch = query.value("batch").toString();
     item.purpose = query.value("purpose").toString();
     item.sn = query.value("sn").toString();
+    item.gnd = query.value("gnd").toString();
+    item.ir = query.value("ir").toString();
+    item.dcw = query.value("dcw").toString();
+    item.acw = query.value("acw").toString();
     item.passed = query.value("passed").toString();
 }

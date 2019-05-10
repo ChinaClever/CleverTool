@@ -30,7 +30,9 @@ void LogWid::initTable()
     mHeadList.clear();
     mHeadList << tr("编号") << tr("日期") << tr("时间")
               << tr("结果") << tr("工状条码") << tr("批次")
-              << tr("用途") << tr("电脑号") << tr("产品条码");
+              << tr("用途") << tr("电脑号") << tr("接地电阻")
+              << tr("绝缘电阻") << tr("直流耐压") << tr("交流耐压")
+              << tr("产品条码");
 
     model->setHeaders(mHeadList);
 }

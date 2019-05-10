@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>853</width>
-    <height>516</height>
+    <height>589</height>
    </rect>
   </property>
   <property name="font">
@@ -23,7 +23,7 @@
    <property name="geometry">
     <rect>
      <x>104</x>
-     <y>450</y>
+     <y>520</y>
      <width>100</width>
      <height>50</height>
     </rect>
@@ -48,7 +48,7 @@
    <property name="geometry">
     <rect>
      <x>530</x>
-     <y>450</y>
+     <y>520</y>
      <width>100</width>
      <height>50</height>
     </rect>
@@ -623,6 +623,67 @@
      </layout>
     </item>
    </layout>
+  </widget>
+  <widget class="QCheckBox" name="gndBox">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>471</y>
+     <width>180</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>接地电阻测试</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="irBox">
+   <property name="geometry">
+    <rect>
+     <x>225</x>
+     <y>471</y>
+     <width>180</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>绝缘测试</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="dcwBox">
+   <property name="geometry">
+    <rect>
+     <x>410</x>
+     <y>471</y>
+     <width>180</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>直流耐压测试</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="acwBox">
+   <property name="geometry">
+    <rect>
+     <x>630</x>
+     <y>471</y>
+     <width>180</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>交流耐压测试</string>
+   </property>
   </widget>
  </widget>
  <resources/>
