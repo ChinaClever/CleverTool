@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -55,14 +55,19 @@ void MainWindow::startTest()
 {
     int ret = mSerialNumDlg->exec();
     if(ret == QDialog::Accepted ) {
-        QString str = tr("测试前接线: \n 将测试议高压线");
+        QString str = tr("将测试仪高压线（红色）接产品输入/输出L、N\n线，黑色线接产品输入PE线，另一线缆（红色）接产品机壳。");
         QuMsgBox box(this,str);
+
         if(box.Exec()) {
-            mItem->mode = Test_Start;
-            mCoreThread->startThread();
-            mItemWid->startSlot();
-            mResultWid->startSlot();
-            mDataWid->startSLot();
+            QString str = tr("请确认");
+            QuMsgBox box(this,str);
+            if(box.Exec()) {
+                mItem->mode = Test_Start;
+                mCoreThread->startThread();
+                mItemWid->startSlot();
+                mResultWid->startSlot();
+                mDataWid->startSLot();
+            }
         }
     }
 
@@ -70,11 +75,16 @@ void MainWindow::startTest()
 
 void MainWindow::overSlot()
 {
+    QString str = tr("请去掉被测试产品线缆。");
+    QuMsgBox box(this,str);
     mItem->mode = Test_Over;
     mResultWid->resultSlot();
     mDataSave->saveTestData();
     mWebSocket->saveTestData();
     mSerialNumDlg->getSerialNum();
+    if(box.Exec()){
+
+    }
 }
 
 void MainWindow::overTest()

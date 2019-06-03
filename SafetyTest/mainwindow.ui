@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>安规测试平台</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>images/logo.jpg</normaloff>images/logo.jpg</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_2">
     <property name="leftMargin">
@@ -196,7 +200,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

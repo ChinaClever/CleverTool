@@ -14,7 +14,7 @@ QuMsgBox::QuMsgBox(QWidget *parent,QString strContext) : QMessageBox(parent)
     //    setWindowTitle(tr("提示信息"));
 //    com_setBackColour(tr("提示信息"),this);
 //    setWindowIcon(QIcon(":/images/logo.jpg"));
-    resize(600, 400);
+    resize(1000, 600);
 
     setIcon(QMessageBox::Question);
     setText(strContext);
@@ -28,7 +28,7 @@ QuMsgBox::QuMsgBox(QWidget *parent,QString strContext) : QMessageBox(parent)
     cancelBut->setFocus();
     confirmBut->setFocus();
 
-    setStyleSheet( "QPushButton:hover{background-color:rgb(91, 237, 238);}" );
+    setStyleSheet( "QPushButton:hover{background-color:rgb(91, 237, 238);} QWidget{font: 15pt \"微软雅黑\";}" );
 }
 
 QuMsgBox::~QuMsgBox()

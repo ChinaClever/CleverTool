@@ -315,10 +315,10 @@ bool rtu_recv_packet(uchar *buf, int len, Rtu_recv *pkt ,bool flag)
 
         int lineSum = 0;
         if(pkt->dc)//交流
-            lineSum = RTU_LINE_NUM;
+            lineSum = pkt->lineNum;
         else
             lineSum = 4; //[暂时未加宏]
-        for(int i=0; i<lineSum; ++i) // 读取电参数
+        for(int i=0; i<pkt->lineNum; ++i) // 读取电参数
             ptr += rtu_recv_data(ptr, &(pkt->data[i]));
 
         if(pkt->dc)

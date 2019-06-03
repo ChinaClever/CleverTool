@@ -1,4 +1,4 @@
-#include "tgswid.h"
+﻿#include "tgswid.h"
 #include "ui_tgswid.h"
 #include "dblogquery.h"
 
@@ -8,10 +8,15 @@ TgsWid::TgsWid(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    groupBox_background_icon(this);
     QDate date = QDate::currentDate();
     ui->todayDateEdit->setDate(date);
     ui->startDateEdit->setDate(date);
     ui->endDateEdit->setDate(date);
+
+    ui->errLcd->setStyleSheet("border: 1px solid black; color: black;");
+    ui->numLcd->setStyleSheet("border: 1px solid black; color: black;");
+    ui->okLcd->setStyleSheet("border: 1px solid black; color: black;");
 }
 
 TgsWid::~TgsWid()
@@ -24,6 +29,12 @@ void TgsWid::updateData(int all, int ok)
     ui->numLcd->display(all);
     ui->okLcd->display(ok);
     ui->errLcd->display(all-ok);
+    if(ok) ui->okLcd->setStyleSheet("border: 1px solid green; color: green;");
+    else ui->okLcd->setStyleSheet("border: 1px solid black; color: black;");
+    if(all-ok) ui->errLcd->setStyleSheet("border: 1px solid red; color: red;");
+    else ui->errLcd->setStyleSheet("border: 1px solid black; color: black;");
+
+    ui->numLcd->setStyleSheet("border: 1px solid black; color: black;");
 
     double value = 0;
     if(all) value = (ok*100.0) / all;

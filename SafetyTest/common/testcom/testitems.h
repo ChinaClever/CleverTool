@@ -1,4 +1,4 @@
-#ifndef TESTITEMS_H
+﻿#ifndef TESTITEMS_H
 #define TESTITEMS_H
 
 #include "comtablewid.h"
@@ -28,6 +28,8 @@ protected:
     int getResis(QList<sTestItem> &items);
     int getInsulation(QList<sTestItem> &items);
     int getWithstand(QList<sTestItem> &items);
+    int getEnd(QList<sTestItem> &items);
+    void getInstep(QList<sTestItem> &items,QString str,int step);
 };
 
 #endif // TESTITEMS_H

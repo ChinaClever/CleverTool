@@ -1,4 +1,4 @@
-/*
+﻿/*
  *
  *
  *  Created on: 2018年10月1日
@@ -35,7 +35,8 @@ void TestResultWid::startSlot()
 
     QString str = tr("产品:%1  批次：%2").arg(name).arg(batch);
     ui->titleTab->setText(str);
-    ui->snLab->setText(sn);
+    str = tr("条码：%1").arg(sn);
+    ui->snLab->setText(str);
 
     ui->itemNumLab->clear();
     ui->statusLab->clear();

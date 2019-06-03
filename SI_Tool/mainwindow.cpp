@@ -87,19 +87,40 @@ void MainWindow::onGetShowData(int value, Rtu_recv *data)
     ui->vLabel->setText(tr("v%1.%2").arg(data->version/10).arg(data->version%10));
     for(int i =0; i < len; i++){
         int j = 0;
-        setItem(i, j++, data->data[i].cur, 10); //电流
-         setItem(i, j++, data->data[i].vol, 1); //电压
-         setItem(i, j++, data->data[i].ele, 10); //电能
+        if( i < data->lineNum)
+        {
+            setItem(i, j++, data->data[i].cur, 10); //电流
+            setItem(i, j++, data->data[i].vol, 1); //电压
+            setItem(i, j++, data->data[i].ele, 10); //电能
+        }
+        else
+        {
+            setItem(i, j++, 0, 10); //电流
+            setItem(i, j++, 0, 1); //电压
+            setItem(i, j++, 0, 10); //电能
+        }
          if(i < 3){
              setItem(i, j++, data->env[i].tem.value, 1); //温度
          }else
              j++;
-         setItem(i, j++, data->data[i].pow, 1000); //功率
+         if( i < data->lineNum)
+        {
+             setItem(i, j++, data->data[i].pow, 1000); //功率
 
-        setItem(i, j++, data->data[i].minCur, 10); //电流min
-        setItem(i, j++, data->data[i].maxCur, 10); //电流max
-        setItem(i, j++, data->data[i].minVol, 1); //电压min
-        setItem(i, j++, data->data[i].maxVol, 1); //电压max
+            setItem(i, j++, data->data[i].minCur, 10); //电流min
+            setItem(i, j++, data->data[i].maxCur, 10); //电流max
+            setItem(i, j++, data->data[i].minVol, 1); //电压min
+            setItem(i, j++, data->data[i].maxVol, 1); //电压max
+         }
+         else
+         {
+             setItem(i, j++, 0, 1000); //功率
+
+            setItem(i, j++, 0, 10); //电流min
+            setItem(i, j++, 0, 10); //电流max
+            setItem(i, j++, 0, 1); //电压min
+            setItem(i, j++, 0, 1); //电压max
+         }
 
         if(i < 3){
             setItem(i, j++, data->env[i].tem.min, 1); //温度min

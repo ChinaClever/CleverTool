@@ -15,7 +15,7 @@ SerialPort::SerialPort(QObject *parent) : QThread(parent)
     mSerial = NULL;
 
     timer = new QTimer(this);
-    timer->start(10);
+    timer->start(100);
     connect(timer, SIGNAL(timeout()),this, SLOT(timeoutDone()));
 }
 
@@ -119,6 +119,8 @@ void SerialPort::timeoutDone()
     QWriteLocker locker(&mRwLock);
         if(mWriteArray.size()) {
             int ret = write();
+            QString str = mWriteArray;
+            qDebug()<<str<<mWriteArray.size()<<mWriteArray.toHex();
             if(ret) {
                 mWriteArray.clear();
                 mSerialData.clear();
