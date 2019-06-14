@@ -228,6 +228,8 @@ static int rtu_recv_thd(uchar *ptr, Rtu_recv *msg)
     *(ptr++); // 防雷开关
      // 读取负载百分比
     for(int i=0; i<3; ++i) *(ptr++);
+
+    ptr+=6;//始端箱需要两个字节零线电流/插接箱保留
     *(ptr++);
 
     int len = 32;
@@ -236,7 +238,7 @@ static int rtu_recv_thd(uchar *ptr, Rtu_recv *msg)
         (*ptr) * 256 + *(ptr+1);  ptr += 2;
     }
 
-    return (1+3+1+len*2);
+    return (1+3+1+6+len*2);
 }
 
 static int rtu_recv_len_dc(uchar *buf, int len)
@@ -311,7 +313,20 @@ bool rtu_recv_packet(uchar *buf, int len, Rtu_recv *pkt ,bool flag)
             ptr += rtu_recv_env(ptr, &(pkt->env[i].tem));
         pkt->lineNum = *(ptr++); //[输出位]
         pkt->version = *(ptr++); //[输出位]
-        ptr += 2;
+        ptr ++;
+        bool state[RTU_LINE_NUM] = {false};
+        {//定制IOF触点解析
+            if(pkt->addr == 0)
+            {
+                state[0] = ((*(ptr++))&0x01)==1?true:false;
+            }
+            else
+            {
+                for(int i = 0 ; i < 3 ; i++)
+                    state[i] = ((*ptr)>>(3-1-i)&0x01)==1?true:false;
+                ptr++;
+            }
+        }
 
         int lineSum = 0;
         if(pkt->dc)//交流
@@ -319,7 +334,11 @@ bool rtu_recv_packet(uchar *buf, int len, Rtu_recv *pkt ,bool flag)
         else
             lineSum = 4; //[暂时未加宏]
         for(int i=0; i<pkt->lineNum; ++i) // 读取电参数
+        {
             ptr += rtu_recv_data(ptr, &(pkt->data[i]));
+            if(pkt->dc)//定制IOF触点状态重新赋值
+            pkt->data[i].sw = state[i]?1:0;
+         }
 
         if(pkt->dc)
         {

@@ -19,19 +19,6 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="GaugeArc2" name="gaugeArc2">
-   <property name="geometry">
-    <rect>
-     <x>60</x>
-     <y>120</y>
-     <width>200</width>
-     <height>200</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>通过率</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
@@ -293,6 +280,25 @@
      <weight>75</weight>
      <bold>true</bold>
     </font>
+   </property>
+  </widget>
+  <widget class="GaugeArc2" name="gaugeArc2">
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>100</y>
+     <width>200</width>
+     <height>200</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>微软雅黑</family>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="title">
+    <string>通过率</string>
    </property>
   </widget>
  </widget>

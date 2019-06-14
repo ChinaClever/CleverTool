@@ -26,7 +26,7 @@
       </property>
       <property name="text">
        <string>BUSBAR_SI交直流
-校准工具_V1.3</string>
+校准工具_V1.4</string>
       </property>
       <property name="checkable">
        <bool>false</bool>
@@ -548,6 +548,11 @@ p, li { white-space: pre-wrap; }
          <column>
           <property name="text">
            <string>温度max（°C）</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>断路器</string>
           </property>
          </column>
          <column>

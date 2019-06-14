@@ -55,7 +55,7 @@ void MainWindow::startTest()
 {
     int ret = mSerialNumDlg->exec();
     if(ret == QDialog::Accepted ) {
-        QString str = tr("将测试仪高压线（红色）接产品输入/输出L、N\n线，黑色线接产品输入PE线，另一线缆（红色）接产品机壳。");
+        QString str = tr("\n将测试仪高压线（红色）接产品输入/输出L、N\n线，黑色线接产品输入PE线，另一线缆（红色）接产品机壳。\n");
         QuMsgBox box(this,str);
 
         if(box.Exec()) {

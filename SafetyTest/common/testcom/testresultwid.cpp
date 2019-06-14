@@ -64,7 +64,7 @@ void TestResultWid::progressSlot()
     sTestProgress *arg = &(mItem->progress);
 
     int progress = (arg->finishNum * 100.0) / arg->allNum;
-    ui->progressBarWater->setValue(progress);
+    //ui->progressBarWater->setValue(progress);
     ui->statusLab->setText(arg->status);
 
     QPalette pe;

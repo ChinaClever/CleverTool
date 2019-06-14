@@ -78,6 +78,28 @@ bool MainWindow::setItem(int row, int column , uint value, int rate)
     return true;
 }
 
+/**
+ * @brief 设置值
+ * @param row
+ * @param column
+ */
+bool MainWindow::setBreakItem(int row, int column , uchar value)
+{
+    //int data = (valueH<<8 | valueD)/rate;
+    QTableWidgetItem *item = new QTableWidgetItem("Apple");
+    if(value==0)
+    {
+        item->setTextColor(QColor(255,0,0));;
+    }
+    else
+    {
+        item->setTextColor(QColor(0,0,0));;
+    }
+    item->setText(value?tr("闭合"):tr("断开"));
+    ui->tableWidget->setItem(row, column,item);
+    return true;
+}
+
 void MainWindow::onGetShowData(int value, Rtu_recv *data)
 {
     QReadLocker locker(&lock); //上锁
@@ -129,6 +151,10 @@ void MainWindow::onGetShowData(int value, Rtu_recv *data)
             j += 2;
         }
 
+        if(i < 3)
+        setBreakItem(i,j++,data->data[i].sw);
+        else
+        j += 1;
     }
 }
 
