@@ -53,6 +53,7 @@ public:
     void requestValue( const QString& oid) {mOids.clear(); mOids.append(oid);}
     void requestValues( const QStringList& oids ) {mOids = oids;}
     void requestSubValues( const QString& oid ) {mSubOid = oid;}
+    void setValue(QList<sSnmpSetCmd> &cmd, int timer);
 
 signals:
     void requestSig(const QString& str);
@@ -75,13 +76,16 @@ private slots:
 private:
     bool isRun;
     QMutex *mMutex;
-    QTimer *m_timer;
+    QTimer *m_timer,*mSetTimer;
     QStringList mOids;
-    QString mSubOid;
+    QString mSubOid,m_address;
 
     sSnmpRes *mSnmpRes;
     QtSnmpClient *m_snmp_client;
     QList<sSnmpSetCmd> mSetCmdList;//设置成public，在别的类可以访问
+    QList<sSnmpSetCmd> mSetCmdList2;//设置成public，在别的类可以访问
+    bool mFlag,mSetOrRead;
+    int mSendTimer;
 };
 
 #endif // SNMP_H

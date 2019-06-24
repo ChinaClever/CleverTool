@@ -715,7 +715,7 @@ bool TestCoreThread::getGndValue(QString& str)
         str = list.at(list.size()-1);
         str = str.left(str.indexOf('m'));
         if(str.at(0)==">")str = str.right(str.size()-1);
-        if(str.toInt() >= 0 && str.toInt() <= 100)
+        if(str.toDouble() >= 0 && str.toDouble() <= 100)
             ret = true;
         else
             ret = false;//false
@@ -742,7 +742,7 @@ bool TestCoreThread::getIRValue(QString& str)
             str = str.right(str.size()-1);
             ret = (str.toInt()==9999)?true:false;
         }
-        else if(str.toInt() >= 2 && str.toInt() <= 9999)
+        else if(str.toDouble() >= 2 && str.toDouble() <= 9999)
             ret = true;
         str += "MΩ";
         //qDebug()<<"IRqstring"<<str;
@@ -766,7 +766,7 @@ bool TestCoreThread::getDCWValue(QString& str)
         else
             ret = false; //false
 
-        str = QString::number(str.toDouble(),'f',1)+"μA";
+        str = QString::number(str.toDouble()/1000.0,'f',4)+"mA";
         //qDebug()<<"DCWqstring"<<str;
     }
     return ret;

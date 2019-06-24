@@ -9,7 +9,7 @@
 
 SnmpThread::SnmpThread(QObject *parent) : QThread(parent)
 {
-    isRun = false;
+    isRun = mFlag = mSetOrRead = false;//mSetOrRead false: read  true:set
     mMutex = new QMutex();
     mSnmpRes = new sSnmpRes();
 
@@ -21,8 +21,8 @@ SnmpThread::SnmpThread(QObject *parent) : QThread(parent)
     m_timer =  new QTimer(this);
     connect( m_timer, SIGNAL(timeout()), SLOT(timeoutDone()));
 
-    //    mSetTimer =  new QTimer(this);
-    //    connect(mSetTimer, SIGNAL(timeout()), SLOT(setSlot()) );
+    mSetTimer =  new QTimer(this);
+    connect( mSetTimer, SIGNAL(timeout()), SLOT(setSlot()) );
 }
 
 SnmpThread::~SnmpThread()
@@ -33,31 +33,87 @@ SnmpThread::~SnmpThread()
 
 void SnmpThread::startRead(const QString &addr, int msec)
 {
-    m_timer->start(msec);
-    memset(mSnmpRes, 0, sizeof(sSnmpRes));
-    mSnmpRes->timeoutmsec = msec;
-    m_snmp_client->setAgentAddress(QHostAddress(addr));
-    m_snmp_client->cancelWork();
+    if(!isRun)
+    {
+        if(msec == 0) msec = 500 + (rand() % 1000);
+        if(!m_timer->isActive()) m_timer->start(msec);
+        if(!mSetTimer->isActive()) mSetTimer->start(mSendTimer);
+        memset(mSnmpRes, 0, sizeof(sSnmpRes));
+        mSnmpRes->timeoutmsec = msec;
+        m_snmp_client->setAgentAddress(QHostAddress(addr));
+        m_address = addr;
+        m_snmp_client->cancelWork();
+        isRun = true;
+    }
 }
 
 
 void SnmpThread::stopRun()
 {
-    m_timer->stop();
-    mOids.clear();
-    mSubOid.clear();
-}
+    if(isRun)
+    {
+        isRun = false;
+        if(m_timer->isActive())  m_timer->stop();;
+        if(mSetTimer->isActive()) mSetTimer->stop();
 
+        mOids.clear();
+        mSubOid.clear();
+    }
+}    
+
+void SnmpThread::setValue(QList<sSnmpSetCmd> &cmd , int timer)
+{
+    mSetCmdList = cmd;
+    mSendTimer = timer;
+}
 
 void SnmpThread::setSlot()
 {
-    if(mSetCmdList.size())
+    if(mSetOrRead)
     {
-        if( ! m_snmp_client->isBusy() ) {
-            sSnmpSetCmd cmd = mSetCmdList.first();
-            m_snmp_client->setValue("private", cmd.oid, cmd.type, cmd.value);
-            //qDebug()<<"setSlot"<<cmd.oid<<cmd.type<<cmd.value<<ret;
-            mSetCmdList.removeFirst();
+        if(!mFlag)
+        {
+            if(mSetCmdList.size())
+            {
+                if( ! m_snmp_client->isBusy() ) {
+                    sSnmpSetCmd cmd = mSetCmdList.first();
+                    mSetCmdList2.append(cmd);
+                    m_snmp_client->setValue("private", cmd.oid, cmd.type, cmd.value);
+                    //mSnmpRes->reqmsec = QTime::currentTime().msecsSinceStartOfDay();
+                    //qDebug()<<"setSlot"<<cmd.oid<<cmd.type<<cmd.value;
+                    emit requestSig(cmd.oid);
+                    mSetCmdList.removeFirst();
+                    getResTime();
+                }
+
+            }
+            else
+            {
+                mFlag = true;
+                mSetOrRead = false;
+            }
+        }
+        else
+        {
+            if(mSetCmdList2.size())
+            {
+                if( ! m_snmp_client->isBusy() ) {
+                    sSnmpSetCmd cmd = mSetCmdList2.first();
+                    mSetCmdList.append(cmd);
+                    m_snmp_client->setValue("private", cmd.oid, cmd.type, cmd.value);
+                    //mSnmpRes->reqmsec = QTime::currentTime().msecsSinceStartOfDay();
+                    //qDebug()<<"setSlot"<<cmd.oid<<cmd.type<<cmd.value;
+                    emit requestSig(cmd.oid);
+                    mSetCmdList2.removeFirst();
+                    getResTime();
+                }
+
+            }
+            else
+            {
+                mFlag = false;
+                mSetOrRead = false;
+            }
         }
     }
 }
@@ -104,9 +160,9 @@ void SnmpThread::onResponseReceived(const qint32, const QtSnmpDataList& values )
     getReqTime();
 
     emit responseSig(values);
-//    for( const auto& value : values ) {
-//        qDebug( "%s | %s : %s\n", qPrintable( "192" ),  qPrintable( value.address() ),  qPrintable( value.data()) );
-//    }
+    for( const auto& value : values ) {
+        qDebug( "%s | %s : %s\n", qPrintable( "192" ),  qPrintable( value.address() ),  qPrintable( value.data()) );
+    }
 }
 
 void SnmpThread::onRequestFailed( const qint32 request_id )
@@ -122,11 +178,16 @@ bool SnmpThread::makeRequest()
     bool ret = true;
 
     if(mOids.size()) {
+        //if(! m_snmp_client->isBusy()){
         m_snmp_client->requestValues(mOids);
         emit requestSig(mOids.first());
+        //}
     }else if(!mSubOid.isEmpty()) {
+        //if(! m_snmp_client->isBusy()){
         m_snmp_client->requestSubValues(mSubOid);
         emit requestSig(mSubOid);
+        mSetOrRead = true;
+        //}
     } else {
         ret = false;
     }
@@ -153,9 +214,12 @@ bool SnmpThread::checkRes()
 
 void SnmpThread::timeoutDone()
 {
-    if(checkRes()) {
-        if(makeRequest()) {
-            getResTime();
+    if(!mSetOrRead)
+    {
+        if(checkRes()) {
+            if(makeRequest()) {
+                getResTime();
+            }
         }
     }
 }

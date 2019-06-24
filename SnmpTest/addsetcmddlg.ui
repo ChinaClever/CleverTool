@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AddSetCmdDlg</class>
+ <widget class="QDialog" name="AddSetCmdDlg">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>760</width>
+    <height>479</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <family>微软雅黑</family>
+    <pointsize>12</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QPushButton" name="okBtn">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>420</y>
+     <width>80</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>微软雅黑</family>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>确定</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="cancelBtn">
+   <property name="geometry">
+    <rect>
+     <x>520</x>
+     <y>420</y>
+     <width>80</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>微软雅黑</family>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>取消</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>180</y>
+     <width>54</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>OID_1:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="OID1lineEdit">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>180</y>
+     <width>411</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>180</y>
+     <width>54</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>值:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="Value1lineEdit">
+   <property name="geometry">
+    <rect>
+     <x>540</x>
+     <y>180</y>
+     <width>113</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="Value2lineEdit">
+   <property name="geometry">
+    <rect>
+     <x>540</x>
+     <y>220</y>
+     <width>113</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="OID2lineEdit">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>220</y>
+     <width>411</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>220</y>
+     <width>54</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>值:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>220</y>
+     <width>54</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>OID_2:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="Value3lineEdit">
+   <property name="geometry">
+    <rect>
+     <x>540</x>
+     <y>260</y>
+     <width>113</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>260</y>
+     <width>54</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>值:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="OID3lineEdit">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>260</y>
+     <width>411</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>260</y>
+     <width>54</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>OID_3:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="Value4lineEdit">
+   <property name="geometry">
+    <rect>
+     <x>540</x>
+     <y>300</y>
+     <width>113</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_7">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>300</y>
+     <width>54</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>值:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="OID4lineEdit">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>300</y>
+     <width>411</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_8">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>300</y>
+     <width>54</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>OID_4:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="Value5lineEdit">
+   <property name="geometry">
+    <rect>
+     <x>540</x>
+     <y>340</y>
+     <width>113</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_9">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>340</y>
+     <width>54</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>值:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="OID5lineEdit">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>340</y>
+     <width>411</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_10">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>340</y>
+     <width>54</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>OID_5:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="OID6lineEdit">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>380</y>
+     <width>411</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_11">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>380</y>
+     <width>54</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>值:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="Value6lineEdit">
+   <property name="geometry">
+    <rect>
+     <x>540</x>
+     <y>380</y>
+     <width>113</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_12">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>380</y>
+     <width>54</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>OID_6:</string>
+   </property>
+  </widget>
+  <widget class="QRadioButton" name="AutoradioBtn">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>20</y>
+     <width>91</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>自动生成</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QRadioButton" name="SetradiaBtn">
+   <property name="geometry">
+    <rect>
+     <x>260</x>
+     <y>20</y>
+     <width>101</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>设置任意值</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_13">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>60</y>
+     <width>54</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>OID_1:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="OIDlineEdit">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>60</y>
+     <width>411</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_14">
+   <property name="geometry">
+    <rect>
+     <x>500</x>
+     <y>60</y>
+     <width>54</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>位数:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="ValuelineEdit">
+   <property name="geometry">
+    <rect>
+     <x>560</x>
+     <y>60</y>
+     <width>113</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="ONcheckBox">
+   <property name="geometry">
+    <rect>
+     <x>570</x>
+     <y>90</y>
+     <width>73</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>ON</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="OFFcheckBox">
+   <property name="geometry">
+    <rect>
+     <x>570</x>
+     <y>120</y>
+     <width>73</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>OFF</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_15">
+   <property name="geometry">
+    <rect>
+     <x>480</x>
+     <y>150</y>
+     <width>81</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>间隔时间:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="TimelineEdit">
+   <property name="geometry">
+    <rect>
+     <x>560</x>
+     <y>150</y>
+     <width>113</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_16">
+   <property name="geometry">
+    <rect>
+     <x>680</x>
+     <y>150</y>
+     <width>41</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>ms</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

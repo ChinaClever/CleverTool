@@ -18,23 +18,35 @@ public:
     void initwid(SerialPort *serial);
 
 protected slots:
-   void updateTextSlot(QString str);
+   void updateTextSlot(QString str,int color);
    void updateErrLabSlot(int count);
 
 private slots:
    void on_pushButton_2_clicked();
    void on_pushButton_clicked();
    void on_stopBtn_clicked();
+   void timeoutDone();
+   void timeoutClearDone();
+
+   void on_EditBtn_clicked();
 
 private:
    bool readFile(QString &fn);
    void updateText(QStringList str);
    void transformer(sSetCmd& cmd);
+   void openFile();
+   void writeLog(QString &str);
 
 private:
     Ui::Mpdu_Test_WRThreshold *ui;
     SI_RtuThread *mRtu;
     QStringList mlist;
+    QFile *mFile;
+    QString mlogs;
+    QTimer *m_timer;
+    QTimer *m_cleartimer;
+    uint64_t m_totalConut;
+    uint64_t m_errConut;
 };
 
 #endif // MPDU_TEST_WRTHRESHOLD_H

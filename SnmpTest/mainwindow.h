@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include "snmpthread.h"
-
+#include "addsetcmddlg.h"
 namespace Ui {
 class MainWindow;
 }
@@ -34,6 +34,8 @@ private slots:
     void on_overBtn_clicked();
     void on_clearBtn_clicked();
 
+    void on_addSetCmdBtn_clicked();
+
 private:
     Ui::MainWindow *ui;
     SnmpThread *mSnmp;
@@ -43,6 +45,9 @@ private:
     bool isSave;
     QString logs;
     QMutex *mMutex;
+    AddSetCmdDlg *mAddSetCmdDlg;
+    QList<sSnmpSetCmd> mSetCmdList;
+    int mSendTimer;
 };
 
 #endif // MAINWINDOW_H

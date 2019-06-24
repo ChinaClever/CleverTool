@@ -31,6 +31,10 @@ MainWindow::MainWindow(QWidget *parent) :
     m_timer->start(2000);
     m_cleartimer = new QTimer(this);
 
+    mAddSetCmdDlg = new AddSetCmdDlg(this);
+    mAddSetCmdDlg->init(this->mSetCmdList);
+
+
     this->setWindowTitle(tr("SnmpTest"));
     connect(m_timer, SIGNAL(timeout()), SLOT(timeoutDone()));
     connect(m_cleartimer, SIGNAL(timeout()), SLOT(timeoutClearDone()));
@@ -132,6 +136,7 @@ bool MainWindow::startFun()
 void MainWindow::on_startBtn_clicked()
 {
     bool ret = startFun();
+
     if(ret) {
         ui->groupBox->setDisabled(ret);
         ui->startBtn->setDisabled(ret);
@@ -202,9 +207,10 @@ void MainWindow::responseSlot(const QtSnmpDataList& values)
 {
     QMutexLocker locker(mMutex);
     for( const auto& value : values ) {
-        QString  str = tr("应答:") + QTime::currentTime().toString("hh:mm:ss.zzz") +  "  ";
+        QString  str = tr("应答:") + QTime::currentTime().toString("hh:mm:ss.zzz");
+        str += "             ";
         str += qPrintable( value.address() );
-        str += "  ";
+        str += "             ";
         str += qPrintable( value.data());
         ui->textEdit->append(str);
         logs += str + "\n";
@@ -216,4 +222,14 @@ void MainWindow::reqErrSlot()
 {
     //on_overBtn_clicked();
     // CriticalMsgBox box(this, str);
+}
+
+void MainWindow::on_addSetCmdBtn_clicked()
+{
+    int ret = mAddSetCmdDlg->exec();
+    if( ret == QDialog::Accepted ) {
+        this->mSetCmdList  = mAddSetCmdDlg->getSetCmdList();
+        this->mSendTimer  = mAddSetCmdDlg->getSendTimer();
+        mSnmp->setValue(this->mSetCmdList,this->mSendTimer);
+    }
 }

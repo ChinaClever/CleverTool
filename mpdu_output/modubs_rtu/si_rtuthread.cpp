@@ -11,9 +11,11 @@ SI_RtuThread::SI_RtuThread(QObject *parent) : QThread(parent)
     mreg = 0;
     mSerial = NULL;
     mBuf = (uchar *)malloc(RTU_BUF_SIZE);
+    mBuf2 = (uchar *)malloc(RTU_BUF_SIZE);
     mMutex = new QMutex();
 
     isRun = false;
+    m_Timer = 400;
     mRtuSent = new SI_RtuSent();
 }
 
@@ -59,57 +61,131 @@ bool SI_RtuThread::sentSetCmd(int addr,int fn, int reg, ushort value, int msecs)
     int len = mRtuSent->sentCmdBuff(addr,fn , reg, value, buf);
     QByteArray array;
     QString strArray;
+    strArray.clear();
+    array.clear();
+    QDateTime local(QDateTime::currentDateTime());
+    QString localTime = local.toString("yyyy-MM-dd:hh:mm:ss:zzz");
     array.append((char *)buf, len);
     strArray = array.toHex(); // 十六进制
     for(int i=0; i<array.size(); ++i)
         strArray.insert(2+3*i, " "); // 插入空格
-    strArray = "send:"+strArray;
-    qDebug()<< "send:" << strArray;
-    emit cmdSig(strArray);
+    strArray = "send:"+strArray+"-----------------"+localTime;
+    //qDebug()<< "send:" << strArray;
+
+
+    emit cmdSig(strArray , 0);
+    memset(mBuf,0,RTU_BUF_SIZE);
     if(mSerial) {
         int rtn = mSerial->transmit(buf, len, mBuf, msecs);
-        if(fn == 6)
+        //if(fn == 6)
         {
-                if(len == rtn) {
-                if(memcmp(buf, mBuf,rtn) == 0)
+                //if(len == rtn)
+            {
+                //if(memcmp(buf, mBuf,rtn) == 0)
                 {
-                    array.append((char *)mBuf, len);
+                    strArray.clear();
+                    array.clear();
+                    array.append((char *)mBuf, rtn);
                     strArray = array.toHex(); // 十六进制
                     for(int i=0; i<array.size(); ++i)
                         strArray.insert(2+3*i, " "); // 插入空格
+                    QDateTime local2(QDateTime::currentDateTime());
+                    QString localTime2 = local2.toString("yyyy-MM-dd:hh:mm:ss:zzz");
                     strArray = "recv:"+strArray;
-                    qDebug()<< "recv:" << strArray;
-                    emit cmdSig(strArray);
-                    ret = true;
+                    //qDebug()<< "recv:" << strArray;
+
+                    QString ans = "";
+                    int color = 0;
+                    if(checkData(array,ret,ans,color,rtn))
+                        strArray+="-----------------"+localTime2;
+                    else
+                    {
+                        msleep(m_Timer);
+                        memset(mBuf2,0,RTU_BUF_SIZE);
+                        int rtn2 = mSerial->read(mBuf2,1);
+                        array.append((char *)mBuf2, rtn2);
+                        if(checkData(array,ret,ans,color,rtn+rtn2))
+                        {
+                            strArray = array.toHex(); // 十六进制
+                            for(int i=rtn; i<array.size(); ++i)
+                                strArray.insert(2+3*i, " "); // 插入空格
+                            QDateTime local3(QDateTime::currentDateTime());
+                            QString localTime3 = local3.toString("yyyy-MM-dd:hh:mm:ss:zzz");
+                            strArray+="-----------------"+localTime3;
+                        }
+                    }
+                    ans += strArray;
+                    qDebug()<< "recv:" << ans;
+                    emit cmdSig(ans,color);
                 }
-                else
-                    qDebug() << "SI sent Set Cmd Err";
-                }
+
+           }
         }
-        else
-        {
-            if(memcmp(buf, mBuf,2) == 0)
-            {
-                array.append((char *)mBuf, len);
-                strArray = array.toHex(); // 十六进制
-                for(int i=0; i<array.size(); ++i)
-                    strArray.insert(2+3*i, " "); // 插入空格
-                strArray = "recv:"+strArray;
-                qDebug()<< "recv:" << strArray;
-                emit cmdSig(strArray);
-                ret = true;
-            }
-            else
-                qDebug() << "SI sent Set Cmd Err";
-        }
+//        else
+//        {
+//            if(memcmp(buf, mBuf,2) == 0)
+//            {
+//                array.append((char *)mBuf, len);
+//                strArray = array.toHex(); // 十六进制
+//                for(int i=0; i<array.size(); ++i)
+//                    strArray.insert(2+3*i, " "); // 插入空格
+//                strArray = "recv:"+strArray;
+//                qDebug()<< "recv:" << strArray;
+//                emit cmdSig(strArray);
+//                ret = true;
+//            }
+//            else
+//                qDebug() << "SI sent Set Cmd Err";
+//        }
     }
 
     return ret;
 }
 
+bool SI_RtuThread::checkData(QByteArray mBuf,bool& ret,QString &ans,int &color,int rtn)
+{
+    if(mBuf.at(0) == 1)
+    {
+        if(mBuf.at(1) == 3)
+        {
+            if(rtn == 87)
+            {
+                ret = true;
+                ans = tr("正确");
+                color = 2;
+            }
+            else
+            {
+                ans = tr("长度错误");
+                color = 1;
+                ret = false;
+            }
+         }
+        else
+        {
+            ans = tr("功能码错误");
+            color = 1;
+            ret = false;
+        }
+    }
+    else if(mBuf.at(0)==0&&mBuf.at(1) == 0&&mBuf.at(2) == 0)
+    {
+        ans = tr("未响应");
+        color = 1;
+        ret = false;
+    }
+    else
+    {
+      ans = tr("设备地址错误");
+      color = 1;
+      ret = false;
+    }
+   return ret;
+}
+
 void SI_RtuThread::run()
 {
-    static int j = 0;
+    int j = 0;
     isRun = true;
     while(isRun) {
 
@@ -126,8 +202,8 @@ void SI_RtuThread::run()
                 ++j;
                 emit countSig(j);
             }
+
         }
-        sleep(1);
         //mList.clear();
     }
 }
@@ -135,4 +211,9 @@ void SI_RtuThread::run()
 void SI_RtuThread::stopThread()
 {
     isRun = false;
+}
+
+void SI_RtuThread::setTimer(int timer)
+{
+    m_Timer = timer;
 }

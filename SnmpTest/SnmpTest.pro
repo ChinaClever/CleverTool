@@ -33,11 +33,14 @@ include(snmp/snmp.pri)
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    msgbox.cpp
+    msgbox.cpp \
+    addsetcmddlg.cpp
 
 HEADERS += \
         mainwindow.h \
-    msgbox.h
+    msgbox.h \
+    addsetcmddlg.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    addsetcmddlg.ui

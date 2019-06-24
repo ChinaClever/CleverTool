@@ -1,4 +1,4 @@
-#include "mpdu_outputthresholdwid.h"
+﻿#include "mpdu_outputthresholdwid.h"
 #include "ui_mpdu_outputthresholdwid.h"
 
 MPDU_OutputThresholdWid::MPDU_OutputThresholdWid(QWidget *parent) :
@@ -31,7 +31,7 @@ void MPDU_OutputThresholdWid::initwid(int mode, SerialPort *serial)
     if(mode) mReg = 229;
     mRtu = new SI_RtuThread(this);
     mRtu->init(serial);
-    connect(mRtu, SIGNAL(cmdSig(QString)), this, SLOT(updateTextSlot(QString)));
+    connect(mRtu, SIGNAL(cmdSig(QString,int)), this, SLOT(updateTextSlot(QString,int)));
     mRtu->mreg = mReg;
 }
 

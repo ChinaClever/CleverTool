@@ -25,13 +25,15 @@ public:
     void init(SerialPort *serial);
     void setCmd(sSetCmd &cmd) {mList.append(cmd);}
     int mreg;
+    void setTimer(int timer);
+    bool checkData(QByteArray mBuf, bool& ret, QString &ans, int &color, int rtn);
 
 protected:    
     bool sentSetCmd(int addr, int fn, int reg, ushort value, int msecs);
     void run();
 
 signals:
-    void cmdSig(QString);
+    void cmdSig(QString,int);
     void countSig(int);
 
 public slots:
@@ -39,11 +41,13 @@ public slots:
 private:
     bool isRun;
     uchar *mBuf;
+    uchar *mBuf2;
     SerialPort *mSerial;
     QMutex *mMutex;
     SI_RtuSent *mRtuSent;
 
     QList<sSetCmd> mList;
+    int m_Timer;
 };
 
 #endif // SI_RTUTHREAD_H

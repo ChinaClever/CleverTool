@@ -109,7 +109,7 @@ int TestItems::getResis(QList<sTestItem> &items)
 
     {
         item.subItem = tr("读取接地电阻测试结果");//?K+回车
-        item.param = tr("0-100");
+        item.param = tr("0-100mΩ");
         items.append(item);
     }
 
@@ -173,7 +173,7 @@ int TestItems::getInsulation(QList<sTestItem> &items)
 
     {
         item.subItem = tr("读取绝缘电阻测试结果");//?K+回车
-        item.param = tr("2-9999");
+        item.param = tr("2-9999MΩ");
         items.append(item);
     }
     return items.size();
@@ -272,7 +272,7 @@ int TestItems::getWithstand(QList<sTestItem> &items)
 
     {
         item.subItem = tr("读取输入对地测试结果");//?K+回车
-        item.param = tr("0-9999");
+        item.param = tr("0-9.999mA");
         items.append(item);
     }
 

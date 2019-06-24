@@ -234,7 +234,7 @@
          <string>条码清零</string>
         </property>
         <property name="checked">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -256,7 +256,7 @@
          <string>自动加一</string>
         </property>
         <property name="checked">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -304,8 +304,13 @@
          </size>
         </property>
         <property name="currentText">
-         <string>普通PDU</string>
+         <string>RPDU</string>
         </property>
+        <item>
+         <property name="text">
+          <string>RPDU</string>
+         </property>
+        </item>
         <item>
          <property name="text">
           <string>普通PDU</string>
