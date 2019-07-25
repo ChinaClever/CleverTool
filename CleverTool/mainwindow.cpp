@@ -724,36 +724,38 @@ void MainWindow::sentDataToPacket(quint8 &addr, quint8 &flag,quint8 *onbit,quint
 
     //标志位
     //    sentData.flag = sendData[j++] = 0xA1;
-    sentData.flag = sendData[j++] = flag;
+
 
 
     if(!symbol) //发送采集命令
     {
+        sentData.flag = sendData[j++] = 0x00;
         int i=0;
-        sentData.openeffective[i++] = sendData[j++] = 0X11;  //第一块执行板的开关控制
-        sentData.openeffective[i++] = sendData[j++] = 0X11;
-        sentData.openeffective[i++] = sendData[j++] = 0X11;
+        sentData.openeffective[i++] = sendData[j++] = 0X00;  //第一块执行板的开关控制
+        sentData.openeffective[i++] = sendData[j++] = 0X00;
+        sentData.openeffective[i++] = sendData[j++] = 0X00;
 
-        sentData.openeffective[i++] = sendData[j++] = 0X11;
-        sentData.openeffective[i++] = sendData[j++] = 0X11;
-        sentData.openeffective[i++] = sendData[j++] = 0X11;
-
-        i=0;
-        sentData.closeffective[i++] = sendData[j++] = 0X11;  //第一块执行板的开关控制
-        sentData.closeffective[i++] = sendData[j++] = 0X11;
-        sentData.closeffective[i++] = sendData[j++] = 0X11;
-
-        sentData.closeffective[i++] = sendData[j++] = 0X11;
-        sentData.closeffective[i++] = sendData[j++] = 0X11;
-        sentData.closeffective[i++] = sendData[j++] = 0X11;
+        sentData.openeffective[i++] = sendData[j++] = 0X00;
+        sentData.openeffective[i++] = sendData[j++] = 0X00;
+        sentData.openeffective[i++] = sendData[j++] = 0X00;
 
         i=0;
-        sentData.obligate[i++] = sendData[j++] = 0x22;
-        sentData.obligate[i++] = sendData[j++] = 0x22;
-        sentData.obligate[i++] = sendData[j++] = 0x22;
+        sentData.closeffective[i++] = sendData[j++] = 0X00;  //第一块执行板的开关控制
+        sentData.closeffective[i++] = sendData[j++] = 0X00;
+        sentData.closeffective[i++] = sendData[j++] = 0X00;
+
+        sentData.closeffective[i++] = sendData[j++] = 0X00;
+        sentData.closeffective[i++] = sendData[j++] = 0X00;
+        sentData.closeffective[i++] = sendData[j++] = 0X00;
+
+        i=0;
+        sentData.obligate[i++] = sendData[j++] = 0x00;
+        sentData.obligate[i++] = sendData[j++] = 0x00;
+        sentData.obligate[i++] = sendData[j++] = 0x00;
     }
     else    //发送控制命令
     {
+        sentData.flag = sendData[j++] = flag;
         //开启有效位
         int i = 0;
         for(int k = 0; k < 6 ; k++)

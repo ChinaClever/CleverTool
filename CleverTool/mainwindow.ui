@@ -1414,7 +1414,7 @@ p, li { white-space: pre-wrap; }
      </font>
     </property>
     <property name="text">
-     <string>软件版本：v1.0</string>
+     <string>软件版本：v1.1</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>

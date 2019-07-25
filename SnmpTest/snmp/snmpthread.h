@@ -86,6 +86,8 @@ private:
     QList<sSnmpSetCmd> mSetCmdList2;//设置成public，在别的类可以访问
     bool mFlag,mSetOrRead;
     int mSendTimer;
+    QSet<int> mSlaveNumSet;
+    bool mFirstCheck;
 };
 
 #endif // SNMP_H

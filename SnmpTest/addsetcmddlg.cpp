@@ -28,27 +28,45 @@ void AddSetCmdDlg::on_okBtn_clicked()
         cmd.type = SNMP_STRING_TYPE;
         QString str = "";
         mBit = ui->ValuelineEdit->text().toInt();
+        QVector <QString> strVec;
         QStringList list = ui->OIDlineEdit->text().split(".");
-        for(int j = 1 ; j < list.size()-2; ++j)
-            str+="."+list.at(j);
+        int addr = ui->SlaveNumspinBox->text().toInt();
+        for(int i = 0 ; i < addr ; ++i )
+        {
+            str.clear();
+            for(int j = 1 ; j < list.size()-2; ++j)
+            {
+                if(j == 9)
+                    str += "."+QString::number(i+1);
+                else
+                str+="."+list.at(j);
+            }
+            strVec.append(str);
+        }
 
         if(ui->OFFcheckBox->isChecked())
         {
-            for(int i = 0 ; i < mBit ; ++i)
+            for(int j = 0 ; j < addr ; ++j)
             {
-                cmd.oid = str+QString(".%1").arg(i+1)+QString(".0");
-                qDebug()<<cmd.oid;
-                cmd.value= QString("OFF").toLocal8Bit();
-                this->mSetCmdList.append(cmd);
+                for(int i = 0 ; i < mBit ; ++i)
+                {
+                    cmd.oid = strVec.at(j)+QString(".%1").arg(i+1)+QString(".0");
+                    qDebug()<<"cmd.oid"<<cmd.oid;
+                    cmd.value= QString("OFF").toLocal8Bit();
+                    this->mSetCmdList.append(cmd);
+                }
             }
         }
         if(ui->ONcheckBox->isChecked())
         {
-            for(int i = 0 ; i < mBit ; ++i)
+            for(int j = 0 ; j < addr ; ++j)
             {
-                cmd.oid = str+QString(".%1").arg(i+1)+QString(".0");
-                cmd.value= QString("ON").toLocal8Bit();
-                this->mSetCmdList.append(cmd);
+                for(int i = 0 ; i < mBit ; ++i)
+                {
+                    cmd.oid = strVec.at(j)+QString(".%1").arg(i+1)+QString(".0");
+                    cmd.value= QString("ON").toLocal8Bit();
+                    this->mSetCmdList.append(cmd);
+                }
             }
         }
     }
@@ -136,6 +154,8 @@ void AddSetCmdDlg::on_AutoradioBtn_clicked()
     ui->ValuelineEdit->show();
     ui->ONcheckBox->show();
     ui->OFFcheckBox->show();
+    ui->label_17->show();
+    ui->SlaveNumspinBox->show();
 }
 
 void AddSetCmdDlg::on_SetradiaBtn_clicked()
@@ -171,4 +191,6 @@ void AddSetCmdDlg::on_SetradiaBtn_clicked()
     ui->ValuelineEdit->hide();
     ui->ONcheckBox->hide();
     ui->OFFcheckBox->hide();
+    ui->label_17->hide();
+    ui->SlaveNumspinBox->hide();
 }

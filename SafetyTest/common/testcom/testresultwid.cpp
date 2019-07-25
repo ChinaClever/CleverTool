@@ -41,6 +41,8 @@ void TestResultWid::startSlot()
     ui->itemNumLab->clear();
     ui->statusLab->clear();
     ui->progressBarWater->setValue(0);
+    ui->progressBarWater->setBgColor(Qt::green);
+    ui->progressBarWater->setUsedColor(Qt::green);
 
     timer->start(200);
     ui->startBtn->setText(tr("停止测试"));
@@ -55,8 +57,16 @@ void TestResultWid::resultSlot()
 
     mItem->progress.allNum = mItem->progress.finishNum;
     progressSlot();
-    ui->statusLab->setText(tr("测试结束!!!"));
+
+
     ui->startBtn->setText(tr("立即测试"));
+    if(!p)
+    {
+        ui->progressBarWater->setUsedColor(Qt::red);
+        ui->statusLab->setText(tr("测试失败!!!"));
+    }
+    else
+        ui->statusLab->setText(tr("测试成功!!!"));
 }
 
 void TestResultWid::progressSlot()
@@ -70,7 +80,7 @@ void TestResultWid::progressSlot()
     QPalette pe;
     pe.setColor(QPalette::WindowText,Qt::black);
     int ok = (arg->okNum * 100.0) / arg->allNum;
-    if(arg->errNum)  pe.setColor(QPalette::WindowText,Qt::red);
+    if(arg->errNum)  {pe.setColor(QPalette::WindowText,Qt::red);ui->progressBarWater->setBgColor(Qt::red);}
     QString str = tr("测试项目数:%1  失败项目数：%2  项目测试通过率：%3%").arg(arg->allNum).arg(arg->errNum).arg(ok);
     ui->itemNumLab->setText(str);
     ui->itemNumLab->setPalette(pe);

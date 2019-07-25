@@ -23,6 +23,7 @@ public:
     void stopThread();
 
     void init(SerialPort *serial);
+    void setLen(int len);
     void setCmd(sSetCmd &cmd) {mList.append(cmd);}
     int mreg;
     void setTimer(int timer);
@@ -48,6 +49,7 @@ private:
 
     QList<sSetCmd> mList;
     int m_Timer;
+    int mLen;
 };
 
 #endif // SI_RTUTHREAD_H

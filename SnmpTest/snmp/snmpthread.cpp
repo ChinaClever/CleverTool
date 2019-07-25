@@ -23,6 +23,8 @@ SnmpThread::SnmpThread(QObject *parent) : QThread(parent)
 
     mSetTimer =  new QTimer(this);
     connect( mSetTimer, SIGNAL(timeout()), SLOT(setSlot()) );
+
+    mFirstCheck = true;
 }
 
 SnmpThread::~SnmpThread()
@@ -44,6 +46,7 @@ void SnmpThread::startRead(const QString &addr, int msec)
         m_address = addr;
         m_snmp_client->cancelWork();
         isRun = true;
+        mFirstCheck = true;
     }
 }
 
@@ -59,7 +62,7 @@ void SnmpThread::stopRun()
         mOids.clear();
         mSubOid.clear();
     }
-}    
+}
 
 void SnmpThread::setValue(QList<sSnmpSetCmd> &cmd , int timer)
 {
@@ -69,21 +72,39 @@ void SnmpThread::setValue(QList<sSnmpSetCmd> &cmd , int timer)
 
 void SnmpThread::setSlot()
 {
-    if(mSetOrRead)
+    static int count = 0;
+    if(mSetOrRead)//设置还是读取标志位true:设置 false:读取
     {
-        if(!mFlag)
+        if(!mFlag)//第一轮设置队列发送命令false/第二轮设置队列发送命令true
         {
             if(mSetCmdList.size())
             {
                 if( ! m_snmp_client->isBusy() ) {
+                    count = 0;
                     sSnmpSetCmd cmd = mSetCmdList.first();
-                    mSetCmdList2.append(cmd);
-                    m_snmp_client->setValue("private", cmd.oid, cmd.type, cmd.value);
-                    //mSnmpRes->reqmsec = QTime::currentTime().msecsSinceStartOfDay();
-                    //qDebug()<<"setSlot"<<cmd.oid<<cmd.type<<cmd.value;
-                    emit requestSig(cmd.oid);
-                    mSetCmdList.removeFirst();
-                    getResTime();
+                    bool flag = true;
+                    if(mFirstCheck)//只筛选一次在线从机命令标志
+                    {
+                        QStringList list = cmd.oid.split(".");
+                        for(int j = 1 ; j < list.size()-2; ++j)
+                            if(j == 9)//筛选在线从机命令标志
+                            { flag = this->mSlaveNumSet.contains(list.at(j).toInt());break;}
+                    }
+                    if(flag){//在线则发送命令
+                        mSetCmdList2.append(cmd);
+                        m_snmp_client->setValue("private", cmd.oid, cmd.type, cmd.value);
+                        //mSnmpRes->reqmsec = QTime::currentTime().msecsSinceStartOfDay();
+                        //qDebug()<<"setSlot"<<cmd.oid<<cmd.type<<cmd.value;
+                        emit requestSig(cmd.oid);
+                        getResTime();
+                    }
+                    mSetCmdList.removeFirst();//移除第一轮设置队列命令
+                }
+                else
+                {
+                    count++;
+                    if(count == 10)
+                        m_snmp_client->cancelWork();//当snmp库繁忙的时候，直接删除工作状态
                 }
 
             }
@@ -98,6 +119,8 @@ void SnmpThread::setSlot()
             if(mSetCmdList2.size())
             {
                 if( ! m_snmp_client->isBusy() ) {
+                    count = 0;
+                    mFirstCheck = false;
                     sSnmpSetCmd cmd = mSetCmdList2.first();
                     mSetCmdList.append(cmd);
                     m_snmp_client->setValue("private", cmd.oid, cmd.type, cmd.value);
@@ -106,6 +129,12 @@ void SnmpThread::setSlot()
                     emit requestSig(cmd.oid);
                     mSetCmdList2.removeFirst();
                     getResTime();
+                }
+                else
+                {
+                    count++;
+                    if(count == 10)
+                        m_snmp_client->cancelWork();//当snmp库繁忙的时候，直接删除工作状态
                 }
 
             }
@@ -161,8 +190,20 @@ void SnmpThread::onResponseReceived(const qint32, const QtSnmpDataList& values )
 
     emit responseSig(values);
     for( const auto& value : values ) {
-        qDebug( "%s | %s : %s\n", qPrintable( "192" ),  qPrintable( value.address() ),  qPrintable( value.data()) );
+        //qDebug( "%s | %s : %s\n", qPrintable( "192" ),  qPrintable( value.address() ),  qPrintable( value.data()) );
+        //qDebug()<<"onResponseReceived"<<QString(value.address());
+        QStringList list = QString(value.address()).split(".");
+        for(int j = 1 ; j < list.size()-2; ++j)
+        {
+            if(j == 9){
+                mSlaveNumSet.insert(list.at(j).toInt());
+                break ;
+            }
+        }
+        //qDebug()<<"mSlaveNumSet.size()"<<mSlaveNumSet.size();
     }
+    mSetOrRead = true;
+
 }
 
 void SnmpThread::onRequestFailed( const qint32 request_id )
@@ -170,24 +211,24 @@ void SnmpThread::onRequestFailed( const qint32 request_id )
     qDebug() << request_id;
     mSnmpRes->err++;
     mSnmpRes->reqmsec = 0;
+    mSetOrRead = true;
     emit reqErrSig();
 }
 
 bool SnmpThread::makeRequest()
-{    
+{
     bool ret = true;
 
     if(mOids.size()) {
-        //if(! m_snmp_client->isBusy()){
-        m_snmp_client->requestValues(mOids);
-        emit requestSig(mOids.first());
-        //}
+        if(! m_snmp_client->isBusy()){
+            m_snmp_client->requestValues(mOids);
+            emit requestSig(mOids.first());
+        }
     }else if(!mSubOid.isEmpty()) {
-        //if(! m_snmp_client->isBusy()){
-        m_snmp_client->requestSubValues(mSubOid);
-        emit requestSig(mSubOid);
-        mSetOrRead = true;
-        //}
+        if(! m_snmp_client->isBusy()){
+            m_snmp_client->requestSubValues(mSubOid);
+            emit requestSig(mSubOid);
+        }
     } else {
         ret = false;
     }

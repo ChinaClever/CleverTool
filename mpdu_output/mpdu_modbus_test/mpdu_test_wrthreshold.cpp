@@ -131,13 +131,25 @@ void Mpdu_Test_WRThreshold::transformer(sSetCmd& cmd)
         QStringList str = mlist.at(i).split(" ");
         //for(int j = 0 ; j < str.size(); ++j )
             //qDebug()<<str.at(j);
-        cmd.addr = 1;
-        cmd.fn =  str.at(0).toInt();
-        cmd.value =  str.at(1).toShort();
-        cmd.reg =  str.at(2).toInt();
+        cmd.addr = str.at(0).toInt();
+        cmd.fn =  str.at(1).toShort();
+        cmd.value = str.at(2).toInt();
+        cmd.reg =  str.at(3).toInt();
         mRtu->setCmd(cmd);
         //qDebug()<<"aaaaa"<<cmd.fn<<cmd.value<<cmd.reg ;
     }
+}
+
+int Mpdu_Test_WRThreshold::analyseDevType(QString str)
+{
+    int len = 121;
+    if(str == "V3")
+        len = 121;
+    else if(str == "V1")
+        len = 103;
+    else
+        len = 87;
+    return len;
 }
 
 void Mpdu_Test_WRThreshold::on_pushButton_clicked()
@@ -145,6 +157,7 @@ void Mpdu_Test_WRThreshold::on_pushButton_clicked()
 
     sSetCmd cmd;
     transformer(cmd);
+    mRtu->setLen(analyseDevType(ui->comboBoxDev->currentText()));
 
     mRtu->start();
     m_timer->start(2000);

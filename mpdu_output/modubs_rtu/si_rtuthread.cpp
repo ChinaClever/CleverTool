@@ -9,6 +9,7 @@
 SI_RtuThread::SI_RtuThread(QObject *parent) : QThread(parent)
 {
     mreg = 0;
+    mLen = 121;
     mSerial = NULL;
     mBuf = (uchar *)malloc(RTU_BUF_SIZE);
     mBuf2 = (uchar *)malloc(RTU_BUF_SIZE);
@@ -42,6 +43,15 @@ SI_RtuThread *SI_RtuThread::bulid(QObject *parent)
 void SI_RtuThread::init(SerialPort *serial)
 {
     mSerial = serial;
+}
+
+/**
+ * @brief 设置串口并开启线程
+ * @param serial
+ */
+void SI_RtuThread::setLen(int len)
+{
+    mLen = len;
 }
 
 
@@ -148,7 +158,7 @@ bool SI_RtuThread::checkData(QByteArray mBuf,bool& ret,QString &ans,int &color,i
     {
         if(mBuf.at(1) == 3)
         {
-            if(rtn == 87)
+            if(rtn == mLen)
             {
                 ret = true;
                 ans = tr("正确");

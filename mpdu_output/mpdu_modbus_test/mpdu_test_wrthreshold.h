@@ -36,6 +36,7 @@ private:
    void transformer(sSetCmd& cmd);
    void openFile();
    void writeLog(QString &str);
+   int analyseDevType(QString str);
 
 private:
     Ui::Mpdu_Test_WRThreshold *ui;
