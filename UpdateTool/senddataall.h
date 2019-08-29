@@ -23,7 +23,7 @@ private:
     void run();
 
     int getPacketNum(int bytes);
-    bool responseSendFile(int num);
+    int responseSendFile(int num);
 
     bool sendUpdateCmd(int add);
     bool responseUpdate();

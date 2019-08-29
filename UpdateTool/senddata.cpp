@@ -42,12 +42,12 @@ void SendData::run()
     qDebug() << QString("[对象切换_>>地址%1<<]").arg(mAddr);
     QByteArray allArray = file.readAll();
 
-  //  qDebug() << allArray.size() % TEXT_MAX_LEN; //取余
+    //qDebug() << allArray.size() % TEXT_MAX_LEN; //取余
 
 
    // QTextStream in(&file);  //字符流可能有问题  -- 改 QDataStream 或直接 QFile
     int ret = 0; //第几包
-    bool recvsuccessful; //数据包接收成功
+    bool recvsuccessful = false; //数据包接收成功
 
     while (ret < packetNum)
     {
@@ -56,7 +56,7 @@ void SendData::run()
         ret++;
         recvsuccessful = false; //数据包接收成功
         if(ret >= packetNum){  //最后一包
-          //  int len = allArray.size() % TEXT_MAX_LEN; //取余
+           //int len = allArray.size() % TEXT_MAX_LEN; //取余
             mLastPacketNum = ret;
             QByteArray da;
             da = allArray;
@@ -130,19 +130,26 @@ void SendData::run()
 
 
             int tick = 0;//用于延时
+            int recvError = 0;
 
             do {
                 tick++;
-                if(responseSendFile(ret) == true)
+                recvError = responseSendFile(ret);
+                if(recvError == 1)
                 {
                     recvsuccessful = true; //接收成功
                     break;
-                }else {
-                   // qDebug() << "responseSendFile err" << tick << ret;
+                }else if(recvError == -1){
+                   qDebug() << "responseSendFile err" << tick << ret;
+                    break;
                 }
                 sleep(1);
             } while (tick < 3);
-
+            if(recvError == -1)
+            {
+                recvsuccessful = false;
+                break;
+            }
         } while (!recvsuccessful && pass < 5); //发送数据包，直到该数据包接收成功
 
         qDebug() << "-------------------- [分割线] --------------------------";
@@ -165,7 +172,7 @@ void SendData::run()
         QMessageBox::warning(this,tr("information"),tr("NG"),tr("quit"));
 */
 
-    if(ret == packetNum) emit sendOk(1);
+    if(ret == packetNum&&recvsuccessful) emit sendOk(1);
     else emit sendOk(0);
 }
 
@@ -183,7 +190,7 @@ int SendData::getPacketNum(int bytes)
     return num;
 }
 
-bool SendData::responseSendFile(int num)
+int SendData::responseSendFile(int num)
 {
     QString responseStr = QString("Receive Packet %1 successful").arg(num);
     QString responseStr2 = QString("Receive Packet %1 successfu").arg(num);
@@ -195,7 +202,7 @@ bool SendData::responseSendFile(int num)
         QString str = QString(array);
         if(str.compare(responseStr) == 0 || str.compare(responseStr2) == 0){
              qDebug() << "[Get正确数据:]_" << str;
-            return true;
+            return 1;
         }
         else {
             QString responseStr = QString("successful");
@@ -204,19 +211,19 @@ bool SendData::responseSendFile(int num)
                 QStringList list = str.split(" ");
                 str = list.at(list.size()-1);
             }
-            if(str.compare(responseStr) == 0 || str.compare(responseStr2) == 0){
+            if(str.contains(responseStr)|| str.contains(responseStr2)){
                  qDebug() << "[Get正确数据:]_" << str;
-                return true;
+                return 1;
             }
             if(mLastPacketNum == num&&(str.contains(responseStr)|| str.contains(responseStr2)))
             {
                     qDebug() << "[Get正确数据:]_" << str;
-                   return true;
+                   return 1;
              }
-            if(!str.isEmpty()) qDebug() << "[Get错误数据:]_" << str << QString("[参考数据：%1]").arg(responseStr);
+            if(!str.isEmpty()) {qDebug() << "[Get错误数据:]_" << str << QString("[参考数据：%1]").arg(responseStr);return -1;}
             else qDebug() << "[Get数据失败:]_" << "空";
         }
     }
 
-    return false;
+    return 0;
 }

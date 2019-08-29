@@ -52,7 +52,7 @@ void SendDataAll::run()
         sendUpdateCmd(caddr);
         int isPass = -1;
         do {  //升级回应
-            if(cret == 3 || cret == 6) sendUpdateCmd(caddr); //再次发送
+            if(cret % 3 == 0) sendUpdateCmd(caddr); //再次发送
             isPass = responseUpdate();
             if(isPass == 1)
             {
@@ -65,7 +65,7 @@ void SendDataAll::run()
             else qDebug() <<"[Get>NG>尝试:]_"<< cret;
             Sleep(1*1000);
             cret++;
-        } while (cret < 10);  //收到应答，立即向下执行，否则等待5s再向下执行 */
+        } while (cret < 15);  //收到应答，立即向下执行，否则等待5s再向下执行 */
 
         if(!isPass) {
              emit sendProgress("从机"+ QString::number(caddr) + "是否启动，请检查--------------------[NG]");  // 是否启动
@@ -77,7 +77,7 @@ void SendDataAll::run()
 
         QByteArray allArray = allArrayEnd; //初始化数据
         int ret = 0; //第几包
-        bool recvsuccessful;
+        bool recvsuccessful = false;
 
         while (ret < packetNum)
         {
@@ -153,17 +153,25 @@ void SendDataAll::run()
                 }
 
                 int tick = 0;//用于延时
+                int recvError = 0;
                 do {
                     tick++;
-                    if(responseSendFile(ret) == true)
+                    recvError = responseSendFile(ret);
+                    if(recvError == 1)
                     {
                         recvsuccessful = true; //接收成功
                         break;
-                    }else {
-                      //  qDebug() << "responseSendFile err" << tick << ret << pass;
+                    }else if(recvError == -1){
+                        qDebug() << "responseSendFile err" << tick << ret << pass;
+                        break;
                     }
                     sleep(1);
                 } while (tick < 3);
+                if(recvError == -1)
+                {
+                    recvsuccessful = false;
+                    break;
+                }
 
             } while (!recvsuccessful && pass < 5); //发送数据包，直到该数据包接收成功
 
@@ -177,7 +185,7 @@ void SendDataAll::run()
              }
 
         }
-        if(ret == packetNum) emit sendProgress("从机"+ QString::number(caddr) + "软件升级完毕");  //当前OK
+        if(ret == packetNum && recvsuccessful) emit sendProgress("从机"+ QString::number(caddr) + "软件升级完毕");  //当前OK
         else emit sendProgress("从机"+ QString::number(caddr) + "数据发送可能存在丢失，请检查-------------------[NG]");  //当前NG
     }
 
@@ -199,7 +207,7 @@ int SendDataAll::getPacketNum(int bytes)
     return num;
 }
 
-bool SendDataAll::responseSendFile(int num)
+int SendDataAll::responseSendFile(int num)
 {
     QString responseStr = QString("Receive Packet %1 successful").arg(num);
     QString responseStr2 = QString("Receive Packet %1 successfu").arg(num);
@@ -209,11 +217,9 @@ bool SendDataAll::responseSendFile(int num)
         QByteArray array = myPort->readData(mCurrentPort);
 
         QString str = QString(array);
-
-        qDebug()<<str;
         if(str.compare(responseStr) == 0 || str.compare(responseStr2) == 0){
              qDebug() << "[Get正确数据:]_" << str;
-            return true;
+            return 1;
         }else {
             QString responseStr = QString("successful");
             QString responseStr2 = QString("successfu");
@@ -221,21 +227,21 @@ bool SendDataAll::responseSendFile(int num)
                 QStringList list = str.split(" ");
                 str = list.at(list.size()-1);
             }
-            if(str.compare(responseStr) == 0 || str.compare(responseStr2) == 0){
+            if(str.contains(responseStr)|| str.contains(responseStr2)){
                  qDebug() << "[Get正确数据:]_" << str;
-                return true;
+                return 1;
             }
             if(mLastPacketNum == num&&(str.contains(responseStr)|| str.contains(responseStr2)))
             {
                     qDebug() << "[Get正确数据:]_" << str;
-                   return true;
+                   return 1;
              }
 
-            if(!str.isEmpty()) qDebug() << "[Get错误数据:]_" << str << array<< QString("[参考数据：%1]").arg(responseStr);
+            if(!str.isEmpty()) {qDebug() << "[Get错误数据:]_" << str << array<< QString("[参考数据：%1]").arg(responseStr);return -1;}
             else qDebug() << "[Get数据失败:]_" << "空";
         }
     }
-    return false;
+    return 0;
 }
 
 

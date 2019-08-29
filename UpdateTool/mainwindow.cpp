@@ -259,7 +259,7 @@ void MainWindow::on_startBtn_clicked()
 
         int isPass = -1;//-1失败 1成功 0接收到其它的数据
         do {  //升级回应
-            if(ret == 3 || ret == 6) sendUpdateCmd(); //再次发送
+            if(ret % 3 == 0) sendUpdateCmd(); //再次发送
             isPass = responseUpdate();
             if(isPass == 1)
              {
@@ -272,7 +272,7 @@ void MainWindow::on_startBtn_clicked()
             else qDebug() << "NG>" << ret;
             sleep(1*1000);
             ret++;
-        } while (ret < 5);  //收到应答，立即向下执行，否则等待5s再向下执行 */
+        } while (ret < 15);  //收到应答，立即向下执行，否则等待5s再向下执行 */
 
         if(!isPass) {
             QMessageBox::warning(this,tr("waring"),tr("请确定从机是否启动"),tr("确定"));
@@ -375,7 +375,7 @@ void MainWindow::sendFile()
     QFile file(mUpdateFile);
 
     int packetNum = getPacketNum(file.size()) ;
-    qDebug() << "packet num" << packetNum;  //包数
+    //qDebug() << "packet num" << packetNum;  //包数
 
     if(packetNum == 0)  //升级文件是否为空
     {

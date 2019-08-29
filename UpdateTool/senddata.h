@@ -24,7 +24,7 @@ private:
 
 
     int getPacketNum(int bytes);
-    bool responseSendFile(int num);
+    int responseSendFile(int num);//1:成功 0：没接收到 -1：接收到乱码
 
     QString mfileName;
     QString mCurrentPort;

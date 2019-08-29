@@ -127,7 +127,7 @@ QByteArray MySeriorport::readData(QString &portName)
     QByteArray recv;
     if(port->isOpen())
     {
-        while (port->waitForReadyRead(100)); // 等待窗口接收完全
+        while (port->waitForReadyRead(500)); // 等待窗口接收完全
         while (!port->atEnd())
             recv += port->readAll();     //因为串口是不稳定的，也许读到的是部分数据而已，但也可能是全部数据
 
