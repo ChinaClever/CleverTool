@@ -1637,3 +1637,20 @@ void MainWindow::on_pushButton12_clicked() //全开
         }
     }
 }
+
+void MainWindow::on_DelayZeroBtn_clicked()
+{
+    qDebug()<<"0s延时命令已发送";
+    quint8 buf[21];
+    memset(buf,0,sizeof(buf));
+    //    qDebug()<<"cmd:"<<mAddr;
+
+
+    delayCmd[sizeof(delayCmd)-1] = getXorNumber(delayCmd,sizeof(delayCmd)-1);
+    for(int i = 0; i < 21; i++)
+        buf[i] = delayCmd[i];
+
+    port->sendDataToPort(mCurrentPortName,buf,sizeof(buf));
+    ui->lineEdit_8->clear();
+    ui->lineEdit_8->setText(quintToStr(buf,sizeof(buf)));
+}

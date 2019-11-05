@@ -90,6 +90,8 @@ private slots:
 
     void on_pushButton12_clicked();
 
+    void on_DelayZeroBtn_clicked();
+
 protected:
     void initComboxDa(int flag);
     void updateStateAndButton();

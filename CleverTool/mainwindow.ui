@@ -834,7 +834,7 @@
     <widget class="QPushButton" name="pushButton_6">
      <property name="geometry">
       <rect>
-       <x>180</x>
+       <x>140</x>
        <y>10</y>
        <width>71</width>
        <height>30</height>
@@ -860,7 +860,7 @@
     <widget class="QPushButton" name="pushButton_8">
      <property name="geometry">
       <rect>
-       <x>310</x>
+       <x>250</x>
        <y>10</y>
        <width>71</width>
        <height>30</height>
@@ -1190,6 +1190,22 @@
       <string>自动切换</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="DelayZeroBtn">
+     <property name="geometry">
+      <rect>
+       <x>350</x>
+       <y>10</y>
+       <width>71</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="toolTipDuration">
+      <number>-1</number>
+     </property>
+     <property name="text">
+      <string>0s延时</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_6">
     <property name="geometry">
@@ -1414,7 +1430,7 @@ p, li { white-space: pre-wrap; }
      </font>
     </property>
     <property name="text">
-     <string>软件版本：v1.1</string>
+     <string>软件版本：v1.2</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
