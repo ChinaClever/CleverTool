@@ -1533,7 +1533,6 @@ void MainWindow::on_comboBox_3_currentIndexChanged(int) //模式切换
     if(index == 0){ //一键
         for(int i = 0; i < 16; i++)
         {
-            qDebug()<<"aaaaaaaaaaaa";
             buf[i] = modelCmd1[mAddr-1][i];
         }
     }else{ //继电器轮流开关模式

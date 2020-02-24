@@ -104,6 +104,24 @@ void MainWindow::onGetShowData(int value, Rtu_recv *data)
 {
     QReadLocker locker(&lock); //上锁
     int len = 0;
+    ////////////////////////////////////////////////////
+    QPalette pa;// 防雷开关------------------有问题
+    if(data->addr == 0) {
+        if(data->lps == 0)
+        {
+            pa.setColor(QPalette::WindowText, Qt::black);
+            ui->lpslab->setPalette(pa);
+            ui->lpslab->setText("正常");
+        }
+        else if(data->lps == 1)
+        {
+            pa.setColor(QPalette::WindowText, Qt::red);
+            ui->lpslab->setPalette(pa);
+            ui->lpslab->setText("损坏");
+        }
+
+    }
+    ////////////////////////////////////////////////////
     if(data->dc) len = 9;
     else len = 4;
     ui->vLabel->setText(tr("v%1.%2").arg(data->version/10).arg(data->version%10));
