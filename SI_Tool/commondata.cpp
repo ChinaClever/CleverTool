@@ -225,11 +225,15 @@ static bool rtu_recv_crc(uchar *buf, int len, Rtu_recv *msg)
 
 static int rtu_recv_thd(uchar *ptr, Rtu_recv *msg)
 {
-    *(ptr++); // 防雷开关
+    if(msg->addr==0)
+    msg->lps = *(ptr++); // 防雷开关------------------有问题
+    else {
+        *(ptr++);
+    }
      // 读取负载百分比
     for(int i=0; i<3; ++i) *(ptr++);
 
-    ptr+=6;//始端箱需要两个字节零线电流/插接箱保留
+    //ptr+=6;//始端箱需要两个字节零线电流/插接箱保留//1.4版本不用注释，1.3需要注释
     *(ptr++);
 
     int len = 32;
@@ -238,7 +242,8 @@ static int rtu_recv_thd(uchar *ptr, Rtu_recv *msg)
         (*ptr) * 256 + *(ptr+1);  ptr += 2;
     }
 
-    return (1+3+1+6+len*2);
+    //return (1+3+1+6+len*2);
+    return (1+3+1+len*2);
 }
 
 static int rtu_recv_len_dc(uchar *buf, int len)

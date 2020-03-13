@@ -49,6 +49,8 @@ void SendDataAll::run()
         qDebug() <<"";
         qDebug() << QString("[对象切换_>>地址%1<<]").arg(caddr);
         int cret = 0 ;
+        if(caddr != mMin)
+        {Sleep(2000);}
         sendUpdateCmd(caddr);
         int isPass = -1;
         do {  //升级回应
@@ -277,7 +279,7 @@ bool SendDataAll::responseUpdate()
         QString str = QString(array);
         qDebug() << "Data1" << str;
 
-        if(!str.compare("Start Updata") || !str.compare("Start Updat"))
+        if(str.contains("Start Updata") || str.contains("Start Updat"))
             return true;
     }
     return false;

@@ -351,7 +351,8 @@ bool MainWindow::sendUpdateCmd()  //bool型
  */
 int MainWindow::responseUpdate()
 {
-    QString responseStr = tr("Start Updata");
+    QString responseStr1 = tr("Start Updata");
+    QString responseStr2 = tr("Start Updat");
 
     int buad;
     if(!mCurrentPort.isEmpty() && myPort->portIsOpen(mCurrentPort, buad))
@@ -359,7 +360,7 @@ int MainWindow::responseUpdate()
         QByteArray array = myPort->readData(mCurrentPort);
         qDebug() << "Data1" << array.toHex();
         QString str = QString(array);
-        if(str == responseStr)
+        if(str.contains(responseStr1)||str.contains(responseStr2))
             return 1;
         if(!str.isEmpty())
             return 0;
