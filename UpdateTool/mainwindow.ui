@@ -23,17 +23,17 @@
       <x>220</x>
       <y>140</y>
       <width>111</width>
-      <height>20</height>
+      <height>31</height>
      </rect>
     </property>
    </widget>
    <widget class="QPushButton" name="selectfileBtn">
     <property name="geometry">
      <rect>
-      <x>400</x>
+      <x>380</x>
       <y>140</y>
-      <width>101</width>
-      <height>23</height>
+      <width>141</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
@@ -79,9 +79,15 @@
      <rect>
       <x>70</x>
       <y>100</y>
-      <width>69</width>
-      <height>20</height>
+      <width>91</width>
+      <height>31</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>11</pointsize>
+     </font>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_port">
@@ -89,8 +95,8 @@
      <rect>
       <x>220</x>
       <y>100</y>
-      <width>80</width>
-      <height>23</height>
+      <width>111</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="maximumSize">
@@ -98,6 +104,12 @@
       <width>111</width>
       <height>16777215</height>
      </size>
+    </property>
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>11</pointsize>
+     </font>
     </property>
     <property name="text">
      <string/>
@@ -108,13 +120,13 @@
      <rect>
       <x>400</x>
       <y>100</y>
-      <width>80</width>
-      <height>23</height>
+      <width>100</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="maximumSize">
      <size>
-      <width>80</width>
+      <width>100</width>
       <height>16777215</height>
      </size>
     </property>
@@ -144,7 +156,7 @@
      </font>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -155,18 +167,18 @@
        <rect>
         <x>30</x>
         <y>130</y>
-        <width>151</width>
+        <width>181</width>
         <height>21</height>
        </rect>
       </property>
       <property name="text">
-       <string>从机已经进入升级状态</string>
+       <string>从机进入升级状态</string>
       </property>
      </widget>
      <widget class="QLabel" name="showProgress">
       <property name="geometry">
        <rect>
-        <x>100</x>
+        <x>170</x>
         <y>80</y>
         <width>101</width>
         <height>21</height>
@@ -179,9 +191,9 @@
      <widget class="QLabel" name="label_2">
       <property name="geometry">
        <rect>
-        <x>30</x>
+        <x>13</x>
         <y>80</y>
-        <width>54</width>
+        <width>141</width>
         <height>20</height>
        </rect>
       </property>
@@ -194,7 +206,7 @@
        <rect>
         <x>140</x>
         <y>220</y>
-        <width>81</width>
+        <width>101</width>
         <height>31</height>
        </rect>
       </property>
@@ -223,13 +235,13 @@
        <rect>
         <x>19</x>
         <y>40</y>
-        <width>51</width>
+        <width>41</width>
         <height>16</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <family>04b_21</family>
+        <family>微软雅黑</family>
         <pointsize>11</pointsize>
        </font>
       </property>
@@ -237,7 +249,7 @@
        <string>地址：</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       <set>Qt::AlignCenter</set>
       </property>
      </widget>
     </widget>
@@ -289,7 +301,7 @@
        <rect>
         <x>260</x>
         <y>20</y>
-        <width>75</width>
+        <width>101</width>
         <height>23</height>
        </rect>
       </property>
@@ -300,9 +312,9 @@
      <widget class="QLabel" name="label_4">
       <property name="geometry">
        <rect>
-        <x>23</x>
+        <x>13</x>
         <y>10</y>
-        <width>71</width>
+        <width>121</width>
         <height>20</height>
        </rect>
       </property>
@@ -315,7 +327,7 @@
        <rect>
         <x>140</x>
         <y>10</y>
-        <width>71</width>
+        <width>101</width>
         <height>16</height>
        </rect>
       </property>
@@ -336,7 +348,7 @@
      <widget class="QLabel" name="labelS">
       <property name="geometry">
        <rect>
-        <x>150</x>
+        <x>240</x>
         <y>60</y>
         <width>181</width>
         <height>21</height>
@@ -351,12 +363,12 @@
        <rect>
         <x>30</x>
         <y>60</y>
-        <width>101</width>
+        <width>191</width>
         <height>21</height>
        </rect>
       </property>
       <property name="text">
-       <string>当前升级进度：</string>
+       <string>当前升级状态：</string>
       </property>
      </widget>
     </widget>
@@ -366,8 +378,8 @@
      <rect>
       <x>70</x>
       <y>140</y>
-      <width>69</width>
-      <height>22</height>
+      <width>91</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
