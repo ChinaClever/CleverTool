@@ -50,6 +50,7 @@ public:
                               const int type,
                               const QByteArray& value );
     void completeWork( const QtSnmpDataList& );
+    void cancelWork();
 
 private:
     Q_SIGNAL void responseReceived( const qint32 request_id,
@@ -60,7 +61,7 @@ private:
     void addWork( const JobPointer& );
     void startNextWork();
     Q_SLOT void onResponseTimeExpired();
-    void cancelWork();
+
     Q_SLOT void onReadyRead();
     QtSnmpDataList getResponseData( const QByteArray& datagram );
     bool writeDatagram( const QByteArray& );

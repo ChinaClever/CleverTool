@@ -40,14 +40,15 @@ private slots:
     void onProgressAllSlot2(QString); //传输进度条
 
     void on_pushButton_clicked();
-
     void on_baudBox_currentIndexChanged(int index);
-
     void on_radioButton_clicked();
-
     void on_SetChannelBtn_clicked();
-
     void on_SetBaudBtn_clicked();
+    void on_comboBox_BoxType_activated(const QString &arg1);
+    void on_comboBox_Screen_activated(const QString &arg1);
+    void on_comboBox_Protocol_activated(const QString &arg1);
+    void on_comboBox_Transformer_activated(int index);
+    void on_comboBox_Monitor_activated(const QString &arg1);
 
 private:
     void initPortCombox(QStringList &portList);
@@ -63,6 +64,8 @@ private:
     bool SetChannelRecvarray(QString str);
     void SetChannelStatus(bool channelOrbaud, bool flag , int steps);
     bool isDirExist(QString fullPath ,QSettings *ini);
+    void initWid();
+    bool sendChangeType(ushort reg,ushort value);
 
 private:
     Ui::MainWindow *ui;

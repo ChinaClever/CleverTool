@@ -115,3 +115,17 @@ void text_send_packet(uchar addr, char *data, QByteArray &array, int len)
     array.append(textCmd.XOR>>8);  //高位在后
 
 }
+
+void text_change_send_packet(uchar addr,uchar funCode,ushort reg,ushort content, QByteArray &array)
+{
+    array.append(addr);
+    array.append(funCode);
+    array.append(reg>>8);
+    array.append(reg& 0xFF);
+    array.append(content>>8);
+    array.append(content& 0xFF);
+    unsigned short xorValue = CRC16_2(array.data(), array.size());
+   // qDebug() << "getCRC" <<  CRC16_2(array.data(), array.size());
+    array.append(xorValue& 0xFF); //低位在前
+    array.append(xorValue>>8);  //高位在后
+}

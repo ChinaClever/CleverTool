@@ -31,6 +31,7 @@ void MainWindow::init()
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
     ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);  //设置不可编辑
+    ui->dcBox->setCurrentText("交流");
 }
 
 void MainWindow::onInit()
@@ -67,16 +68,35 @@ void MainWindow::on_startOrStop_clicked()
  * @brief 设置值
  * @param row
  * @param column
- */
+ */// QString str = QString::number(value/(1.0*rate),'f',bit);
 bool MainWindow::setItem(int row, int column , uint value, int rate)
 {
     //int data = (valueH<<8 | valueD)/rate;
     QString str = QString("%1.%2").arg(value/rate).arg(value%rate);
+
     QTableWidgetItem *item = new QTableWidgetItem("Apple");
     item->setText(str);
     ui->tableWidget->setItem(row, column,item);
     return true;
 }
+
+/**
+ * @brief 设置值
+ * @param row
+ * @param column
+ */
+bool MainWindow::setItem(int row, int column , uint value, int rate , int bit)
+{
+    //int data = (valueH<<8 | valueD)/rate;
+    //QString str = QString("%1.%2").arg(value/rate).arg(value%rate);
+
+    QString str = QString::number(value/(1.0*rate),'f',bit);
+    QTableWidgetItem *item = new QTableWidgetItem("Apple");
+    item->setText(str);
+    ui->tableWidget->setItem(row, column,item);
+    return true;
+}
+
 
 /**
  * @brief 设置值
@@ -129,14 +149,18 @@ void MainWindow::onGetShowData(int value, Rtu_recv *data)
         int j = 0;
         if( i < data->lineNum)
         {
-            setItem(i, j++, data->data[i].cur, 10); //电流
-            setItem(i, j++, data->data[i].vol, 1); //电压
+//            setItem(i, j++, data->data[i].cur, 10); //电流
+//            setItem(i, j++, data->data[i].vol, 1); //电压
+            setItem(i, j++, data->data[i].cur, 100 , 2); //电流
+            setItem(i, j++, data->data[i].vol, 10 , 1); //电压
             setItem(i, j++, data->data[i].ele, 10); //电能
         }
         else
         {
-            setItem(i, j++, 0, 10); //电流
-            setItem(i, j++, 0, 1); //电压
+//            setItem(i, j++, 0, 10); //电流
+//            setItem(i, j++, 0, 1); //电压
+            setItem(i, j++, 0, 100 , 2); //电流
+            setItem(i, j++, 0, 10 , 1); //电压
             setItem(i, j++, 0, 10); //电能
         }
          if(i < 3){
@@ -145,7 +169,8 @@ void MainWindow::onGetShowData(int value, Rtu_recv *data)
              j++;
          if( i < data->lineNum)
         {
-             setItem(i, j++, data->data[i].pow, 1000); //功率
+//             setItem(i, j++, data->data[i].pow, 1000); //功率
+             setItem(i, j++, data->data[i].pow, 1000 , 4); //功率
 
             setItem(i, j++, data->data[i].minCur, 10); //电流min
             setItem(i, j++, data->data[i].maxCur, 10); //电流max
@@ -154,7 +179,8 @@ void MainWindow::onGetShowData(int value, Rtu_recv *data)
          }
          else
          {
-             setItem(i, j++, 0, 1000); //功率
+//             setItem(i, j++, 0, 1000); //功率
+             setItem(i, j++, 0, 1000, 4); //功率
 
             setItem(i, j++, 0, 10); //电流min
             setItem(i, j++, 0, 10); //电流max
@@ -178,9 +204,12 @@ void MainWindow::onGetShowData(int value, Rtu_recv *data)
 
 void MainWindow::sleep(unsigned int msec)
 {
-    QTime dieTime = QTime::currentTime().addMSecs(msec);
-    while( QTime::currentTime() < dieTime )
-        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+    QEventLoop loop;//定义一个新的事件循环
+    QTimer::singleShot(msec, &loop, SLOT(quit()));//创建单次定时器，槽函数为事件循环的退出函数
+    loop.exec();//事件循环开始执行，程序会卡在这里，直到定时时间到，本循环被退出
+//    QTime dieTime = QTime::currentTime().addMSecs(msec);
+//    while( QTime::currentTime() < dieTime )
+//        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }
 
 void MainWindow::on_readBox_clicked(bool checked)
@@ -265,7 +294,7 @@ void MainWindow::on_clearBtn_clicked()
             }
 
             sleep(500);
-            uchar recvDat[20];
+            uchar recvDat[512];
             int ret = 0;
             memset(recvDat,0,sizeof(recvDat));
             for(int i = 0; i < 8; i++){

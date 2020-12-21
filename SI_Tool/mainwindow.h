@@ -25,6 +25,7 @@ public:
 private:
     void init();
     bool setItem(int row, int column, uint value, int rate);
+    bool setItem(int row, int column , uint value, int rate , int bit);
     bool setBreakItem(int row, int column , uchar value);
 
 

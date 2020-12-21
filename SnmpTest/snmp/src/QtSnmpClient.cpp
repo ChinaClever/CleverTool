@@ -75,3 +75,8 @@ qint32 QtSnmpClient::setValue( const QByteArray& community,
 {
     return m_session->setValue( community, oid, type, value );
 }
+
+void QtSnmpClient::cancelWork()
+{
+    return m_session->cancelWork();
+}

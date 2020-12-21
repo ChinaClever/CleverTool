@@ -4,7 +4,7 @@
 #include <QThread>
 #include <QScopedPointer>
 #include <QMap>
-#include <QtSnmpClient.h>
+#include <src/QtSnmpClient.h>
 #include <QtCore>
 
 #define MIB_OID_CLEVER  ".1.3.6.1.4.1.30966"

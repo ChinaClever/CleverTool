@@ -171,7 +171,7 @@ static int rtu_recv_data(uchar *ptr, RtuRecvLine *msg)
     msg->cur =  (*ptr) * 256 + *(ptr+1);  ptr += 2; // 读取电流
     msg->pow =  (*ptr) * 256 + *(ptr+1);  ptr += 2; // 读取功率
     msg->ele =  (*ptr) * 256 + *(ptr+1);  ptr += 2; // 读取电能高8位
-    msg->ele <<= 8; // 左移8位
+    msg->ele <<= 16; // 左移16位
     msg->ele +=  (*ptr) * 256 + *(ptr+1);  ptr += 2; // 读取电能底8位
 
     msg->maxVol =  (*ptr) * 256 + *(ptr+1);  ptr += 2;
@@ -307,7 +307,7 @@ bool rtu_recv_packet(uchar *buf, int len, Rtu_recv *pkt ,bool flag)
     bool ret = false;
 
     int rtn = rtu_recv_len(buf, len , flag); //判断回收的数据是否完全
-    //if(rtn == 0) {
+    if(rtn == 0) {
         //qDebug() << len << RTU_SENT_DC_LEN;
         uchar *ptr=buf;
         ptr += rtu_recv_head(ptr, pkt); //指针偏移
@@ -341,8 +341,8 @@ bool rtu_recv_packet(uchar *buf, int len, Rtu_recv *pkt ,bool flag)
         for(int i=0; i<pkt->lineNum; ++i) // 读取电参数
         {
             ptr += rtu_recv_data(ptr, &(pkt->data[i]));
-            if(pkt->dc)//定制IOF触点状态重新赋值
-            pkt->data[i].sw = state[i]?1:0;
+//            if(pkt->dc)//定制IOF触点状态重新赋值
+//            pkt->data[i].sw = state[i]?1:0;
          }
 
         if(pkt->dc)
@@ -374,7 +374,7 @@ bool rtu_recv_packet(uchar *buf, int len, Rtu_recv *pkt ,bool flag)
 #else
         ret = true;
 #endif
-    //}
+    }
     return ret;
 }
 

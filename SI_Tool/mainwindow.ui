@@ -26,7 +26,7 @@
       </property>
       <property name="text">
        <string>BUSBAR_SI交直流
-校准工具_V1.4</string>
+校准工具_V1.5</string>
       </property>
       <property name="checkable">
        <bool>false</bool>

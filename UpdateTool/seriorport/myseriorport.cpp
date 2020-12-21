@@ -132,8 +132,8 @@ QByteArray MySeriorport::readData(QString &portName)
             recv += port->readAll();     //因为串口是不稳定的，也许读到的是部分数据而已，但也可能是全部数据
 
        // qDebug() << recv.toHex();
-       /* for(int i = 0 ; i < recv.size() ; i++)
-            qDebug("recv:%x",(uchar)recv.at(i)); */
+//       for(int i = 0 ; i < recv.size() ; i++)
+//            qDebug("recv:%x",(uchar)recv.at(i));
     }else
     {
        // QString warningstr = QObject::tr("串口%1未打开").arg(portName);

@@ -23,6 +23,20 @@ MainWindow::MainWindow(QWidget *parent) :
     QStringList portList = myPort->initSeriorPortInfos();
     initPortCombox(portList); //初始化串口信息  -- 初始化界面
 
+    initWid();
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+
+/**
+ * @brief 初始化
+ */
+void MainWindow::initWid()
+{
     //--- 没必要的功能
     ui->checkBox->hide();
     mCbaud = QSerialPort::Baud9600;
@@ -38,11 +52,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->SetBaudBtn->hide();
     ui->StatusBaudlabel->hide();
 
-}
+    ui->label_status->setText(tr(""));
 
-MainWindow::~MainWindow()
-{
-    delete ui;
 }
 
 /**
@@ -93,7 +104,7 @@ void MainWindow::initPortCombox(QStringList &portList)
     QString iniFile = QCoreApplication::applicationDirPath() + "/config.ini";
     //qDebug()<<iniFile;
     ini = new QSettings(iniFile, QSettings::IniFormat);
-   if(isDirExist(iniFile ,ini))
+    if(isDirExist(iniFile ,ini))
     {
         ini->beginGroup("File");
         mUpdateFile = ini->value("FilePath").toString();
@@ -115,12 +126,12 @@ bool MainWindow::isDirExist(QString fullPath ,QSettings *ini)
     bool ok = isFile.exists();
     if( ok )
     {
-      return true;
+        return true;
     }
     else
     {
-      ini->setValue("/File/FilePath","");
-      return true;
+        ini->setValue("/File/FilePath","");
+        return true;
     }
     return false;
 }
@@ -201,7 +212,7 @@ void MainWindow::on_pushButton_port_clicked()
     QString portName = ui->comboBox_port->currentText();
     if(str == "打开串口")
     {
-       mIsOpenSerial =  myPort->openPort(portName, mCbaud);
+        mIsOpenSerial =  myPort->openPort(portName, mCbaud);
     }else if(str == "关闭串口")
     {
         myPort->closePort(portName);
@@ -231,7 +242,7 @@ void MainWindow::on_selectfileBtn_clicked()
 
     QString iniFile = QCoreApplication::applicationDirPath() + "/config.ini";
 
-   if(isDirExist(iniFile ,ini))
+    if(isDirExist(iniFile ,ini))
     {
         ini->setValue("/File/FilePath",filename);
     }
@@ -247,6 +258,16 @@ void MainWindow::on_startBtn_clicked()
     ui->Statuslabel->hide();
     if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("请确认是否有打开串口"),tr("确定"));return;}
     if(ui->nameEdit->text().isEmpty()){QMessageBox::warning(this,tr("waring"),tr("请选择升级文件"),tr("确定"));return;}
+    //    if(QMessageBox::Yes==QMessageBox::question(this,tr("question"),tr("请确认升级始端箱时，先升级为插接箱。\n选择Yes表示已经清楚继续升级，选择No表示换取新的升级文件。"),QMessageBox::Yes | QMessageBox::No,
+    //                                               QMessageBox::Yes))
+    //    {
+    //        qDebug()<<"Yes";
+    //    }
+    //    else
+    //    {
+    //        qDebug()<<"No";
+    //        return;
+    //    }
     this->setEnabled(false);
     if(!ui->checkBox->isChecked()){ //从机没有进入升级模式
         int ret = 0 ;
@@ -262,10 +283,10 @@ void MainWindow::on_startBtn_clicked()
             if(ret % 3 == 0) sendUpdateCmd(); //再次发送
             isPass = responseUpdate();
             if(isPass == 1)
-             {
+            {
                 if( ui->radioButton->isChecked())
                     sleep(1000);
-                    break;  //收到回复 跳出循环
+                break;  //收到回复 跳出循环
             }
             else if(isPass == 0)
             {ret = 0;}
@@ -274,7 +295,7 @@ void MainWindow::on_startBtn_clicked()
             ret++;
         } while (ret < 15);  //收到应答，立即向下执行，否则等待5s再向下执行 */
 
-        if(!isPass) {
+        if(isPass!=1) {
             QMessageBox::warning(this,tr("waring"),tr("请确定从机是否启动"),tr("确定"));
             this->setEnabled(true);
             return;
@@ -508,12 +529,12 @@ bool MainWindow::responseSendFile(int num)
         if(str == responseStr)
             return true;
         else{
-        QString responseStr = QString("successful");
-        if(num > 42) {
-           if(str.contains(responseStr))return true;
-        }
-        if(str == responseStr)
-            return true;
+            QString responseStr = QString("successful");
+            if(num > 42) {
+                if(str.contains(responseStr))return true;
+            }
+            if(str == responseStr)
+                return true;
         }
     }
     return false;
@@ -524,6 +545,16 @@ void MainWindow::on_pushButton_clicked() //批量
     ui->Statuslabel->hide();
     if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("请确认是否有打开串口"),tr("确定"));return;}
     if(ui->nameEdit->text().isEmpty()){QMessageBox::warning(this,tr("waring"),tr("请选择升级文件"),tr("确定"));return;}
+    if(QMessageBox::Yes==QMessageBox::question(this,tr("question"),tr("请确认定点升级始端箱为插接箱。\n选择Yes表示已经把始端箱升级为插接箱，选择No表示需要换取新的升级文件，再定点升级。"),QMessageBox::Yes | QMessageBox::No,
+                                               QMessageBox::Yes))
+    {
+        qDebug()<<"Yes";
+    }
+    else
+    {
+        qDebug()<<"No";
+        return;
+    }
     this->setEnabled(false);
 
     //  if(ui->lEditMin->text().isDetached())
@@ -726,7 +757,7 @@ void MainWindow::SetChannelStatus(bool channelOrbaud , bool flag , int steps)
 
 
     if(flag && steps == 4)
-     {
+    {
         if(channelOrbaud)
         {
             ui->Statuslabel->show();
@@ -857,4 +888,174 @@ void MainWindow::on_SetBaudBtn_clicked()
     }
 
     SetChannelStatus(channelOrbaud , flag ,steps);//成功时，设置状态
+}
+
+
+
+bool MainWindow::sendChangeType(ushort reg,ushort value)
+{
+    QByteArray sendArray;
+    bool ret = false;
+    bool screen = false;
+    if(ui->comboBox_Screen->currentText().contains("新屏")) screen = true;
+
+    uchar fun = screen==true?0x06:0x10;
+    int addr = 1;
+    if(ui->addrEdit->text().isEmpty() && ui->lEditMax->text().isEmpty())
+        return ret;
+    else if(ui->lEditMax->text().isEmpty())
+        addr = ui->addrEdit->text().toInt();
+    else if(ui->addrEdit->text().isEmpty())
+        addr = ui->lEditMax->text().toInt();
+    else
+        addr = ui->addrEdit->text().toInt();
+
+    text_change_send_packet(addr,fun,reg,value,sendArray);
+
+    QByteArray recvArray = myPort->readData(mCurrentPort);
+    myPort->sendData(sendArray,mCurrentPort);
+    //sleep(200);
+    recvArray = myPort->readData(mCurrentPort);
+    qDebug() << "getData:" << recvArray.toHex()
+             <<"recvsize"<<recvArray.size()
+            << "sendData:" << sendArray.toHex()
+            <<"sendsize"<<sendArray.size();
+    if(QString(recvArray).contains(QString(sendArray))) ret = true;
+    if(!ret){
+         sleep(200);
+         recvArray = myPort->readData(mCurrentPort);
+         qDebug() << "getData2:" << recvArray.toHex()
+                  <<"recvsize2"<<recvArray.size()
+                 << "sendData2:" << sendArray.toHex()
+                 <<"sendsize2"<<sendArray.size();
+         if(QString(recvArray).contains(QString(sendArray))) ret = true;
+    }
+    sleep(200);
+    return ret;
+}
+
+void MainWindow::on_comboBox_BoxType_activated(const QString &arg1)
+{
+    ui->label_status->setText(tr(""));
+    if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("请确认是否有打开串口"),tr("确定"));return;}
+    if(ui->addrEdit->text().isEmpty() && ui->lEditMin->text().isEmpty()){
+        QMessageBox::warning(this,tr("waring"),tr("请确认是否填写设备地址"),tr("确定"));return;
+    }
+    bool ret = false;
+    ushort reg = 0x1071;
+    ushort value = 0x00;
+
+    if( arg1.contains(tr("插接箱"))){
+        value = 0x00;
+    }else if(arg1.contains(tr("始端箱"))){
+        value = 0x01;
+    }
+    ret = sendChangeType(reg,value);
+    if(ret){
+        ui->label_status->setText(tr("成功"));
+        ui->label_status->setStyleSheet("color:green");
+    }
+    else{
+        ui->label_status->setText(tr("失败"));
+        ui->label_status->setStyleSheet("color:red");
+    }
+}
+
+void MainWindow::on_comboBox_Screen_activated(const QString &arg1)
+{
+    ui->label_status->setText(tr(""));
+    if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("请确认是否有打开串口"),tr("确定"));return;}
+    if(ui->addrEdit->text().isEmpty() && ui->lEditMin->text().isEmpty()){
+        QMessageBox::warning(this,tr("waring"),tr("请确认是否填写设备地址"),tr("确定"));return;
+    }
+    ushort reg = 0x1070;
+    bool ret = false;
+    ushort value = 0x00;
+    if( arg1.contains(tr("新屏"))){
+        value = 0x01;
+    }else if(arg1.contains(tr("旧屏"))){
+        value = 0x00;
+    }
+    ret = sendChangeType(reg,value);
+    if(ret){
+        ui->label_status->setText(tr("成功"));
+        ui->label_status->setStyleSheet("color:green");
+    }
+    else{
+        ui->label_status->setText(tr("失败"));
+        ui->label_status->setStyleSheet("color:red");
+    }
+}
+
+void MainWindow::on_comboBox_Protocol_activated(const QString &arg1)
+{
+    ui->label_status->setText(tr(""));
+    if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("请确认是否有打开串口"),tr("确定"));return;}
+    if(ui->addrEdit->text().isEmpty() && ui->lEditMin->text().isEmpty()){
+        QMessageBox::warning(this,tr("waring"),tr("请确认是否填写设备地址"),tr("确定"));return;
+    }
+    bool ret = false;
+    ushort reg = 0x1072;
+    ushort value = 0x00;
+    if( arg1.contains(tr("标准"))){
+        value = 0x00;
+    }else if(arg1.contains(tr("定制（蓝厅）"))){
+        value = 0x01;
+    }
+    ret = sendChangeType(reg,value);
+    if(ret){
+        ui->label_status->setText(tr("成功"));
+        ui->label_status->setStyleSheet("color:green");
+    }
+    else{
+        ui->label_status->setText(tr("失败"));
+        ui->label_status->setStyleSheet("color:red");
+    }
+}
+
+void MainWindow::on_comboBox_Transformer_activated(int index)
+{
+    ui->label_status->setText(tr(""));
+    if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("请确认是否有打开串口"),tr("确定"));return;}
+    if(ui->addrEdit->text().isEmpty() && ui->lEditMin->text().isEmpty()){
+        QMessageBox::warning(this,tr("waring"),tr("请确认是否填写设备地址"),tr("确定"));return;
+    }
+    bool ret = false;
+    ushort reg = 0x1073;
+    ushort value = index;
+    ret = sendChangeType(reg,value);
+    if(ret){
+        ui->label_status->setText(tr("成功"));
+        ui->label_status->setStyleSheet("color:green");
+    }
+    else{
+        ui->label_status->setText(tr("失败"));
+        ui->label_status->setStyleSheet("color:red");
+    }
+}
+
+void MainWindow::on_comboBox_Monitor_activated(const QString &arg1)
+{
+    ui->label_status->setText(tr(""));
+    if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("请确认是否有打开串口"),tr("确定"));return;}
+    if(ui->addrEdit->text().isEmpty() && ui->lEditMin->text().isEmpty()){
+        QMessageBox::warning(this,tr("waring"),tr("请确认是否填写设备地址"),tr("确定"));return;
+    }
+    bool ret = false;
+    ushort reg = 0x1074;
+    ushort value = 0x00;
+    if( arg1.contains(tr("分监测"))){
+        value = 0x00;
+    }else if(arg1.contains(tr("总监测"))){
+        value = 0x01;
+    }
+    ret = sendChangeType(reg,value);
+    if(ret){
+        ui->label_status->setText(tr("成功"));
+        ui->label_status->setStyleSheet("color:green");
+    }
+    else{
+        ui->label_status->setText(tr("失败"));
+        ui->label_status->setStyleSheet("color:red");
+    }
 }

@@ -177,7 +177,7 @@ void RtuThread::readData()
 {
     /* 01 03 00 00 00 D1 05 F8*/
     //static uchar sentDataAc[8] = {0x01, 0x03, 0x00, 0x00, 0x00, 0xE6, 0x05, 0xF8};
-    static uchar sentDataAc[8] = {0x01, 0x03, 0x00, 0x00, 0x00, 0xE0, 0x05, 0xF8};
+    static uchar sentDataAc[8] = {0x01, 0x03, 0x00, 0x00, 0x00, 0xE6, 0x05, 0xF8};
     static uchar sentDataDc[8] = {0x01, 0x03, 0x00, 0x00, 0x00, 0x67, 0x04, 0x20};//72 61 64 69 6F 61 64 72
     //static uchar sentDataAc[16] = {0x72, 0x61, 0x64, 0x69, 0x6F, 0x61, 0x64, 0x72, 0x01, 0x03, 0x00, 0x00, 0x00, 0xE0, 0x05, 0xF8};
     //static uchar sentDataDc[16] = {0x72, 0x61, 0x64, 0x69, 0x6F, 0x61, 0x64, 0x72, 0x01, 0x03, 0x00, 0x00, 0x00, 0x6C, 0x04, 0x20};
@@ -199,7 +199,7 @@ void RtuThread::readData()
     for(int i = 0; i < 8; i++){
         if(isRun == false) return;
         msleep(500);
-        ret = mSerialPortPlate->read(recvData, 2);
+        ret = mSerialPortPlate->read(recvData, 10);
         if(ret > 3) break;
     }
     uchar * buf = recvData;
@@ -208,7 +208,7 @@ void RtuThread::readData()
 
     QWriteLocker locker(&lock); //上锁
     memset(pkt,0,sizeof(pkt));
-    //qDebug() << "len" << RTU_SENT_LEN + 5 << ret;
+    qDebug() << "len" << RTU_SENT_LEN + 5 << ret;
     //emit sendStr(tr("recv len:%1").arg(ret));
     if(rtu_recv_packet(buf, ret,  pkt , mDc)) {qDebug() << "crc" << pkt->dc << QString::number(pkt->crc, 16);
         emit showDataSignal(0, pkt); //发送到主线程

@@ -69,7 +69,7 @@ void SendDataAll::run()
             cret++;
         } while (cret < 15);  //收到应答，立即向下执行，否则等待5s再向下执行 */
 
-        if(!isPass) {
+        if(isPass!=1) {
              emit sendProgress("从机"+ QString::number(caddr) + "是否启动，请检查--------------------[NG]");  // 是否启动
              continue;
         } //十次依旧无结果
