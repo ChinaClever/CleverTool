@@ -184,13 +184,13 @@
        </rect>
       </property>
       <property name="text">
-       <string>从机已经进入升级状态</string>
+       <string>从机进入升级状态</string>
       </property>
      </widget>
      <widget class="QLabel" name="showProgress">
       <property name="geometry">
        <rect>
-        <x>100</x>
+        <x>170</x>
         <y>80</y>
         <width>101</width>
         <height>21</height>
@@ -218,7 +218,7 @@
        <rect>
         <x>140</x>
         <y>220</y>
-        <width>81</width>
+        <width>101</width>
         <height>31</height>
        </rect>
       </property>
@@ -247,7 +247,7 @@
        <rect>
         <x>19</x>
         <y>40</y>
-        <width>51</width>
+        <width>41</width>
         <height>16</height>
        </rect>
       </property>
@@ -261,7 +261,7 @@
        <string>地址：</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       <set>Qt::AlignCenter</set>
       </property>
      </widget>
     </widget>
@@ -313,7 +313,7 @@
        <rect>
         <x>260</x>
         <y>20</y>
-        <width>75</width>
+        <width>101</width>
         <height>23</height>
        </rect>
       </property>
@@ -324,9 +324,9 @@
      <widget class="QLabel" name="label_4">
       <property name="geometry">
        <rect>
-        <x>23</x>
+        <x>13</x>
         <y>10</y>
-        <width>71</width>
+        <width>121</width>
         <height>20</height>
        </rect>
       </property>
@@ -339,7 +339,7 @@
        <rect>
         <x>140</x>
         <y>10</y>
-        <width>71</width>
+        <width>101</width>
         <height>16</height>
        </rect>
       </property>
@@ -380,7 +380,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>当前升级进度：</string>
+       <string>当前升级状态：</string>
       </property>
      </widget>
     </widget>
