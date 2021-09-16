@@ -49,6 +49,9 @@ private slots:
     void on_comboBox_Protocol_activated(const QString &arg1);
     void on_comboBox_Transformer_activated(int index);
     void on_comboBox_Monitor_activated(const QString &arg1);
+    void on_SetAddrBtn_clicked();
+    void on_ResetFactoryBtn_clicked();
+    void on_ReadCurAddrBtn_clicked();
 
 private:
     void initPortCombox(QStringList &portList);
@@ -66,6 +69,10 @@ private:
     bool isDirExist(QString fullPath ,QSettings *ini);
     void initWid();
     bool sendChangeType(ushort reg,ushort value);
+    bool sendChangeAddr(ushort reg, ushort value);
+    bool sendResetFactory(ushort reg,ushort value);
+    void showResult(bool ret);
+    void checkAddr(int reg);
 
 private:
     Ui::MainWindow *ui;

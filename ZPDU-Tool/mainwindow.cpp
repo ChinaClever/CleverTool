@@ -62,7 +62,7 @@ void MainWindow::onInitIni()
     QString iniFile = QCoreApplication::applicationDirPath() + "/config.ini";
     //qDebug()<<iniFile;
     ini = new QSettings(iniFile, QSettings::IniFormat);
-   if(isDirExist(iniFile ,ini))
+    if(isDirExist(iniFile ,ini))
     {
         ini->beginGroup("Value");
         Amin = ini->value("Amin").toDouble();
@@ -94,17 +94,17 @@ bool MainWindow::isDirExist(QString fullPath ,QSettings *ini)
     bool ok = isFile.exists();
     if( ok )
     {
-      return true;
+        return true;
     }
     else
     {
-      ini->setValue("/Value/Amin",0);
-      ini->setValue("/Value/Amax",32);
-      ini->setValue("/Value/Vmin",0);
-      ini->setValue("/Value/Vmax",270);
-      ini->setValue("/Value/Wmin",0);
-      ini->setValue("/Value/Wmax",8.64);
-      return true;
+        ini->setValue("/Value/Amin",0);
+        ini->setValue("/Value/Amax",32);
+        ini->setValue("/Value/Vmin",0);
+        ini->setValue("/Value/Vmax",270);
+        ini->setValue("/Value/Wmin",0);
+        ini->setValue("/Value/Wmax",8.64);
+        return true;
     }
     return false;
 }
@@ -145,9 +145,9 @@ void MainWindow::initData()
     if(isSet){
         pass = 0;
         for(int j = 0 ; j < 14 ;j++){
-                init[j] = 1;
-                onbuffer[j] = 0;
-                offbuffer[j] = 1;
+            init[j] = 1;
+            onbuffer[j] = 0;
+            offbuffer[j] = 1;
         }
     }
 
@@ -158,8 +158,8 @@ void MainWindow::initTablewidget()
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tableWidget->horizontalHeader()->setStretchLastSection(true);//设置表格是否充满，即行位不留空
     ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);  //设置不可编辑
-//    ui->tableWidget->setStyleSheet("QTableWidget::item:alternate:!selected{background-color: rgb(255, 255, 245);}"
-//                                   "QTableWidget::item:!alternate:!selected{ background-color: rgb(245, 245, 245);}");
+    //    ui->tableWidget->setStyleSheet("QTableWidget::item:alternate:!selected{background-color: rgb(255, 255, 245);}"
+    //                                   "QTableWidget::item:!alternate:!selected{ background-color: rgb(245, 245, 245);}");
 
 
     initTablewidgetOfButton();
@@ -222,7 +222,7 @@ void MainWindow::initTablewidgetOfButton()
                 if(i == ui->tableWidget->rowCount()-1)
                     button_off->setText(tr("全关"));
                 else
-                button_off->setText(tr("关闭"));
+                    button_off->setText(tr("关闭"));
                 button_off->setStyleSheet(
 
                             "QPushButton:hover{background-color: qconicalgradient(cx:0.5, cy:0.522909, angle:179.9, stop:0.494318 rgba(181, 225, 250, 255), stop:0.5 rgba(222, 242, 251, 255)); border-radius:5px; border: 1px solid #3C80B1;}"
@@ -260,13 +260,22 @@ void MainWindow::sentDataToPacket(quint8 &addr)
     //    sentData.addr = sendData[j++] = 0x01;
     sentData.addr = sendData[j++] = addr;
 
-    //功能码
-    sentData.funcode[0] = sendData[j++] = 0xA1;
-    sentData.funcode[1] = sendData[j++] = 0xB1;
+    if(ui->readApduBtn->isChecked())
+    {
+        sentData.funcode[0] = sendData[j++] = 0xA9;
+        sentData.funcode[1] = sendData[j++] = 0xB9;
+        for(int i = 0 ; i < 61 ; i++)
+            sentData.obligate[i] = sendData[j++] = 0x00;
+    }
+    else{
+        //功能码
+        sentData.funcode[0] = sendData[j++] = 0xA1;
+        sentData.funcode[1] = sendData[j++] = 0xB1;
+        sentData.obligate[0] = sendData[j++] = 0x01;
+        for(int i = 1 ; i < 61 ; i++)
+            sentData.obligate[i] = sendData[j++] = 0x00;
+    }
 
-    sentData.obligate[0] = sendData[j++] = 0x01;
-    for(int i = 1 ; i < 61 ; i++)
-        sentData.obligate[i] = sendData[j++] = 0x00;
 
     //长度
     sentData.length = sendData[j++] = 0x44;
@@ -354,19 +363,19 @@ void MainWindow::collectLoopDone()
 
     if(mCurrentButtonRow == 15 && mCurrentClearButtonRow == 15) //当前行为0 - 7，为9表示初始并无按钮点击
     {
-          //  qDebug()<<"采集指令---------------------------------";
-            //            sendGatherCmd(); //发送采集数据命令
-            //            is_once = false;
+        //  qDebug()<<"采集指令---------------------------------";
+        //            sendGatherCmd(); //发送采集数据命令
+        //            is_once = false;
 
-            if(is_read)
-            {
-                sendGatherCmd(); //发送采集数据命令
-                //qDebug()<<"sendGatherCmd()";
-             }
+        if(is_read)
+        {
+            sendGatherCmd(); //发送采集数据命令
+            //qDebug()<<"sendGatherCmd()";
+        }
     }
     else if(mCurrentButtonRow != 15 && mCurrentClearButtonRow == 15)//点击开启和关闭响应
     {
-      //  qDebug()<<"按钮指令---------------------------------";
+        //  qDebug()<<"按钮指令---------------------------------";
         if(isSet){
             onbuffer[mCurrentButtonRow] = switchData;
             offbuffer[mCurrentButtonRow] = 1-onbuffer[mCurrentButtonRow];
@@ -406,12 +415,12 @@ void MainWindow::setSwitch(int row,int onOroff ,bool flag)
 
         for(int j = 0 ; j < 14 ;j++)
         {
-           onbuffer[j] = onbuf[j] = 0;
-           offbuffer[j] = offbuf[j] = 1;
+            onbuffer[j] = onbuf[j] = 0;
+            offbuffer[j] = offbuf[j] = 1;
         }
 
-       onbuffer[row] = onbuf[row] = 1;
-       offbuffer[row] = offbuf[row] = 0;
+        onbuffer[row] = onbuf[row] = 1;
+        offbuffer[row] = offbuf[row] = 0;
 
     }else        //关，与上面正好相反
     {
@@ -439,14 +448,14 @@ void MainWindow::setSwitch(int row,int onOroff ,bool flag)
             //打开有效位
             for(int k = 0; k < 6 ; k++)
             {
-               if(row == 14 && onOroff)
-                   sentData.openeffective[k] = sendData[j++] = 0xFF;//10
-               else
-               sentData.openeffective[k] = sendData[j++] = 0x00;//10
+                if(row == 14 && onOroff)
+                    sentData.openeffective[k] = sendData[j++] = 0xFF;//10
+                else
+                    sentData.openeffective[k] = sendData[j++] = 0x00;//10
 
             }
             if(row != 14 && onOroff)
-             {
+            {
                 for(int k = 0 ; k < returnData.opnum ; k++)
                 {
                     if(onbuffer[k] == 1)
@@ -467,24 +476,24 @@ void MainWindow::setSwitch(int row,int onOroff ,bool flag)
                     sentData.closeffective[k] = sendData[j++] = 0xFF;//10
                 }
                 else
-               {
+                {
                     sentData.closeffective[k] = sendData[j++] = 0x00;
                 }
             }
             if(row != 14 && !flag)
-             {
-                    for(int k = 0 ; k < returnData.opnum ; k++)
+            {
+                for(int k = 0 ; k < returnData.opnum ; k++)
+                {
+                    if(offbuffer[k] == 1)
                     {
-                        if(offbuffer[k] == 1)
-                        {
-                            int index = (returnData.opnum * (mAddr-1) +k) / 8 ;
-                            int key = (returnData.opnum * (mAddr-1) +k) % 8 ;
-                            //qDebug()<<"close"<<j<<k<<index<<key<<j - 6 + index;
-                            sentData.closeffective[index] |= 0x80 >> key;
-                            sendData[j - 6 + index] |= 0x80 >> key;
-                            //qDebug()<<sendData[j - 6 + index];
-                        }
+                        int index = (returnData.opnum * (mAddr-1) +k) / 8 ;
+                        int key = (returnData.opnum * (mAddr-1) +k) % 8 ;
+                        //qDebug()<<"close"<<j<<k<<index<<key<<j - 6 + index;
+                        sentData.closeffective[index] |= 0x80 >> key;
+                        sendData[j - 6 + index] |= 0x80 >> key;
+                        //qDebug()<<sendData[j - 6 + index];
                     }
+                }
             }
         }
         else if(returnData.opnum == 4)
@@ -492,22 +501,22 @@ void MainWindow::setSwitch(int row,int onOroff ,bool flag)
             //打开有效位
             for(int k = 0; k < 6 ; k++)
             {
-               if(row == 14 && onOroff)
-                   sentData.openeffective[k] = sendData[j++] = 0xFF;//10
-               else
-               sentData.openeffective[k] = sendData[j++] = 0x00;//10
+                if(row == 14 && onOroff)
+                    sentData.openeffective[k] = sendData[j++] = 0xFF;//10
+                else
+                    sentData.openeffective[k] = sendData[j++] = 0x00;//10
 
             }
             if(row != 14 && onOroff)
-             {
+            {
                 for(int k = 0 ; k < returnData.opnum ; k++)
                 {
                     if(onbuffer[k] == 1)
                     {
                         if(mAddr==3)
-                        sendData[j - 4 ] |= 0x80>>k ;
+                            sendData[j - 4 ] |= 0x80>>k ;
                         else if(mAddr==2)
-                        sendData[j - 5 ] |= 0x80>>k ;
+                            sendData[j - 5 ] |= 0x80>>k ;
                     }
                 }
             }
@@ -519,22 +528,22 @@ void MainWindow::setSwitch(int row,int onOroff ,bool flag)
                     sentData.closeffective[k] = sendData[j++] = 0xFF;//10
                 }
                 else
-               {
+                {
                     sentData.closeffective[k] = sendData[j++] = 0x00;
                 }
             }
             if(row != 14 && !flag)
-             {
-                    for(int k = 0 ; k < returnData.opnum ; k++)
+            {
+                for(int k = 0 ; k < returnData.opnum ; k++)
+                {
+                    if(offbuffer[k] == 1)
                     {
-                        if(offbuffer[k] == 1)
-                        {
-                            if(mAddr==3)
+                        if(mAddr==3)
                             sendData[j - 4 ] |= 0x80>>k ;
-                            else if(mAddr==2)
+                        else if(mAddr==2)
                             sendData[j - 5 ] |= 0x80>>k ;
-                        }
                     }
+                }
             }
         }
         //预留位
@@ -548,9 +557,9 @@ void MainWindow::setSwitch(int row,int onOroff ,bool flag)
             sendData[j++] = 0x00;
 
         if(row != 14)
-        sentData.swstate = sendData[j++] = 0x00;
+            sentData.swstate = sendData[j++] = 0x00;
         else
-        sentData.swstate = sendData[j++] = 0x01;
+            sentData.swstate = sendData[j++] = 0x01;
 
         for(int k = 0 ; k < 3 ; k ++)
             sentData.opbit[k] = sendData[j++] = 0x0E;
@@ -558,8 +567,8 @@ void MainWindow::setSwitch(int row,int onOroff ,bool flag)
         //异或校验码
         sentData.xornumber = sendData[j++] = getXorNumber(sendData,sizeof(sendData));
 
-//        QByteArray array = port->quintToByte(sendData,68);
-//        qDebug() << "Array:" << array.toHex();
+        //        QByteArray array = port->quintToByte(sendData,68);
+        //        qDebug() << "Array:" << array.toHex();
 
         port->sendDataToPort(mCurrentPortName,sendData,68);
     }
@@ -588,20 +597,20 @@ void MainWindow::setClearEle(int row)
 
         for(int k = 0; k < 6 ; k++)
         {
-           if(row == 14 )
-               sentData.clearEle[k] = sendData[j++] = 0xFF;//10
-           else
-           sentData.clearEle[k] = sendData[j++] = 0x00;//10
+            if(row == 14 )
+                sentData.clearEle[k] = sendData[j++] = 0xFF;//10
+            else
+                sentData.clearEle[k] = sendData[j++] = 0x00;//10
 
         }
         if(row < 14)
         {
 
-             int index = (returnData.opnum * (mAddr-1) +row) / 8 ;
-             int key = (returnData.opnum * (mAddr-1) +row) % 8 ;
-             //qDebug()<<"clear"<< j- 6 + index<<row<<index<<key;
-             sentData.clearEle[index] |= 0x80 >> key;
-             sendData[j - 6 + index] |= 0x80 >> key;
+            int index = (returnData.opnum * (mAddr-1) +row) / 8 ;
+            int key = (returnData.opnum * (mAddr-1) +row) % 8 ;
+            //qDebug()<<"clear"<< j- 6 + index<<row<<index<<key;
+            sentData.clearEle[index] |= 0x80 >> key;
+            sendData[j - 6 + index] |= 0x80 >> key;
         }
 
         //预留位
@@ -624,7 +633,7 @@ void MainWindow::setClearEle(int row)
  */
 void MainWindow::readAnswer()
 {
-   // qDebug()<<"判断uuuu mflg："<<mflag;
+    // qDebug()<<"判断uuuu mflg："<<mflag;
 
     QByteArray answer;
     answer.clear();
@@ -640,7 +649,7 @@ void MainWindow::readAnswer()
     for(int i = 0; i < answer.length() ; i++)
     {
         data[i] = answer.at(i);
-                //qDebug("data:%x",data[i]);
+        //qDebug("data:%x",data[i]);
         str.append(QString::number(data[i],16));
         str.append(" ");
     }
@@ -653,7 +662,7 @@ void MainWindow::readAnswer()
         {
         case 0:
             if(data[0]!=0x7B)//忽略两个底层发送7B开头的两个命令
-            updateGroupboxOne(data,mflag,answer.length()-1,answer.length());
+                updateGroupboxOne(data,mflag,answer.length()-1,answer.length());
             break;
         case 1:
             //updateGroupboxTwo(data,mflag,answer.length()-1,answer.length());
@@ -661,8 +670,8 @@ void MainWindow::readAnswer()
         case 2:  //当数据为采集信息数据时，需要判断是显示到采集应答还是表格
             if(is_gather)
             {
-                if(data[0] == 0x7B && answer.length() == 127)//只对开头是7B和长度是105进行解析
-               {
+                if(data[0] == 0x7B && (answer.length() == 127||answer.length() == 62))//只对开头是7B和长度是105进行解析
+                {
                     qDebug()<<answer.length();
                     updateGroupboxThree(data,answer.length());
 
@@ -677,7 +686,7 @@ void MainWindow::readAnswer()
     else //数据未收到，如果is_read一直为false，那么后面数据将一直无法发送，所以延迟置1，延迟时间内无法发送
     {
 
-       // qDebug()<<"数据未收到";
+        // qDebug()<<"数据未收到";
 
         if(!port->checkIsOpen(mCurrentPortName) && mflag !=3)
         {
@@ -697,7 +706,7 @@ void MainWindow::updataTableData()
         return ;
     for(int i = 0 ; i < returnData.opnum ;i++ )
     {
-       // int j = 0;
+        // int j = 0;
         setOnOffState(i,0);
         setCurretnt(i,1);
         setCurretVolate(i,2);
@@ -740,7 +749,7 @@ void MainWindow::setOnOffState(int row, int column)
     bool state = false;
     if(returnData.opnum == 8)
     {
-       state = (returnData.onoffState[0]>>(7-row))&1; //判断该位，先将该位移到第一位，再与1相与，则第一位不变，其他位置0
+        state = (returnData.onoffState[0]>>(7-row))&1; //判断该位，先将该位移到第一位，再与1相与，则第一位不变，其他位置0
     }
     else
     {
@@ -786,10 +795,10 @@ void MainWindow::setCurretnt(int row, int column)
     QTableWidgetItem *item2 = ui->tableWidget->item(row,column+3); //+++++++++
 
     if(ui->doubleSpinBoxAmin->value()<= str.toDouble() &&
-       ui->doubleSpinBoxAmax->value() >= str.toDouble() ) {
+            ui->doubleSpinBoxAmax->value() >= str.toDouble() ) {
         item->setForeground(QBrush(QColor(0, 0, 0)));
         item2->setForeground(QBrush(QColor(0, 0, 0)));
-        }
+    }
     else  {
         item->setForeground(QBrush(QColor(255, 0, 0)));
         item2->setForeground(QBrush(QColor(255, 0, 0)));
@@ -808,15 +817,15 @@ void MainWindow::setCurretVolate(int row, int column)
     int data = 0;
     QString str="";
     if(row < returnData.opnum)
-    data= (returnData.vol[row][0]<<8 | returnData.vol[row][1]);
+        data= (returnData.vol[row][0]<<8 | returnData.vol[row][1]);
     str = QString("%1.%2").arg(data/10).arg(data%10);
 
     if(ui->doubleSpinBoxVmin->value() <= str.toDouble() &&
-         ui->doubleSpinBoxVmax->value() >= str.toDouble() )
-          item->setForeground(QBrush(QColor(0, 0, 0)));
+            ui->doubleSpinBoxVmax->value() >= str.toDouble() )
+        item->setForeground(QBrush(QColor(0, 0, 0)));
     else
-          item->setForeground(QBrush(QColor(255, 0, 0)));
-      item->setText(str + "V");
+        item->setForeground(QBrush(QColor(255, 0, 0)));
+    item->setText(str + "V");
 }
 
 void MainWindow::setCurretPower(int row, int column)
@@ -829,11 +838,11 @@ void MainWindow::setCurretPower(int row, int column)
     if(curdata == 0 || pfdata == 0 || voldata == 0 )
         returnData.power[row] = 0;
     else
-    returnData.power[row] = (voldata * curdata /(10.0*10*100)/1000.0)* pfdata;
+        returnData.power[row] = (voldata * curdata /(10.0*10*100)/1000.0)* pfdata;
     QString str = QString::number(returnData.power[row], 'f', 3);
 
     if(ui->doubleSpinBoxWmin->value() <= str.toDouble() &&
-       ui->doubleSpinBoxWmax->value() >= str.toDouble() ) {
+            ui->doubleSpinBoxWmax->value() >= str.toDouble() ) {
         item->setForeground(QBrush(QColor(0, 0, 0)));
     }
     else  {
@@ -965,82 +974,120 @@ void MainWindow::returnToPacket(QByteArray &array)
     //qDebug() << array.toHex();
     //qDebug() << array.length();
     int i = 0;
+    if(ui->readApduBtn->isChecked()){
+        //头码
+        returnData.head[0] = array.at(i++);//0
+        //头码
+        returnData.head[1] = array.at(i++);//1
+        returnData.opnum = 6;
+        //执行板地址
+        returnData.addr = array.at(i++);//2
+        //频率
+        returnData.conversefreq = array.at(i++);//3
 
-    //头码
-    returnData.head[0] = array.at(i++);//0
-    //头码
-    returnData.head[1] = array.at(i++);//1
-
-    //执行板地址
-    returnData.addr = array.at(i++);//2
-
-    //输出位的个数////////////////////////////////////////////////////////////////////
-    returnData.opnum = array.at(i++);//3
-
-    //频率
-    returnData.conversefreq = array.at(i++);//4
-
-
-    for(int n = 0 ; n < 2 ; n ++)
-    returnData.vol[0][n] = array.at(i++);//6
-
-    if(returnData.opnum < 8)
-    for(int n = 0 ; n < 2 ; n ++)
-        array.at(i++);
-    else
-    for(int n = 0 ; n < 2 ; n ++)
-    returnData.vol[returnData.opnum-1][n] = array.at(i++);//8
-
-    //开关状态1
-    returnData.onoffState[0] = array.at(i++);//9
-    //开关状态2
-    returnData.onoffState[1] = array.at(i++);//10
-
-    //十四位电流值
-    for(int m = 0; m < 14; m++)
-        for(int n = 0 ; n <2 ; n++)
-            returnData.current[m][n] = array.at(i++);//38
-
-    for(int m = 0 ;m < 14; m++)
-        returnData.powerfactor[m] = array.at(i++);//52
-
-    //电能
-    for(int m = 0; m < 14; m++)
-        for(int n = 0 ; n < 3 ; n++)
-            returnData.ele[m][n] = array.at(i++);//94
-
-    i += 3;//忽略三位97
-    returnData.version = array.at(i++);//98
-
-    i += 2;//忽略四位100
-
-    if(returnData.opnum<8)
-    {
-        for(int m = 1 ; m < returnData.opnum ; m ++)
-        for(int n = 0 ; n < 2 ; n ++)
-        returnData.vol[m][n] = array.at(i++);//124
-        if(returnData.opnum < 14)
+        for(int j = 0 ; j < 6 ; j ++)
         {
-            for(int m = returnData.opnum ; m < 13; m ++)
-                for(int n = 0 ; n < 2 ; n ++)
-                    i ++;
+            for(int n = 0 ; n < 2 ; n ++)
+            returnData.vol[j][n] = array.at(i++);//6
         }
+
+        for(int j = 0 ; j < 6 ; j ++)
+        {
+            for(int n = 0 ; n < 2 ; n ++)
+            returnData.current[j][n] = array.at(i++);//6
+        }
+        for(int j = 0 ; j < 6 ; j ++)
+        {
+            returnData.power[j] = array.at(i++)<<8;//6
+            returnData.power[j] += array.at(i++);//6
+        }
+        //电能
+        for(int m = 0; m < 6; m++)
+            for(int n = 0 ; n < 3 ; n++)
+                returnData.ele[m][n] = array.at(i++);//94
+
+//        uchar sw = array.at(i++); // 开关状态 1表示开，0表示关
+//        for(int i=0; i<6; ++i)  returnData.sw[i] = (sw >> (6-i)) & 1;
+//        mData->version = *ptr++;
+//        ptr++;
     }
     else{
-        for(int m = 1 ; m < returnData.opnum - 1 ; m ++)
+        //头码
+        returnData.head[0] = array.at(i++);//0
+        //头码
+        returnData.head[1] = array.at(i++);//1
+
+        //执行板地址
+        returnData.addr = array.at(i++);//2
+
+        //输出位的个数////////////////////////////////////////////////////////////////////
+        returnData.opnum = array.at(i++);//3
+
+        //频率
+        returnData.conversefreq = array.at(i++);//4
+
+
         for(int n = 0 ; n < 2 ; n ++)
-        returnData.vol[m][n] = array.at(i++);//124
-        if(returnData.opnum < 14)
+            returnData.vol[0][n] = array.at(i++);//6
+
+        if(returnData.opnum < 8)
+            for(int n = 0 ; n < 2 ; n ++)
+                array.at(i++);
+        else
+            for(int n = 0 ; n < 2 ; n ++)
+                returnData.vol[returnData.opnum-1][n] = array.at(i++);//8
+
+        //开关状态1
+        returnData.onoffState[0] = array.at(i++);//9
+        //开关状态2
+        returnData.onoffState[1] = array.at(i++);//10
+
+        //十四位电流值
+        for(int m = 0; m < 14; m++)
+            for(int n = 0 ; n <2 ; n++)
+                returnData.current[m][n] = array.at(i++);//38
+
+        for(int m = 0 ;m < 14; m++)
+            returnData.powerfactor[m] = array.at(i++);//52
+
+        //电能
+        for(int m = 0; m < 14; m++)
+            for(int n = 0 ; n < 3 ; n++)
+                returnData.ele[m][n] = array.at(i++);//94
+
+        i += 3;//忽略三位97
+        returnData.version = array.at(i++);//98
+
+        i += 2;//忽略四位100
+
+        if(returnData.opnum<8)
         {
-            i += 2;
-            for(int m = returnData.opnum ; m < 13; m ++)
+            for(int m = 1 ; m < returnData.opnum ; m ++)
                 for(int n = 0 ; n < 2 ; n ++)
-                    i ++;
+                    returnData.vol[m][n] = array.at(i++);//124
+            if(returnData.opnum < 14)
+            {
+                for(int m = returnData.opnum ; m < 13; m ++)
+                    for(int n = 0 ; n < 2 ; n ++)
+                        i ++;
+            }
         }
+        else{
+            for(int m = 1 ; m < returnData.opnum - 1 ; m ++)
+                for(int n = 0 ; n < 2 ; n ++)
+                    returnData.vol[m][n] = array.at(i++);//124
+            if(returnData.opnum < 14)
+            {
+                i += 2;
+                for(int m = returnData.opnum ; m < 13; m ++)
+                    for(int n = 0 ; n < 2 ; n ++)
+                        i ++;
+            }
+        }
+        returnData.len = array.at(i++);//125
+        //异或校验码
+        returnData.xornumber = array.at(i);//126
     }
-    returnData.len = array.at(i++);//125
-    //异或校验码
-    returnData.xornumber = array.at(i);//126
 
 }
 /**
@@ -1123,10 +1170,10 @@ void MainWindow::button_clear_clicked()
         address = NULL;
         address = mAddrMap.value(i);
         if(address == button)
-            {
-                mCurrentClearButtonRow = i; //当前行数
-                break;
-            }
+        {
+            mCurrentClearButtonRow = i; //当前行数
+            break;
+        }
     }
 
 }
@@ -1224,8 +1271,8 @@ void MainWindow::on_RecorrectBtn_clicked()
     sleep(200);
 
     port->sendDataToPort(mCurrentPortName,activationCmd,sizeof(activationCmd));
-//    sleep(2100);
-//    port->sendDataToPort(mCurrentPortName,recalibrateCmd[ui->comBox_Addr->currentIndex()],sizeof(recalibrateCmd[ui->comBox_Addr->currentIndex()]));
+    //    sleep(2100);
+    //    port->sendDataToPort(mCurrentPortName,recalibrateCmd[ui->comBox_Addr->currentIndex()],sizeof(recalibrateCmd[ui->comBox_Addr->currentIndex()]));
     ui->ResponseDatalineEdit->clear();
     ui->CRCCodelineEdit->clear();
 
@@ -1308,7 +1355,7 @@ void MainWindow::on_StopBtn_clicked()
     mflag = 3;
     is_read = true;
     //    mTimer->stop();
- //   QMessageBox::information(this,tr("information"),tr("停止数据采集！"),tr("确定"));
+    //   QMessageBox::information(this,tr("information"),tr("停止数据采集！"),tr("确定"));
     //    initTablewidgetOfButton();//如果停止采集初始化表格
     clearTalbeText();
 
@@ -1360,13 +1407,13 @@ void MainWindow::on_AllOpenBtn_clicked()
             //打开有效位
             for(int k = 0; k < 6 ; k++)
             {
-                   sentData.openeffective[k] = sendData[j++] = 0xFF;//10
+                sentData.openeffective[k] = sendData[j++] = 0xFF;//10
             }
 
             //关闭有效位
             for(int k = 0 ; k < 6 ; k++)
             {
-               sentData.closeffective[k] = sendData[j++] = 0x00;
+                sentData.closeffective[k] = sendData[j++] = 0x00;
             }
 
             //预留位

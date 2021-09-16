@@ -9,7 +9,7 @@ Mpdu_Test_WRThreshold::Mpdu_Test_WRThreshold(QWidget *parent) :
     ui->setupUi(this);
     ui->stopBtn->setEnabled(false);
     mFile = new QFile;
-    m_timer =  new QTimer(this);
+    m_timer =  new QTimer(this);//30min清理一次textEdit控件内容
     m_totalConut = 0;
     openFile();
     ui->TimeEdit->setText(QString("%1").arg(400));
@@ -131,10 +131,15 @@ void Mpdu_Test_WRThreshold::transformer(sSetCmd& cmd)
         QStringList str = mlist.at(i).split(" ");
         //for(int j = 0 ; j < str.size(); ++j )
             //qDebug()<<str.at(j);
-        cmd.addr = str.at(0).toInt();
-        cmd.fn =  str.at(1).toShort();
-        cmd.value = str.at(2).toInt();
-        cmd.reg =  str.at(3).toInt();
+//        cmd.addr = str.at(0).toInt();
+//        cmd.fn =  str.at(1).toShort();
+//        cmd.value = str.at(2).toInt();
+//        cmd.reg =  str.at(3).toInt();
+        bool ok;
+        cmd.addr = str.at(0).toInt(&ok,16);
+        cmd.fn =  str.at(1).toShort(&ok,16);
+        cmd.reg =  str.at(2).toInt(&ok,16)*256+str.at(3).toInt(&ok,16);
+        cmd.value = str.at(4).toInt(&ok,16)*256+str.at(5).toInt(&ok,16);
         mRtu->setCmd(cmd);
         //qDebug()<<"aaaaa"<<cmd.fn<<cmd.value<<cmd.reg ;
     }
@@ -177,6 +182,8 @@ void Mpdu_Test_WRThreshold::on_stopBtn_clicked()
     ui->pushButton->setEnabled(true);
     ui->stopBtn->setEnabled(false);
     m_cleartimer->start(30*60*1000);
+    ui->textEdit_2->clear();
+    this->mlist.clear();
 }
 
 void Mpdu_Test_WRThreshold::on_EditBtn_clicked()

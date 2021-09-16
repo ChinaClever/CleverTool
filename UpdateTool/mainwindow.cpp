@@ -53,6 +53,10 @@ void MainWindow::initWid()
     ui->StatusBaudlabel->hide();
 
     ui->label_status->setText(tr(""));
+    bool flag = ui->comboBox_BoxType->currentText()==tr("插接箱")?false:true;
+
+    ui->comboBox_Transformer->setEnabled(flag);
+    ui->comboBox_Monitor->setEnabled(flag);
 
 }
 
@@ -922,13 +926,13 @@ bool MainWindow::sendChangeType(ushort reg,ushort value)
             <<"sendsize"<<sendArray.size();
     if(QString(recvArray).contains(QString(sendArray))) ret = true;
     if(!ret){
-         sleep(200);
-         recvArray = myPort->readData(mCurrentPort);
-         qDebug() << "getData2:" << recvArray.toHex()
-                  <<"recvsize2"<<recvArray.size()
-                 << "sendData2:" << sendArray.toHex()
-                 <<"sendsize2"<<sendArray.size();
-         if(QString(recvArray).contains(QString(sendArray))) ret = true;
+        sleep(200);
+        recvArray = myPort->readData(mCurrentPort);
+        qDebug() << "getData2:" << recvArray.toHex()
+                 <<"recvsize2"<<recvArray.size()
+                << "sendData2:" << sendArray.toHex()
+                <<"sendsize2"<<sendArray.size();
+        if(QString(recvArray).contains(QString(sendArray))) ret = true;
     }
     sleep(200);
     return ret;
@@ -947,18 +951,15 @@ void MainWindow::on_comboBox_BoxType_activated(const QString &arg1)
 
     if( arg1.contains(tr("插接箱"))){
         value = 0x00;
+        ui->comboBox_Transformer->setEnabled(false);
+        ui->comboBox_Monitor->setEnabled(false);
     }else if(arg1.contains(tr("始端箱"))){
         value = 0x01;
+        ui->comboBox_Transformer->setEnabled(true);
+        ui->comboBox_Monitor->setEnabled(true);
     }
     ret = sendChangeType(reg,value);
-    if(ret){
-        ui->label_status->setText(tr("成功"));
-        ui->label_status->setStyleSheet("color:green");
-    }
-    else{
-        ui->label_status->setText(tr("失败"));
-        ui->label_status->setStyleSheet("color:red");
-    }
+    showResult(ret);
 }
 
 void MainWindow::on_comboBox_Screen_activated(const QString &arg1)
@@ -977,14 +978,7 @@ void MainWindow::on_comboBox_Screen_activated(const QString &arg1)
         value = 0x00;
     }
     ret = sendChangeType(reg,value);
-    if(ret){
-        ui->label_status->setText(tr("成功"));
-        ui->label_status->setStyleSheet("color:green");
-    }
-    else{
-        ui->label_status->setText(tr("失败"));
-        ui->label_status->setStyleSheet("color:red");
-    }
+    showResult(ret);
 }
 
 void MainWindow::on_comboBox_Protocol_activated(const QString &arg1)
@@ -997,20 +991,13 @@ void MainWindow::on_comboBox_Protocol_activated(const QString &arg1)
     bool ret = false;
     ushort reg = 0x1072;
     ushort value = 0x00;
-    if( arg1.contains(tr("标准"))){
+    if( arg1 == tr("标准")){
         value = 0x00;
-    }else if(arg1.contains(tr("定制（蓝厅）"))){
+    }else if(arg1.contains(tr("iOF"))){
         value = 0x01;
     }
     ret = sendChangeType(reg,value);
-    if(ret){
-        ui->label_status->setText(tr("成功"));
-        ui->label_status->setStyleSheet("color:green");
-    }
-    else{
-        ui->label_status->setText(tr("失败"));
-        ui->label_status->setStyleSheet("color:red");
-    }
+    showResult(ret);
 }
 
 void MainWindow::on_comboBox_Transformer_activated(int index)
@@ -1024,14 +1011,7 @@ void MainWindow::on_comboBox_Transformer_activated(int index)
     ushort reg = 0x1073;
     ushort value = index;
     ret = sendChangeType(reg,value);
-    if(ret){
-        ui->label_status->setText(tr("成功"));
-        ui->label_status->setStyleSheet("color:green");
-    }
-    else{
-        ui->label_status->setText(tr("失败"));
-        ui->label_status->setStyleSheet("color:red");
-    }
+    showResult(ret);
 }
 
 void MainWindow::on_comboBox_Monitor_activated(const QString &arg1)
@@ -1050,6 +1030,16 @@ void MainWindow::on_comboBox_Monitor_activated(const QString &arg1)
         value = 0x01;
     }
     ret = sendChangeType(reg,value);
+    showResult(ret);
+}
+
+void MainWindow::on_SetAddrBtn_clicked()
+{
+    checkAddr(0x1001);
+}
+
+void MainWindow::showResult(bool ret)
+{
     if(ret){
         ui->label_status->setText(tr("成功"));
         ui->label_status->setStyleSheet("color:green");
@@ -1058,4 +1048,157 @@ void MainWindow::on_comboBox_Monitor_activated(const QString &arg1)
         ui->label_status->setText(tr("失败"));
         ui->label_status->setStyleSheet("color:red");
     }
+}
+
+bool MainWindow::sendChangeAddr(ushort reg,ushort value)
+{
+    QByteArray sendArray;
+    bool ret = false;
+    bool screen = false;
+    if(ui->comboBox_Screen->currentText().contains("新屏")) screen = true;
+    uchar fun = screen==true?0x06:0x10;
+
+    text_change_send_packet( 0x00 , fun , reg , value , sendArray );
+
+    QByteArray recvArray = myPort->readData(mCurrentPort);
+    myPort->sendData(sendArray,mCurrentPort);
+    sleep(200);
+    recvArray = myPort->readData(mCurrentPort);
+    if( recvArray.size() )
+    {
+
+        if( checkCrc( recvArray ) )
+            ret = true;
+    }
+    if(!ret){
+        sleep(200);
+        recvArray = myPort->readData(mCurrentPort);
+        if( recvArray.size() )
+        {
+            if( checkCrc( recvArray ) )
+                ret = true;
+        }
+    }
+    sleep(200);
+    if( ret )
+    {
+        sendArray = "";
+        text_change_send_packet( recvArray.at(0) , fun , reg , value , sendArray );
+        myPort->sendData(sendArray,mCurrentPort);
+        sleep(200);
+        recvArray = myPort->readData(mCurrentPort);
+        if(QString(recvArray).contains(QString(sendArray))) ret = true;
+        if(!ret){
+            sleep(200);
+            recvArray = myPort->readData(mCurrentPort);
+            if(QString(recvArray).contains(QString(sendArray))) ret = true;
+        }
+    }
+    return ret;
+}
+
+bool MainWindow::sendResetFactory(ushort reg,ushort value)
+{
+    QByteArray sendArray;
+    bool ret = false;
+    bool screen = false;
+    if(ui->comboBox_Screen->currentText().contains("新屏")) screen = true;
+
+    uchar fun = screen==true?0x06:0x10;
+
+    text_change_send_packet(value,fun,reg,0x4351,sendArray);
+
+    QByteArray recvArray = myPort->readData(mCurrentPort);
+    myPort->sendData(sendArray,mCurrentPort);
+    sleep(200);
+    recvArray = myPort->readData(mCurrentPort);
+    if(QString(recvArray).contains(QString(sendArray))) ret = true;
+    if(!ret){
+        sleep(200);
+        recvArray = myPort->readData(mCurrentPort);
+        if(QString(recvArray).contains(QString(sendArray))) ret = true;
+    }
+    sleep(200);
+    return ret;
+}
+
+void MainWindow::on_ResetFactoryBtn_clicked()
+{
+    checkAddr(0x1043);
+}
+
+void MainWindow::checkAddr(int reg)
+{
+    ui->label_status->setText(tr(""));
+    if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("请确认是否有打开串口"),tr("确定"));return;}
+    if( ui->InputAddrEdit->text().isEmpty() ){
+        QMessageBox::warning(this,tr("waring"),tr("请确认是否填写设备地址"),tr("确定"));return;
+    }
+    QString str = ui->InputAddrEdit->text();
+    int addr = ui->InputAddrEdit->text().toInt();
+    QString pattern = "[0-9]*";
+    QRegExp rx(pattern);
+    bool match = rx.exactMatch(str);
+    if(match)
+    {
+        if( addr >= 0 && addr <= 32 )
+        {
+            bool ret = false;
+            if( reg == 0x1043 )
+                ret = sendResetFactory(reg,addr);
+            else if( reg == 0x1001 )
+                ret = sendChangeAddr(reg,addr);
+            showResult(ret);
+        }
+        else
+        {
+            QMessageBox::warning(this,tr("waring"),tr("输入地址不在0到32地址范围"),tr("确定"));
+            qDebug()<<tr("输入地址不在0到32地址范围")<<endl;
+        }
+    }
+    else
+    {
+        QMessageBox::warning(this,tr("waring"),tr("输入地址不是整数"),tr("确定"));
+        qDebug()<<tr("输入地址不是整数")<<endl;
+    }
+}
+
+void MainWindow::on_ReadCurAddrBtn_clicked()
+{
+    if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("请确认是否有打开串口"),tr("确定"));return;}
+
+    bool ret = false;
+    QByteArray sendArray;
+    bool screen = false;
+    if(ui->comboBox_Screen->currentText().contains("新屏")) screen = true;
+    uchar fun = screen==true?0x06:0x10;
+
+    text_change_send_packet( 0x00 , fun , 0x1001 , 0x1 , sendArray );
+
+    QByteArray recvArray = myPort->readData(mCurrentPort);
+    myPort->sendData(sendArray,mCurrentPort);
+    sleep(200);
+    recvArray = myPort->readData(mCurrentPort);
+    if( recvArray.size() )
+    {
+
+        if( checkCrc( recvArray ) )
+        {
+            ret = true;
+            ui->curAddr->setText(QString::number((uchar)recvArray.at(0)));
+        }
+    }
+    if(!ret){
+        sleep(200);
+        recvArray = myPort->readData(mCurrentPort);
+        if( recvArray.size() )
+        {
+            if( checkCrc( recvArray ) )
+            {
+                ret = true;
+                ui->curAddr->setText(QString::number((uchar)recvArray.at(0)));
+            }
+        }
+    }
+    showResult(ret);
 }

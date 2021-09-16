@@ -129,3 +129,13 @@ void text_change_send_packet(uchar addr,uchar funCode,ushort reg,ushort content,
     array.append(xorValue& 0xFF); //低位在前
     array.append(xorValue>>8);  //高位在后
 }
+
+bool checkCrc(QByteArray &array)
+{
+    bool ret = false;
+    if( array.size() != 8 ) return ret;
+    unsigned short xorValue = CRC16_2(array.data(), array.size()-2);
+    if( (xorValue& 0xFF) == (uchar)array.at(array.size()-2)&& (xorValue>>8) == (uchar)array.at(array.size()-1) )
+        ret = true;
+    return ret;
+}
