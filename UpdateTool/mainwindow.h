@@ -73,6 +73,7 @@ private:
     bool sendResetFactory(ushort reg,ushort value);
     void showResult(bool ret);
     void checkAddr(int reg);
+    void initEnWid();
 
 private:
     Ui::MainWindow *ui;

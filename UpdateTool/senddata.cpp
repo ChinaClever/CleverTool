@@ -40,6 +40,7 @@ void SendData::run()
     qDebug() <<"";
     qDebug() <<"";
     qDebug() << QString("[对象切换_>>地址%1<<]").arg(mAddr);
+//    qDebug() << QString("[object switching_>>address %1<<]").arg(mAddr);
     QByteArray allArray = file.readAll();
 
     //qDebug() << allArray.size() % TEXT_MAX_LEN; //取余
@@ -115,6 +116,7 @@ void SendData::run()
                     if(!mCurrentPort.isEmpty() && myPort->portIsOpen(mCurrentPort, buad))
                         myPort->sendData(arr,mCurrentPort);
                     qDebug() << "[Set正确数据:]_" <<arr.toHex();
+//                    qDebug() << "[Set right data:]_" <<arr.toHex();
                     k++;
                     msleep(500);
                 }
@@ -126,6 +128,7 @@ void SendData::run()
                     myPort->sendData(array,mCurrentPort);
 
                 qDebug() << "[Set正确数据:]_" <<array.toHex();
+//                qDebug() << "[Set right data:]_" <<array.toHex();
             }
 
 
@@ -153,11 +156,13 @@ void SendData::run()
         } while (!recvsuccessful && pass < 5); //发送数据包，直到该数据包接收成功
 
         qDebug() << "-------------------- [分割线] --------------------------";
+//       qDebug() << "-------------------- [split line] --------------------------";
         qDebug() << "";
 
         if(!recvsuccessful){
         /* 发送失败信号  -- 同时跳出当前升级对象*/  //QString::number(caddr)
            qDebug() << "[<定点升级失败>]_" << QString("从机数据发送第%2包失败跳出升级升级，请检查").arg(ret);
+//            qDebug() << "[<upgrade failed>]_" << QString("Failed to send the %2 package of data from the machine, jump out of the upgrade, please check.").arg(ret);
             break;
          }
 
@@ -202,6 +207,7 @@ int SendData::responseSendFile(int num)
         QString str = QString(array);
         if(str.compare(responseStr) == 0 || str.compare(responseStr2) == 0){
              qDebug() << "[Get正确数据:]_" << str;
+//            qDebug() << "[Get right data:]_" << str;
             return 1;
         }
         else {
@@ -213,15 +219,19 @@ int SendData::responseSendFile(int num)
             }
             if(str.contains(responseStr)|| str.contains(responseStr2)){
                  qDebug() << "[Get正确数据:]_" << str;
+//                qDebug() << "[Get right data:]_" << str;
                 return 1;
             }
             if(mLastPacketNum == num&&(str.contains(responseStr)|| str.contains(responseStr2)))
             {
                     qDebug() << "[Get正确数据:]_" << str;
+//                qDebug() << "[Get right data:]_" << str;
                    return 1;
              }
             if(!str.isEmpty()) {qDebug() << "[Get错误数据:]_" << str << QString("[参考数据：%1]").arg(responseStr);return -1;}
             else qDebug() << "[Get数据失败:]_" << "空";
+//            if(!str.isEmpty()) {qDebug() << "[Get wrong data:]_" << str << QString("[Reference data：%1]").arg(responseStr);return -1;}
+//            else qDebug() << "[Get wrong data:]_" << "null";
         }
     }
 

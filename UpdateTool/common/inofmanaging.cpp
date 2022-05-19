@@ -116,12 +116,19 @@ void text_send_packet(uchar addr, char *data, QByteArray &array, int len)
 
 }
 
-void text_change_send_packet(uchar addr,uchar funCode,ushort reg,ushort content, QByteArray &array)
+void text_change_send_packet(uchar addr,uchar funCode,ushort reg,ushort content, QByteArray &array ,bool flag)
 {
     array.append(addr);
     array.append(funCode);
+    uchar temp = 0x00;
+
     array.append(reg>>8);
     array.append(reg& 0xFF);
+    if(flag)
+    {
+        array.append(temp);
+        array.append(temp);
+    }
     array.append(content>>8);
     array.append(content& 0xFF);
     unsigned short xorValue = CRC16_2(array.data(), array.size());

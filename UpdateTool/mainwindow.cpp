@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     initPortCombox(portList); //初始化串口信息  -- 初始化界面
 
     initWid();
+    //initEnWid();
 }
 
 MainWindow::~MainWindow()
@@ -32,6 +33,33 @@ MainWindow::~MainWindow()
 }
 
 
+void MainWindow::initEnWid()
+{
+    ui->radioButton->hide();
+    ui->label_45->hide();
+    ui->comboBox_BoxType->hide();
+    ui->label_44->hide();
+    ui->comboBox_Screen->hide();
+    ui->label_46->hide();
+    ui->comboBox_Protocol->hide();
+    ui->label_47->hide();
+    ui->comboBox_Transformer->hide();
+    ui->label_48->hide();
+    ui->comboBox_Monitor->hide();
+    ui->label_status->hide();
+    ui->textEdit_2->hide();
+    ui->tabWidget->clear();
+    ui->tabWidget->addTab(ui->tab,"Update");
+
+    ui->label_43->setText("Port:");
+    ui->label_7->setText("Baud:");
+    ui->pushButton_port->setText("Open port");
+    ui->pushButton_12->setText("Refresh");
+    ui->selectfileBtn->setText("Select file");
+    ui->label->setText("Address");
+    ui->label_2->setText("Transfer progress");
+    ui->startBtn->setText("Start upgrade");
+}
 /**
  * @brief 初始化
  */
@@ -90,17 +118,20 @@ void MainWindow::initPortCombox(QStringList &portList)
                 ui->comboBox_port->setCurrentIndex(index);
             }else
             {
-                qDebug() << "串口不存在!!!";
+                //qDebug() << "串口不存在!!!";
+                qDebug() << "Serialport is not exist!!!";
             }
         }else
         {
-            qDebug()<< "该串口已不存在";
+            //qDebug()<< "该串口已不存在";
+            qDebug() << "This serialport is not exist!!!";
             ui->comboBox_port->setCurrentText(0);
         }
 
     }else
     {
-        qDebug() << "当前无串口连接";
+        //qDebug() << "当前无串口连接";
+        qDebug() << "current serialport is not connection.";
         ui->pushButton_port->setText(tr(""));
     }
     //刷新串口信息，将会触发combox的index变化，将在对应槽函数中刷新buttontext；
@@ -177,8 +208,10 @@ void MainWindow::initButtonText()
         if(myPort->portIsOpen(str,baud))
         {
             ui->pushButton_port->setText(tr("关闭串口"));
+            //ui->pushButton_port->setText(tr("Close port"));
         }else
-            ui->pushButton_port->setText(tr("打开串口"));
+           ui->pushButton_port->setText(tr("打开串口"));
+             //ui->pushButton_port->setText(tr("Open port"));
 
         int index = 0;
         switch (baud) {
@@ -191,7 +224,7 @@ void MainWindow::initButtonText()
         }
         ui->baudBox->setCurrentIndex(index);
 
-        qDebug() << baud;
+        qDebug() << str<<baud<<endl;;
     }else
         ui->pushButton_port->setText(tr(""));
 }
@@ -224,6 +257,18 @@ void MainWindow::on_pushButton_port_clicked()
     }
     else
         qDebug() << "当前串口不存在！";
+
+//    if(str == "Open port")
+//    {
+//        mIsOpenSerial =  myPort->openPort(portName, mCbaud);
+//    }else if(str == "Close port")
+//    {
+//        myPort->closePort(portName);
+//        mIsOpenSerial = false;
+//    }
+//    else
+//        //qDebug() << "当前串口不存在！";
+//        qDebug() << "Current serialport is not exist!";
 
     initButtonText();
 }
@@ -262,6 +307,8 @@ void MainWindow::on_startBtn_clicked()
     ui->Statuslabel->hide();
     if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("请确认是否有打开串口"),tr("确定"));return;}
     if(ui->nameEdit->text().isEmpty()){QMessageBox::warning(this,tr("waring"),tr("请选择升级文件"),tr("确定"));return;}
+//    if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("Please confirm whether the serial port is open."),tr("OK"));return;}
+//    if(ui->nameEdit->text().isEmpty()){QMessageBox::warning(this,tr("waring"),tr("Please select an upgrade file"),tr("OK"));return;}
     //    if(QMessageBox::Yes==QMessageBox::question(this,tr("question"),tr("请确认升级始端箱时，先升级为插接箱。\n选择Yes表示已经清楚继续升级，选择No表示换取新的升级文件。"),QMessageBox::Yes | QMessageBox::No,
     //                                               QMessageBox::Yes))
     //    {
@@ -281,6 +328,7 @@ void MainWindow::on_startBtn_clicked()
         qDebug() <<"";
         qDebug() <<"";
         qDebug() << QString("[>>↓↓↓↓↓↓↓ 定点升级%1 ↓↓↓↓↓↓↓<<]").arg(ui->addrEdit->text().toInt());
+        //qDebug() << QString("[>>↓↓↓↓↓↓↓ Update%1 ↓↓↓↓↓↓↓<<]").arg(ui->addrEdit->text().toInt());
 
         int isPass = -1;//-1失败 1成功 0接收到其它的数据
         do {  //升级回应
@@ -301,6 +349,7 @@ void MainWindow::on_startBtn_clicked()
 
         if(isPass!=1) {
             QMessageBox::warning(this,tr("waring"),tr("请确定从机是否启动"),tr("确定"));
+//            QMessageBox::warning(this,tr("waring"),tr("Please confirm whether slave start"),tr("OK"));
             this->setEnabled(true);
             return;
         } //十次依旧无结果
@@ -320,8 +369,10 @@ void MainWindow::onOSendOkSlot(int value)
     this->setEnabled(true);
     if(value){ //传输OK
         QMessageBox::information(this,tr("information"),tr("软件升级完毕！"),tr("确定"));
+//        QMessageBox::information(this,tr("information"),tr("Software upgrade completed！"),tr("OK"));
     }else{  //传输NG
-        QMessageBox::warning(this,tr("information"),tr("数据发送可能存在丢失，请检查！"),tr("确定"));
+       QMessageBox::warning(this,tr("information"),tr("数据发送可能存在丢失，请检查！"),tr("确定"));
+//         QMessageBox::warning(this,tr("information"),tr("Data transmission may be lost, please check!"),tr("OK"));
     }
 }
 
@@ -334,6 +385,7 @@ void MainWindow::onOSendAllOkSlot(int)
 {
     this->setEnabled(true);
     QMessageBox::information(this,tr("information"),tr("批处理执行完毕！"),tr("确定"));
+//    QMessageBox::information(this,tr("information"),tr("The batch is executed!"),tr("OK"));
 }
 
 void MainWindow::onProgressAllSlot(QString str)
@@ -358,6 +410,7 @@ bool MainWindow::sendUpdateCmd()  //bool型
         addr = uchar(ui->addrEdit->text().toInt());
     else{
         QMessageBox::warning(this,tr("waring"),tr("请选择执行板地址"),tr("确定"));
+//        QMessageBox::warning(this,tr("waring"),tr("Please select the address of the execution board"),tr("OK"));
         return false;
     }
 
@@ -406,17 +459,20 @@ void MainWindow::sendFile()
     if(packetNum == 0)  //升级文件是否为空
     {
         QMessageBox::warning(this,tr("waring"),tr("升级文件为空，请重新选择！"),tr("确定"));
+//        QMessageBox::warning(this,tr("waring"),tr("The upgrade file is empty, please select again!"),tr("OK"));
         return;
     }
 
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) //升级文件是否打开
     {
         QMessageBox::warning(this,tr("warning"),tr("文件打开失败"),tr("确定"));
+//        QMessageBox::warning(this,tr("warning"),tr("File open failed"),tr("OK"));
         return;
     }
     if(ui->addrEdit->text().isEmpty()) //升级文件是否打开
     {
         QMessageBox::warning(this,tr("warning"),tr("没有填写地址"),tr("确定"));
+//        QMessageBox::warning(this,tr("warning"),tr("Not address"),tr("OK"));
         return;
     }
 
@@ -484,8 +540,10 @@ void MainWindow::sendFile()
 
     if(ret >= packetNum)
         QMessageBox::information(this,tr("information"),tr("软件升级完毕！"),tr("确定"));
+//        QMessageBox::information(this,tr("information"),tr("Software upgrade completed！"),tr("OK"));
     else
         QMessageBox::warning(this,tr("information"),tr("数据发送可能存在丢失，请检查！"),tr("确定"));
+//        QMessageBox::warning(this,tr("information"),tr("Data transmission may be lost, please check!"),tr("OK"));
 }
 
 /**
@@ -549,6 +607,8 @@ void MainWindow::on_pushButton_clicked() //批量
     ui->Statuslabel->hide();
     if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("请确认是否有打开串口"),tr("确定"));return;}
     if(ui->nameEdit->text().isEmpty()){QMessageBox::warning(this,tr("waring"),tr("请选择升级文件"),tr("确定"));return;}
+//    if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("Please confirm whether the serial port is open."),tr("OK"));return;}
+//    if(ui->nameEdit->text().isEmpty()){QMessageBox::warning(this,tr("waring"),tr("Please select an upgrade file"),tr("OK"));return;}
     if(QMessageBox::Yes==QMessageBox::question(this,tr("question"),tr("请确认定点升级始端箱为插接箱。\n选择Yes表示已经把始端箱升级为插接箱，选择No表示需要换取新的升级文件，再定点升级。"),QMessageBox::Yes | QMessageBox::No,
                                                QMessageBox::Yes))
     {
@@ -559,6 +619,16 @@ void MainWindow::on_pushButton_clicked() //批量
         qDebug()<<"No";
         return;
     }
+//    if(QMessageBox::Yes==QMessageBox::question(this,tr("question"),tr("Please confirm that the fixed-point upgrade start end box is a plug-in box.\nselect Yes:start end box update to plug-in box，select No:Indicates that you need to exchange for a new upgrade file, and then upgrade at a fixed point."),QMessageBox::Yes | QMessageBox::No,
+//                                               QMessageBox::Yes))
+//    {
+//        qDebug()<<"Yes";
+//    }
+//    else
+//    {
+//        qDebug()<<"No";
+//        return;
+//    }
     this->setEnabled(false);
 
     //  if(ui->lEditMin->text().isDetached())
@@ -569,6 +639,7 @@ void MainWindow::on_pushButton_clicked() //批量
         sendDataAll->start();  //不能点第二下  待优化
     }else{
         QMessageBox::warning(this,tr("waring"),tr("上下地址或升级文件有空白"),tr("确定"));
+//        QMessageBox::warning(this,tr("waring"),tr("start and end address and update file are blank."),tr("OK"));
         this->setEnabled(true);
     }
 }
@@ -914,7 +985,7 @@ bool MainWindow::sendChangeType(ushort reg,ushort value)
     else
         addr = ui->addrEdit->text().toInt();
 
-    text_change_send_packet(addr,fun,reg,value,sendArray);
+    text_change_send_packet(addr,fun,reg,value,sendArray,ui->newVerRadioBtn->isChecked());
 
     QByteArray recvArray = myPort->readData(mCurrentPort);
     myPort->sendData(sendArray,mCurrentPort);
@@ -1058,7 +1129,7 @@ bool MainWindow::sendChangeAddr(ushort reg,ushort value)
     if(ui->comboBox_Screen->currentText().contains("新屏")) screen = true;
     uchar fun = screen==true?0x06:0x10;
 
-    text_change_send_packet( 0x00 , fun , reg , value , sendArray );
+    text_change_send_packet( 0x00 , fun , reg , value , sendArray ,ui->newVerRadioBtn->isChecked());
 
     QByteArray recvArray = myPort->readData(mCurrentPort);
     myPort->sendData(sendArray,mCurrentPort);
@@ -1083,7 +1154,7 @@ bool MainWindow::sendChangeAddr(ushort reg,ushort value)
     if( ret )
     {
         sendArray = "";
-        text_change_send_packet( recvArray.at(0) , fun , reg , value , sendArray );
+        text_change_send_packet( recvArray.at(0) , fun , reg , value , sendArray ,ui->newVerRadioBtn->isChecked());
         myPort->sendData(sendArray,mCurrentPort);
         sleep(200);
         recvArray = myPort->readData(mCurrentPort);
@@ -1106,7 +1177,7 @@ bool MainWindow::sendResetFactory(ushort reg,ushort value)
 
     uchar fun = screen==true?0x06:0x10;
 
-    text_change_send_packet(value,fun,reg,0x4351,sendArray);
+    text_change_send_packet(value,fun,reg,0x4351,sendArray,ui->newVerRadioBtn->isChecked());
 
     QByteArray recvArray = myPort->readData(mCurrentPort);
     myPort->sendData(sendArray,mCurrentPort);
@@ -1173,7 +1244,7 @@ void MainWindow::on_ReadCurAddrBtn_clicked()
     if(ui->comboBox_Screen->currentText().contains("新屏")) screen = true;
     uchar fun = screen==true?0x06:0x10;
 
-    text_change_send_packet( 0x00 , fun , 0x1001 , 0x1 , sendArray );
+    text_change_send_packet( 0x00 , fun , 0x1001 , 0x1 , sendArray ,ui->newVerRadioBtn->isChecked());
 
     QByteArray recvArray = myPort->readData(mCurrentPort);
     myPort->sendData(sendArray,mCurrentPort);

@@ -168,7 +168,7 @@
      </font>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -190,7 +190,7 @@
      <widget class="QLabel" name="showProgress">
       <property name="geometry">
        <rect>
-        <x>170</x>
+        <x>200</x>
         <y>80</y>
         <width>101</width>
         <height>21</height>
@@ -205,7 +205,7 @@
        <rect>
         <x>20</x>
         <y>80</y>
-        <width>61</width>
+        <width>130</width>
         <height>20</height>
        </rect>
       </property>
@@ -218,7 +218,7 @@
        <rect>
         <x>140</x>
         <y>220</y>
-        <width>101</width>
+        <width>111</width>
         <height>31</height>
        </rect>
       </property>
@@ -229,7 +229,7 @@
      <widget class="QLineEdit" name="addrEdit">
       <property name="geometry">
        <rect>
-        <x>70</x>
+        <x>160</x>
         <y>40</y>
         <width>133</width>
         <height>20</height>
@@ -247,7 +247,7 @@
        <rect>
         <x>20</x>
         <y>40</y>
-        <width>51</width>
+        <width>130</width>
         <height>20</height>
        </rect>
       </property>
@@ -550,6 +550,9 @@
       <pointsize>13</pointsize>
      </font>
     </property>
+    <property name="currentIndex">
+     <number>1</number>
+    </property>
     <item>
      <property name="text">
       <string>9600</string>
@@ -770,7 +773,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;2、 再用&lt;/span&gt;&lt;span style=&quot; font-size:12pt; color:#ff0000;&quot;&gt;插接箱程序&lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;批量升级&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;插接箱；&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;3、 所有插接箱都升级成功后，再用&lt;/span&gt;&lt;span style=&quot; font-size:12pt; color:#ff0000;&quot;&gt;始端箱程序&lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;定点升级&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;始端箱；&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;4、 一条母线上的地址不能重复；&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;软件版本：V1.2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;软件版本：V1.3&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_44">
@@ -1105,6 +1108,25 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="text">
      <string>  成功</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="newVerRadioBtn">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>40</y>
+      <width>131</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Microsoft YaHei</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string> 设置添加字节</string>
     </property>
    </widget>
   </widget>
