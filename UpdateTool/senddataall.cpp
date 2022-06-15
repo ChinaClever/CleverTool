@@ -268,7 +268,7 @@ bool SendDataAll::sendUpdateCmd(int add)  //bool型
 /**
  * @brief MainWindow::responseUpdate  升级命令回应
  */
-bool SendDataAll::responseUpdate()
+int SendDataAll::responseUpdate()
 {
    // QString responseStr = tr();
 
@@ -280,7 +280,9 @@ bool SendDataAll::responseUpdate()
         qDebug() << "Data1" << str;
 
         if(str.contains("Start Updata") || str.contains("Start Updat"))
-            return true;
+            return 1;
+        if(!str.isEmpty())
+            return 0;
     }
-    return false;
+    return -1;
 }

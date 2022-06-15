@@ -26,7 +26,7 @@ private:
     int responseSendFile(int num);
 
     bool sendUpdateCmd(int add);
-    bool responseUpdate();
+    int responseUpdate();
 
     QString mfileName;
     QString mCurrentPort;

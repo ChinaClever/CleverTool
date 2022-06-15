@@ -319,6 +319,8 @@ void MainWindow::on_startBtn_clicked()
     //        qDebug()<<"No";
     //        return;
     //    }
+    myPort->closePort(mCurrentPort);
+    mIsOpenSerial =  myPort->openPort(mCurrentPort, mCbaud);
     this->setEnabled(false);
     if(!ui->checkBox->isChecked()){ //从机没有进入升级模式
         int ret = 0 ;
@@ -635,6 +637,9 @@ void MainWindow::on_pushButton_clicked() //批量
 
     if(!mUpdateFile.isEmpty() && !ui->lEditMin->text().isEmpty() && !ui->lEditMax->text().isEmpty())  //触发线程 发送文件
     {
+        myPort->closePort(mCurrentPort);
+        mIsOpenSerial =  myPort->openPort(mCurrentPort, mCbaud);
+
         sendDataAll->init(mUpdateFile, mCurrentPort,ui->lEditMin->text().toInt(), ui->lEditMax->text().toInt() , ui->radioButton->isChecked());
         sendDataAll->start();  //不能点第二下  待优化
     }else{
