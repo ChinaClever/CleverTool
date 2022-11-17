@@ -1201,6 +1201,7 @@ bool MainWindow::sendResetFactory(ushort reg,ushort value)
 void MainWindow::on_ResetFactoryBtn_clicked()
 {
     checkAddr(0x1043);
+    checkAddr(0x1082);
 }
 
 void MainWindow::checkAddr(int reg)
@@ -1220,7 +1221,7 @@ void MainWindow::checkAddr(int reg)
         if( addr >= 0 && addr <= 32 )
         {
             bool ret = false;
-            if( reg == 0x1043 )
+            if( reg == 0x1043 || reg == 0x1082)
                 ret = sendResetFactory(reg,addr);
             else if( reg == 0x1001 )
                 ret = sendChangeAddr(reg,addr);
