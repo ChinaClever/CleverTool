@@ -218,7 +218,8 @@ void MainWindow::initButtonText()
         case 9600: index = 0; break;
         case 19200: index = 1; break;
         case 38400: index = 2; break;
-        case 115200: index = 3; break;
+        case 57600: index = 3; break;
+        case 115200: index = 4; break;
         default:
             break;
         }
@@ -655,7 +656,8 @@ void MainWindow::on_baudBox_currentIndexChanged(int index) //botelv
     case 0: mCbaud = QSerialPort::Baud9600; break;
     case 1: mCbaud = QSerialPort::Baud19200; break;
     case 2: mCbaud = QSerialPort::Baud38400; break;
-    case 3: mCbaud = QSerialPort::Baud115200; break;
+    case 3: mCbaud = QSerialPort::Baud57600; break;
+    case 4: mCbaud = QSerialPort::Baud115200; break;
     default:
         break;
     }

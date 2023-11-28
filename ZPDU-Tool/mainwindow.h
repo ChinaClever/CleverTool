@@ -93,6 +93,7 @@ protected:
     void setCurretVolate(int row,int column);
     void setCurretPower(int row,int column);
     void setCurretEle(int row, int column);
+    void setPF(int row, int column);
 
     void setSwitch(int row, int onOroff , bool flag);
     void setClearEle(int row);

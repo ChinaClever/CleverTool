@@ -704,6 +704,7 @@ void MainWindow::updataTableData()
     //qDebug()<<"刷新表格";
     if(returnData.opnum > 14)//大于14开关位不符合
         return ;
+    ui->Hzlabel->setText(QString(tr("%1 Hz")).arg(returnData.conversefreq));
     for(int i = 0 ; i < returnData.opnum ;i++ )
     {
         // int j = 0;
@@ -715,6 +716,7 @@ void MainWindow::updataTableData()
         setCurretEle(i, 5);
 
         setAll();
+        setPF(i , 6);
     }
 
 }
@@ -722,20 +724,20 @@ void MainWindow::setAll()////////
 {
     QTableWidgetItem *itemA = ui->tableWidget->item(14, 1);
     QTableWidgetItem *itemW = ui->tableWidget->item(14, 3);
-    int dataA = 0;
+    float dataA = 0;
     double dataW = 0;
     for(int i = 0; i < returnData.opnum; i++){
-        int data1 = (returnData.current[i][0]<<8 | returnData.current[i][1])/10;
+        float data1 = (returnData.current[i][0]<<8 | returnData.current[i][1])/10.0;
         dataA += data1;
 
         double data2 = returnData.power[i];
         dataW += data2;
 
     }
-    QString str = QString("%1.%2").arg(dataA/10).arg(dataA%10);
+    QString str = QString::number(dataA/10.0, 'f', 2);
     itemA->setText(str+ "A");
     str = QString::number(dataW, 'f', 3);//取一位小数点，并且判断小数点后一位是否大于等于5，则进一，否则舍弃
-    itemW->setText(str+ "KW");
+    itemW->setText(str+ "kW");
 }
 
 /**
@@ -788,7 +790,7 @@ void MainWindow::setOnOffState(int row, int column)
 void MainWindow::setCurretnt(int row, int column)
 {
     QTableWidgetItem *item = ui->tableWidget->item(row,column);
-    int data = (returnData.current[row][0]<<8 | returnData.current[row][1])/10;
+    float data = (returnData.current[row][0]<<8 | returnData.current[row][1])/10.0;
     //QString str = QString("%1.%2").arg(data/10).arg(data%10);
     QString str = QString::number(data/10.0, 'f', 2);
 
@@ -809,6 +811,20 @@ void MainWindow::setCurretnt(int row, int column)
     }
 
     item->setText(str+ "A");
+}
+
+/**
+ * @brief 设置电流值
+ * @param row
+ * @param column
+ */
+void MainWindow::setPF(int row, int column)
+{
+    QTableWidgetItem *item = ui->tableWidget->item(row,column);
+    int data = returnData.powerfactor[row];
+    QString str = QString::number(data/100.0, 'f', 2);
+
+    item->setText(str);
 }
 
 void MainWindow::setCurretVolate(int row, int column)
@@ -833,12 +849,12 @@ void MainWindow::setCurretPower(int row, int column)
     QTableWidgetItem *item = ui->tableWidget->item(row,column);
     int voldata = 0;
     voldata= (returnData.vol[row][0]<<8 | returnData.vol[row][1]);
-    int curdata = (returnData.current[row][0]<<8 | returnData.current[row][1])/10;
+    int curdata = returnData.current[row][0]<<8 | returnData.current[row][1];
     int pfdata = returnData.powerfactor[row];
     if(curdata == 0 || pfdata == 0 || voldata == 0 )
         returnData.power[row] = 0;
     else
-        returnData.power[row] = (voldata * curdata /(10.0*10*100)/1000.0)* pfdata;
+        returnData.power[row] = (voldata * curdata /(10.0*10*10*100)/1000.0)* pfdata;
     QString str = QString::number(returnData.power[row], 'f', 3);
 
     if(ui->doubleSpinBoxWmin->value() <= str.toDouble() &&
@@ -864,7 +880,7 @@ void MainWindow::setCurretEle(int row, int column)
     QString str = QString("%1.%2").arg(data/10).arg(data%10);
 
 
-    item->setText(str + "KWh");
+    item->setText(str + "kWh");
 }
 /**
  * @brief 更新增益按钮应答数据及其相关状态,参数主要用于判断状态正确错误
@@ -1030,12 +1046,12 @@ void MainWindow::returnToPacket(QByteArray &array)
         for(int n = 0 ; n < 2 ; n ++)
             returnData.vol[0][n] = array.at(i++);//6
 
-        if(returnData.opnum < 8)
-            for(int n = 0 ; n < 2 ; n ++)
-                array.at(i++);
-        else
-            for(int n = 0 ; n < 2 ; n ++)
-                returnData.vol[returnData.opnum-1][n] = array.at(i++);//8
+//        if(returnData.opnum < 8)
+//            for(int n = 0 ; n < 2 ; n ++)
+//                array.at(i++);
+//        else
+        for(int n = 0 ; n < 2 ; n ++)
+            returnData.vol[returnData.opnum-1][n] = array.at(i++);//8
 
         //开关状态1
         returnData.onoffState[0] = array.at(i++);//9
@@ -1060,19 +1076,20 @@ void MainWindow::returnToPacket(QByteArray &array)
 
         i += 2;//忽略四位100
 
-        if(returnData.opnum<8)
+//        if(returnData.opnum<8)
+//        {
+//            for(int m = 1 ; m < returnData.opnum ; m ++)
+//                for(int n = 0 ; n < 2 ; n ++)
+//                    returnData.vol[m][n] = array.at(i++);//124
+//            if(returnData.opnum < 14)
+//            {
+//                for(int m = returnData.opnum ; m < 13; m ++)
+//                    for(int n = 0 ; n < 2 ; n ++)
+//                        i ++;
+//            }
+//        }
+//        else
         {
-            for(int m = 1 ; m < returnData.opnum ; m ++)
-                for(int n = 0 ; n < 2 ; n ++)
-                    returnData.vol[m][n] = array.at(i++);//124
-            if(returnData.opnum < 14)
-            {
-                for(int m = returnData.opnum ; m < 13; m ++)
-                    for(int n = 0 ; n < 2 ; n ++)
-                        i ++;
-            }
-        }
-        else{
             for(int m = 1 ; m < returnData.opnum - 1 ; m ++)
                 for(int n = 0 ; n < 2 ; n ++)
                     returnData.vol[m][n] = array.at(i++);//124

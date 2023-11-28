@@ -473,7 +473,7 @@ p, li { white-space: pre-wrap; }
     <widget class="QLabel" name="label_9">
      <property name="geometry">
       <rect>
-       <x>440</x>
+       <x>390</x>
        <y>10</y>
        <width>73</width>
        <height>30</height>
@@ -505,7 +505,7 @@ p, li { white-space: pre-wrap; }
     <widget class="QLineEdit" name="timerline">
      <property name="geometry">
       <rect>
-       <x>620</x>
+       <x>460</x>
        <y>20</y>
        <width>71</width>
        <height>20</height>
@@ -666,7 +666,7 @@ p, li { white-space: pre-wrap; }
       <number>15</number>
      </property>
      <property name="columnCount">
-      <number>8</number>
+      <number>9</number>
      </property>
      <attribute name="horizontalHeaderMinimumSectionSize">
       <number>30</number>
@@ -777,6 +777,11 @@ p, li { white-space: pre-wrap; }
      <column>
       <property name="text">
        <string>电能（KWh）</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>PF</string>
       </property>
      </column>
      <column>
@@ -911,6 +916,32 @@ p, li { white-space: pre-wrap; }
      </property>
      <property name="value">
       <double>8.640000000000001</double>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_16">
+     <property name="geometry">
+      <rect>
+       <x>530</x>
+       <y>20</y>
+       <width>54</width>
+       <height>12</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>频率：</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="Hzlabel">
+     <property name="geometry">
+      <rect>
+       <x>600</x>
+       <y>20</y>
+       <width>54</width>
+       <height>12</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </widget>

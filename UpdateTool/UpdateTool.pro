@@ -9,7 +9,7 @@ QT       += serialport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = UpdateToolV1.5
+TARGET = UpdateToolV2.0
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
