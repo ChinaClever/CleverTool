@@ -90,6 +90,7 @@ void text_send_packet(uchar addr, char *data, QByteArray &array, int len)
 
     textCmd.header = 0x7B;
     textCmd.addr = addr;
+    //textCmd.addr = addr|0xC0;由于下位机无法识别最后一包，要用0xCx表示最后一包数据
     textCmd.len = len;
     memcpy(textCmd.data,data, len); //内存拷贝
 
