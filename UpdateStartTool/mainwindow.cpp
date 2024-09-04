@@ -325,7 +325,8 @@ void MainWindow::on_startBtn_clicked()
     this->setEnabled(false);
     if(!ui->checkBox->isChecked()){ //从机没有进入升级模式
         int ret = 0 ;
-        if(!sendUpdateCmd()) { this->setEnabled(true);  return; } //发送升级标志
+        QFile file(mUpdateFile);
+        if(!sendUpdateCmd(file.size())) { this->setEnabled(true);  return; } //发送升级标志
 
         qDebug() <<"";
         qDebug() <<"";
@@ -335,7 +336,7 @@ void MainWindow::on_startBtn_clicked()
 
         int isPass = -1;//-1失败 1成功 0接收到其它的数据
         do {  //升级回应
-            if(ret % 3 == 0) sendUpdateCmd(); //再次发送
+            if(ret % 3 == 0) sendUpdateCmd(file.size()); //再次发送
             isPass = responseUpdate();
             if(isPass == 1)
             {
@@ -404,7 +405,7 @@ void MainWindow::onProgressAllSlot2(QString str)
 /**
  * @brief MainWindow::sendUpdateCmd  发送升级命令
  */
-bool MainWindow::sendUpdateCmd()  //bool型
+bool MainWindow::sendUpdateCmd(int size)  //bool型
 {
     QByteArray array;
     uchar addr;
@@ -417,7 +418,7 @@ bool MainWindow::sendUpdateCmd()  //bool型
         return false;
     }
 
-    send_to_packet(addr,array); //打包到array
+    send_to_packet(addr,array,size); //打包到array
     qDebug() << "initData" << array.toHex();
 
     int buad;
@@ -499,7 +500,7 @@ void MainWindow::sendFile()
             char *data =  da.data();
             if(!ui->addrEdit->text().isEmpty())
                 addr = uchar(ui->addrEdit->text().toInt());
-            text_send_packet(addr ,data,array, da.size(),len==TEXT_MAX_LEN);  //组装数据
+            text_send_packet(addr ,data,array, da.size(),ret);  //组装数据
 
         }else{
 
@@ -511,7 +512,7 @@ void MainWindow::sendFile()
             char *data =  da.data();
             if(!ui->addrEdit->text().isEmpty())
                 addr = uchar(ui->addrEdit->text().toInt());
-            text_send_packet(addr ,data,array);  //组装数据
+            text_send_packet(addr ,data,array,ret);  //组装数据
         }
 
 

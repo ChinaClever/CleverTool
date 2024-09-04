@@ -66,7 +66,7 @@ void SendData::run()
 
             addr = uchar(mAddr);
           //  qDebug() << "EndLen:" << allArray.size() % TEXT_MAX_LEN << da.size();
-            text_send_packet(addr ,data,array, da.size() , allArray.size()==TEXT_MAX_LEN);  //组装数据
+            text_send_packet(addr ,data,array, da.size() , ret);  //组装数据
 
         }else{
 
@@ -78,7 +78,7 @@ void SendData::run()
             //da= str.toLatin1();
             char *data =  da.data();
             addr = uchar(mAddr);
-            text_send_packet(addr ,data,array);  //组装数据
+            text_send_packet(addr ,data,array,ret);  //组装数据
         }
 
 //        QByteArray xxx;
@@ -136,6 +136,7 @@ void SendData::run()
             int recvError = 0;
 
             do {
+                msleep(300);
                 tick++;
                 recvError = responseSendFile(ret);
                 if(recvError == 1)
@@ -146,7 +147,6 @@ void SendData::run()
                    qDebug() << "responseSendFile err" << tick << ret;
                     break;
                 }
-                sleep(1);
             } while (tick < 3);
             if(recvError == -1)
             {

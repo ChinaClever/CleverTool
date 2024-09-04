@@ -51,10 +51,10 @@ void SendDataAll::run()
         int cret = 0 ;
         if(caddr != mMin)
         {Sleep(2000);}
-        sendUpdateCmd(caddr);
+        sendUpdateCmd(caddr,file.size());
         int isPass = -1;
         do {  //升级回应
-            if(cret % 3 == 0) sendUpdateCmd(caddr); //再次发送
+            if(cret % 3 == 0) sendUpdateCmd(caddr,file.size()); //再次发送
             isPass = responseUpdate();
             if(isPass == 1)
             {
@@ -97,7 +97,7 @@ void SendDataAll::run()
 
                 addr = uchar(caddr);
                // qDebug() << "EndLen:" << allArray.size() % TEXT_MAX_LEN << da.size();
-                text_send_packet(addr ,data,array, da.size() , allArray.size()==TEXT_MAX_LEN);  //组装数据
+                text_send_packet(addr ,data,array, da.size() ,ret );  //组装数据
 
             }else{
 
@@ -109,7 +109,7 @@ void SendDataAll::run()
                 //da= str.toLatin1();
                 char *data =  da.data();
                 addr = uchar(caddr);
-                text_send_packet(addr ,data,array);  //组装数据
+                text_send_packet(addr ,data,array,ret);  //组装数据
             }
 
             QString progress = "从机" + QString::number(caddr) + "完成" + QString::number(ret) + "/" + QString::number(packetNum);
@@ -157,6 +157,7 @@ void SendDataAll::run()
                 int tick = 0;//用于延时
                 int recvError = 0;
                 do {
+                    msleep(300);
                     tick++;
                     recvError = responseSendFile(ret);
                     if(recvError == 1)
@@ -167,7 +168,6 @@ void SendDataAll::run()
                         qDebug() << "responseSendFile err" << tick << ret << pass;
                         break;
                     }
-                    sleep(1);
                 } while (tick < 3);
                 if(recvError == -1)
                 {
@@ -250,12 +250,12 @@ int SendDataAll::responseSendFile(int num)
 /**
  * @brief MainWindow::sendUpdateCmd  发送升级命令
  */
-bool SendDataAll::sendUpdateCmd(int add)  //bool型
+bool SendDataAll::sendUpdateCmd(int add,int size)  //bool型
 {
     QByteArray array;
     uchar addr = uchar(add);
 
-    send_to_packet(addr,array); //打包到array
+    send_to_packet(addr,array,size); //打包到array
     qDebug() << "initData" << array.toHex();
 
     int buad;

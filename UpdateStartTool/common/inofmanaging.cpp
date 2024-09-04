@@ -5,7 +5,7 @@
  * @param addr
  * @param cmd
  */
-void init_update_cmd(int addr,updateCmd *cmd)
+void init_update_cmd(int addr,updateCmd *cmd,int size)
 {
     cmd->header = 0x7B;
     cmd->stx = 0xA5;
@@ -13,12 +13,16 @@ void init_update_cmd(int addr,updateCmd *cmd)
     cmd->len = 0x10;
 
     memset(cmd->reserved,0,sizeof(cmd->reserved)); //清零
+    for(int i = 0 ; i < 4 ; i++)
+        cmd->reserved[i] = (size >> (8*(3-i)));
 
     cmd->XOR = 0;  //异或
     cmd->XOR ^=cmd->header;
     cmd->XOR ^=cmd->stx;
     cmd->XOR ^=cmd->addr;
     cmd->XOR ^=cmd->len;
+    for(int i = 0 ; i < 4 ; i++)
+        cmd->XOR ^= cmd->reserved[i];
 
     //    cmd->XOR ^=cmd->reserved;
 }
@@ -27,11 +31,11 @@ void init_update_cmd(int addr,updateCmd *cmd)
  * addr 执行板地址 array 数据打包后
  * 该函数用于将需要发送的远程升级命令打包
  */
-void send_to_packet(uchar addr,QByteArray &array)
+void send_to_packet(uchar addr,QByteArray &array,int size)
 {
     updateCmd cmd;
 
-    init_update_cmd(addr,&cmd);
+    init_update_cmd(addr,&cmd,size);
 
     array.append(cmd.header);
     array.append(cmd.stx);
@@ -44,10 +48,11 @@ void send_to_packet(uchar addr,QByteArray &array)
     array.append(cmd.XOR);
 }
 
-void init_text_cmd(uchar addr ,char *data,textSendCmd *cmd)//数据发送-初始化
+void init_text_cmd(uchar addr ,char *data,textSendCmd *cmd , int num)//数据发送-初始化
 {
     cmd->header = 0x7B;
     cmd->addr = addr;
+    cmd->num = num;
     cmd->len = TEXT_MAX_LEN;
     memcpy(cmd->data,data,TEXT_MAX_LEN); //内存拷贝
 }
@@ -57,14 +62,16 @@ void init_text_cmd(uchar addr ,char *data,textSendCmd *cmd)//数据发送-初始
  * @param data 一包（升级文件）
  * @param array 调用串口发送时的数据包
  */
-void text_send_packet(uchar addr ,char *data,QByteArray &array)
+void text_send_packet(uchar addr ,char *data,QByteArray &array,int num)
 {
     textSendCmd textCmd;
 
-    init_text_cmd(addr,data ,&textCmd);
+    init_text_cmd(addr,data ,&textCmd, num);
 
     array.append(textCmd.header);
     array.append(textCmd.addr);
+    array.append(textCmd.num >> 8);
+    array.append(textCmd.num & 0xFF);
     array.append((textCmd.len >> 8));
     array.append((textCmd.len & 0xFF));
 
@@ -82,23 +89,23 @@ void text_send_packet(uchar addr ,char *data,QByteArray &array)
 
 
 
-void text_send_packet(uchar addr, char *data, QByteArray &array, int len , bool lastflag)
+void text_send_packet(uchar addr, char *data, QByteArray &array, int len ,int num)
 {
     textSendCmd textCmd;
 
     //init_text_cmd(addr,data ,&textCmd);
 
     textCmd.header = 0x7B;
-    if(!lastflag)
-        textCmd.addr = addr;
-    else
-        textCmd.addr = addr|0xC0;//由于下位机无法识别最后一包，要用0xCx表示最后一包数据
+    textCmd.addr = addr;
+    textCmd.num = num;
     textCmd.len = len;
     memcpy(textCmd.data,data, len); //内存拷贝
 
   //  qDebug() << "len" << textCmd.len;
     array.append(textCmd.header);
     array.append(textCmd.addr);
+    array.append(textCmd.num >> 8);
+    array.append(textCmd.num & 0xFF);
     array.append((textCmd.len >> 8));
     array.append((textCmd.len & 0xFF));
 
