@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     initData();
     port = new SerialportOperate;
     //initGroupboxThree(0);
+
     initTablewidget();
     initComboxDa(0);
     timer2 = new QTimer(this);
