@@ -671,7 +671,8 @@ void MainWindow::readAnswer()
         case 2:  //当数据为采集信息数据时，需要判断是显示到采集应答还是表格
             if(is_gather)
             {
-                if(data[0] == 0x7B && (answer.length() == 127||answer.length() == 62))//只对开头是7B和长度是105进行解析
+//                if(data[0] == 0x7B && (answer.length() == 127||answer.length() == 62))//只对开头是7B和长度是105进行解析
+                if(data[0] == 0x7B)//只对开头是7B和长度是105进行解析
                 {
                     qDebug()<<answer.length();
                     updateGroupboxThree(data,answer.length());
