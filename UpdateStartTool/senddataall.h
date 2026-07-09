@@ -6,7 +6,7 @@
 #include <QMessageBox>
 #include "common/inofmanaging.h"
 #include "seriorport/myseriorport.h"
-
+extern int g_UpdateType;
 class SendDataAll : public QThread
 {
     Q_OBJECT

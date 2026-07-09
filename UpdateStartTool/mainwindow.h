@@ -12,7 +12,7 @@
 #include "seriorport/myseriorport.h"
 #include "senddata.h"
 #include "senddataall.h"
-
+extern int g_UpdateType;
 namespace Ui {
 class MainWindow;
 }

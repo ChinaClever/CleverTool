@@ -71,9 +71,10 @@ void SendData::run()
         }else{
 
           QByteArray da;
-          for(int i=0; i<TEXT_MAX_LEN; ++i)      da.append(allArray.at (i));
+          int len = (g_UpdateType==0)?TEXT_MAX_LEN:TEXT_MAX_BOOTLOADER_LEN;
+          for(int i=0; i<len; ++i)      da.append(allArray.at (i));
 
-            allArray.remove(0, TEXT_MAX_LEN);
+            allArray.remove(0, len);
            // da = file.read(TEXT_MAX_LEN);
             //da= str.toLatin1();
             char *data =  da.data();
@@ -185,11 +186,11 @@ int SendData::getPacketNum(int bytes)
 {
   //  qDebug() << "file size"<< bytes;
     int num = 0 ;
-
+    int len = (g_UpdateType==0)?TEXT_MAX_LEN:TEXT_MAX_BOOTLOADER_LEN;
     if(bytes > 0)
-        num = bytes/TEXT_MAX_LEN;
+        num = bytes/len;
 
-    if(bytes%TEXT_MAX_LEN != 0)
+    if(bytes%len != 0)
         num++;
 
     return num;

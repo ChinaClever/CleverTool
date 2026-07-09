@@ -16,12 +16,14 @@ void init_update_cmd(int addr,updateCmd *cmd,int size)
     for(int i = 0 ; i < 4 ; i++)
         cmd->reserved[i] = (size >> (8*(3-i)));
 
+    cmd->reserved[4] = g_UpdateType;
+
     cmd->XOR = 0;  //异或
     cmd->XOR ^=cmd->header;
     cmd->XOR ^=cmd->stx;
     cmd->XOR ^=cmd->addr;
     cmd->XOR ^=cmd->len;
-    for(int i = 0 ; i < 4 ; i++)
+    for(int i = 0 ; i < 5 ; i++)
         cmd->XOR ^= cmd->reserved[i];
 
     //    cmd->XOR ^=cmd->reserved;
@@ -53,8 +55,9 @@ void init_text_cmd(uchar addr ,char *data,textSendCmd *cmd , int num)//数据发
     cmd->header = 0x7B;
     cmd->addr = addr;
     cmd->num = num;
-    cmd->len = TEXT_MAX_LEN;
-    memcpy(cmd->data,data,TEXT_MAX_LEN); //内存拷贝
+    int len = (g_UpdateType==0)? TEXT_MAX_LEN:TEXT_MAX_BOOTLOADER_LEN;
+    cmd->len = len;
+    memcpy(cmd->data,data,len); //内存拷贝
 }
 
 /**
@@ -75,7 +78,8 @@ void text_send_packet(uchar addr ,char *data,QByteArray &array,int num)
     array.append((textCmd.len >> 8));
     array.append((textCmd.len & 0xFF));
 
-    for(int i = 0 ; i < TEXT_MAX_LEN ; i++)
+    int len = (g_UpdateType==0)? TEXT_MAX_LEN:TEXT_MAX_BOOTLOADER_LEN;
+    for(int i = 0 ; i < len ; i++)
         array.append(textCmd.data[i]);
 
     textCmd.XOR = CRC16_2(array.data(), array.size());
@@ -115,8 +119,9 @@ void text_send_packet(uchar addr, char *data, QByteArray &array, int len ,int nu
         array.append(textCmd.data[i]);
 
     //假设在补充在后
+    int totallen = (g_UpdateType==0)? TEXT_MAX_LEN:TEXT_MAX_BOOTLOADER_LEN;
     uchar dat = 0x00;
-    for(int i = 0 ; i < TEXT_MAX_LEN - len ; i++)
+    for(int i = 0 ; i < totallen - len ; i++)
         array.append(dat);
 
     textCmd.XOR = CRC16_2(array.data(), array.size());

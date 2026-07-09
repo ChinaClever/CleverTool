@@ -4,7 +4,7 @@
 #include <QByteArray>
 #include <QDebug>
 #include "common.h"
-
+extern int g_UpdateType;
 extern void send_to_packet(uchar addr, QByteArray &array, int size);
 extern void text_send_packet(uchar addr , char *data, QByteArray &array, int num);
 

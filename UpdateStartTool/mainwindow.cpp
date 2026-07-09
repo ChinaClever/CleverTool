@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <QDebug>
 #include<QFile>
+int g_UpdateType;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -20,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(sendDataAll, SIGNAL(sendProgress(QString)), this, SLOT(onProgressAllSlot(QString))); //tiaoshi
     connect(sendDataAll, SIGNAL(sendProgress2(QString)), this, SLOT(onProgressAllSlot2(QString))); //进度条
 
+    g_UpdateType = 0;
     QStringList portList = myPort->initSeriorPortInfos();
     initPortCombox(portList); //初始化串口信息  -- 初始化界面
 
@@ -305,6 +307,7 @@ void MainWindow::on_selectfileBtn_clicked()
  */
 void MainWindow::on_startBtn_clicked()
 {
+    g_UpdateType = ui->comboBox_Screen->currentIndex();
     ui->Statuslabel->hide();
     if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("请确认是否有打开串口"),tr("确定"));return;}
     if(ui->nameEdit->text().isEmpty()){QMessageBox::warning(this,tr("waring"),tr("请选择升级文件"),tr("确定"));return;}
@@ -608,6 +611,7 @@ bool MainWindow::responseSendFile(int num)
 
 void MainWindow::on_pushButton_clicked() //批量
 {
+    g_UpdateType = ui->comboBox_Screen->currentIndex();
     ui->Statuslabel->hide();
     if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("请确认是否有打开串口"),tr("确定"));return;}
     if(ui->nameEdit->text().isEmpty()){QMessageBox::warning(this,tr("waring"),tr("请选择升级文件"),tr("确定"));return;}
@@ -1043,21 +1047,21 @@ void MainWindow::on_comboBox_BoxType_activated(const QString &arg1)
 
 void MainWindow::on_comboBox_Screen_activated(const QString &arg1)
 {
-    ui->label_status->setText(tr(""));
-    if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("请确认是否有打开串口"),tr("确定"));return;}
-    if(ui->addrEdit->text().isEmpty() && ui->lEditMin->text().isEmpty()){
-        QMessageBox::warning(this,tr("waring"),tr("请确认是否填写设备地址"),tr("确定"));return;
-    }
-    ushort reg = 0x1070;
-    bool ret = false;
-    ushort value = 0x00;
-    if( arg1.contains(tr("新屏"))){
-        value = 0x01;
-    }else if(arg1.contains(tr("旧屏"))){
-        value = 0x00;
-    }
-    ret = sendChangeType(reg,value);
-    showResult(ret);
+//    ui->label_status->setText(tr(""));
+//    if(!mIsOpenSerial)   {QMessageBox::warning(this,tr("waring"),tr("请确认是否有打开串口"),tr("确定"));return;}
+//    if(ui->addrEdit->text().isEmpty() && ui->lEditMin->text().isEmpty()){
+//        QMessageBox::warning(this,tr("waring"),tr("请确认是否填写设备地址"),tr("确定"));return;
+//    }
+//    ushort reg = 0x1070;
+//    bool ret = false;
+//    ushort value = 0x00;
+//    if( arg1.contains(tr("新屏"))){
+//        value = 0x01;
+//    }else if(arg1.contains(tr("旧屏"))){
+//        value = 0x00;
+//    }
+//    ret = sendChangeType(reg,value);
+//    showResult(ret);
 }
 
 void MainWindow::on_comboBox_Protocol_activated(const QString &arg1)
@@ -1181,7 +1185,7 @@ bool MainWindow::sendResetFactory(ushort reg,ushort value)
     QByteArray sendArray;
     bool ret = false;
     bool screen = false;
-    if(ui->comboBox_Screen->currentText().contains("新屏")) screen = true;
+    //if(ui->comboBox_Screen->currentText().contains("新屏")) screen = true;
 
     uchar fun = screen==true?0x06:0x10;
 
